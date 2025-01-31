@@ -1,6 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
+import Header from "./components/header";
+import Footer from "./components/footer";
+import About from "./pages/about";
+import Contact from "./pages/contact";
+import FAQ from "./pages/faq";
+import Services from "./pages/services";
 
 const App = () => {
   return (
@@ -8,7 +12,7 @@ const App = () => {
       <Header />
       <main className="container mx-auto p-4">
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/"/>
           <Route path="/about" element={<About />} />
           <Route path="/services" element={<Services />} />
           <Route path="/faq" element={<FAQ />} />
