@@ -1,17 +1,19 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Header from "./components/header";
-import Footer from "./components/footer";
-import Home from "./pages/home";
-import About from "./pages/about";
-import Contact from "./pages/contact";
-import FAQ from "./pages/faq";
-import Services from "./pages/services";
+import React, { useState, useEffect } from "react";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import Home from "./pages/Home";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import FAQ from "./pages/FAQ";
+import Services from "./pages/Services";
 
 const App = () => {
+
   return (
     <Router>
       <Header />
-      <main className="container mx-auto p-4">
+      <main className="container mx-auto">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
