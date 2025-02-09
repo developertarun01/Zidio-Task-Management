@@ -24,9 +24,9 @@ const TaskAssignment = ({ onAddTask }) => {
     };
 
     return (
-        <div className="w-1/2 bg-gray-200 rounded-lg p-4 mt-9 mr-5">
+        <div className="w-1/2 bg-blue-50 rounded-lg p-4 mt-9 mr-5 shadow-lg">
             <form onSubmit={handleSubmit}>
-                <h2 className="text-xl font-bold text-center text-blue-600 mb-4">Task Assignment</h2>
+                <h2 className="text-2xl font-bold text-black mb-4 text-center">Task Assignment</h2>
                 <input
                     type="text"
                     placeholder="Task Title"
@@ -72,9 +72,9 @@ const TaskAssignment = ({ onAddTask }) => {
                 />
                 <button
                     type="submit"
-                    className="bg-blue-600 text-white px-4 py-2 rounded w-full mt-2"
+                    className="bg-blue-600 text-white px-4 py-2 rounded w-full mt-2 hover:bg-blue-500"
                 >
-                    Add Task
+                    <b>ADD TASK</b>
                 </button>
             </form>
         </div>

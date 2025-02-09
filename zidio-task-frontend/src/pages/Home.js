@@ -5,6 +5,8 @@ import axios from "axios";
 import TaskAssignment from "../components/TaskAssignment";
 import TaskList from "../components/TaskList";
 import CalendarView from "../components/CalendarView";
+import Chart from "../components/Chart";
+import ProgressChart from "../components/ProgressChart";
 import { io } from "socket.io-client";
 
 // Initialize Socket.IO
@@ -24,8 +26,6 @@ const Home = () => {
       },
     ],
   };
-
-  const [tasks, setTasks] = useState([]);
 
   // Fetch tasks from backend
   const fetchTasks = async () => {
@@ -67,15 +67,41 @@ const Home = () => {
     return () => socket.disconnect();
   }, []);
 
+  const [tasks, setTasks] = useState([]);
+
+  // Fetch tasks from the backend
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const response = await fetch("http://localhost:4000/api/tasks");
+        const data = await response.json();
+        setTasks(data);
+      } catch (error) {
+        console.error("Error fetching tasks:", error);
+      }
+    };
+    fetchTasks();
+  }, []);
+
   return (
     <main className="container mx-auto">
-      <div className="container flex mx-auto">
-        <TaskAssignment onAddTask={handleAddTask} />
-        <TaskList tasks={tasks} />
-      </div>
+      <div className="container item-center flex mx-auto" >
+        <div className="w-1/2 bg-blue-50 rounded-lg p-6 mt-9 mr-5 flex flex-col justify-center items-center shadow-lg">
+          <h4 className="text-2xl font-semibold text-gray-700 mb-2">Welcome to</h4>
+          <h2 className="text-3xl font-bold text-blue-600 mb-4">Zidio Task Management</h2>
+          <p className="text-lg text-gray-600 text-center px-4">
+            Stay organized and boost productivity with Zidio. Effortlessly manage, track, and complete your tasks on time.
+          </p>
+        </div>
 
+
+
+        <TaskAssignment onAddTask={handleAddTask} />
+
+      </div>
+      <TaskList tasks={tasks} setTasks={setTasks} />
       {/* <Chart chartData={chartData} />
-        <ProgressChart tasks={tasks} /> */}
+      <ProgressChart tasks={tasks} /> */}
       <CalendarView tasks={tasks} />
     </main>
   );
