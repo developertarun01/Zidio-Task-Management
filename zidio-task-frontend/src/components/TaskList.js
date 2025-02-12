@@ -57,7 +57,7 @@ const TaskList = ({ tasks, setTasks }) => {
 
     return (
         <div className="w-full bg-blue-50 rounded-lg p-4 mt-9 shadow-lg">
-            <h2 className="text-2xl font-bold text-black mb-4 text-center">Task List</h2>
+            <h2 className="text-2xl font-bold text-blue-600 mb-4 text-center">Task List</h2>
             <ul>
                 {sortedTasks.map((task) => (
                     <li

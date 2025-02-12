@@ -7,14 +7,19 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Careers from "./pages/Careers";
 import Services from "./pages/Services";
+import Auth from "./components/Auth";
+import Dashboard from "./components/Dashboard";
 
 const App = () => {
-  
+
   return (
     <Router>
       <Header />
       <main className="container mx-auto">
         <Routes>
+          <Route path="/login" element={<Auth isSignup={false} />} />
+          <Route path="/signup" element={<Auth isSignup={true} />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/services" element={<Services />} />

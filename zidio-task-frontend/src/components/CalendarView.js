@@ -23,13 +23,13 @@ const CalendarView = ({ tasks }) => {
 
     return (
         <div className="bg-blue-50 rounded-lg p-4 mt-9  shadow-lg">
-            <h2 className="text-2xl font-bold text-black mb-4 text-center">Calender View</h2>
+            <h2 className="text-2xl font-bold text-blue-600 mb-4 text-center">Calender View</h2>
 
             {Object.keys(tasksByMonthYear)
                 .sort((a, b) => a - b) // Sort by year ascending
                 .map((year) => (
                     <div key={year} className="mb-10">
-                        <h2 className="text-2xl font-bold text-center bg-gray-300 py-3 rounded">{year}</h2>
+                        {/* <h2 className="text-2xl font-bold text-center bg-gray-300 py-3 rounded">{year}</h2> */}
 
                         {Object.keys(tasksByMonthYear[year])
                             .sort((a, b) => a - b) // Sort by month ascending

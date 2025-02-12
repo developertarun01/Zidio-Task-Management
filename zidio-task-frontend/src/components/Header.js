@@ -1,9 +1,13 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 // import Info from "./Info";
 // import Search from "./Search";
+import Auth from "./Auth";
 import { Search, Info } from "lucide-react";
 
 const Header = () => {
+
+  const navigate = useNavigate();
+
   return (
     <header className="bg-White text-black p-4  mt-8">
       <div className="container mx-auto flex justify-between items-center">
@@ -57,10 +61,11 @@ const Header = () => {
               </NavLink>
             </li>
             <button
-              type="submit"
+              type="button"
               className="bg-blue-600 text-white px-10 py-3 rounded w-full hover:bg-blue-500"
+              onClick={() => navigate("/login")} // Redirect on click
             >
-              <b>ADD TASK</b>
+              <b>Login / Signup</b>
             </button>
           </ul>
         </nav>
