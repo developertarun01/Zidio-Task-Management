@@ -86,7 +86,7 @@ const Home = () => {
   return (
     <main className="container mx-auto">
       <div className="container item-center flex mx-auto" >
-        <div className="w-1/2 bg-blue-50 rounded-lg p-6 mt-9 mr-5 flex flex-col justify-center items-center shadow-lg">
+        <div className="w-1/2 bg-blue-50 rounded-lg p-6 mt-9 mr-9 flex flex-col justify-center items-center shadow-lg">
           <h4 className="text-2xl font-semibold text-gray-700 mb-2">Welcome to</h4>
           <h2 className="text-3xl font-bold text-blue-600 mb-4">Zidio Task Management</h2>
           <p className="text-lg text-gray-600 text-center px-4">

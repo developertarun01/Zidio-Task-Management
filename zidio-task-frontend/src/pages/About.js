@@ -11,8 +11,8 @@ const About = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center p-10 bg-gray-100 min-h-screen">
-      <div className="bg-white p-10 rounded-2xl shadow-lg max-w-4xl w-full">
+    <div className="flex flex-col items-center p-10 bg-white">
+      <div className="bg-blue-50 p-10 rounded-2xl shadow-lg max-w-4xl w-full">
         <h1 className="text-3xl font-bold text-center text-blue-600">{aboutInfo.title}</h1>
         <p className="text-gray-700 mt-4 text-center">{aboutInfo.description}</p>
         <div className="mt-8">

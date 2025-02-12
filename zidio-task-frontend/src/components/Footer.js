@@ -44,7 +44,7 @@ const Footer = () => {
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition mt-4 md:mt-0"
           >
-            Go On Top
+            <b>Go On Top</b>
           </button>
         </div>
       </div>
