@@ -7,6 +7,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const connectDB = require("./config/db");
 const taskRoutes = require("./routes/taskRoutes");
+const aboutRoutes = require("./routes/aboutRoutes"); // Import About Routes
 
 dotenv.config();
 connectDB();
@@ -23,6 +24,8 @@ const io = new Server(server, {
 app.use(cors());
 app.use(bodyParser.json());
 app.use("/api/tasks", taskRoutes);
+app.use("/api/about", aboutRoutes); // Add About API Route
+
 
 io.on("connection", (socket) => {
   console.log("A user connected");
