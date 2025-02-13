@@ -1,4 +1,5 @@
 import React from 'react';
+import { ClipboardList, GitBranch, Users, BarChart } from 'lucide-react';
 
 const Services = () => {
   return (
@@ -7,30 +8,42 @@ const Services = () => {
         <h1 className="text-3xl font-bold text-center text-blue-600 mb-6">Our Services</h1>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white p-6 rounded-lg shadow-md">
+          <div className="bg-white p-6 rounded-lg shadow-md group relative h-40 overflow-hidden transition-all duration-300 hover:h-64">
             <h2 className="text-2xl font-semibold text-blue-600 mb-3">Task Management</h2>
-            <p className="text-gray-700">
+            <div className="flex justify-center mb-4">
+              <ClipboardList className="w-12 h-12 text-blue-500" />
+            </div>
+            <p className="text-gray-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               Comprehensive task tracking and management solutions with real-time updates and collaborative features.
             </p>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-md">
+          <div className="bg-white p-6 rounded-lg shadow-md group relative h-40 overflow-hidden transition-all duration-300 hover:h-64">
             <h2 className="text-2xl font-semibold text-blue-600 mb-3">Project Planning</h2>
-            <p className="text-gray-700">
+            <div className="flex justify-center mb-4">
+              <GitBranch className="w-12 h-12 text-blue-500" />
+            </div>
+            <p className="text-gray-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               Strategic project planning tools with deadline management and milestone tracking capabilities.
             </p>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-md">
+          <div className="bg-white p-6 rounded-lg shadow-md group relative h-40 overflow-hidden transition-all duration-300 hover:h-64">
             <h2 className="text-2xl font-semibold text-blue-600 mb-3">Team Collaboration</h2>
-            <p className="text-gray-700">
+            <div className="flex justify-center mb-4">
+              <Users className="w-12 h-12 text-blue-500" />
+            </div>
+            <p className="text-gray-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               Enhanced team communication features with real-time updates and progress tracking.
             </p>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-md">
+          <div className="bg-white p-6 rounded-lg shadow-md group relative h-40 overflow-hidden transition-all duration-300 hover:h-64">
             <h2 className="text-2xl font-semibold text-blue-600 mb-3">Analytics & Reporting</h2>
-            <p className="text-gray-700">
+            <div className="flex justify-center mb-4">
+              <BarChart className="w-12 h-12 text-blue-500" />
+            </div>
+            <p className="text-gray-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               Detailed insights and analytics to track project progress and team performance.
             </p>
           </div>
