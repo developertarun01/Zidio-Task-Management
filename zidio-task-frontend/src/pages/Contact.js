@@ -1,6 +1,5 @@
 import { useState } from "react";
 import axios from "axios";
-// import { FaEnvelope, FaPhone, FaMapMarkerAlt } from "react-icons/fa";
 
 function Contact() {
   const [formData, setFormData] = useState({
@@ -43,15 +42,12 @@ function Contact() {
           {/* Contact Info Section */}
           <div className="space-y-6">
             <div className="flex items-center space-x-3">
-              {/* <FaEnvelope className="text-blue-500 text-xl" /> */}
               <p className="text-gray-700">support@zidiotaskmanager.com</p>
             </div>
             <div className="flex items-center space-x-3">
-              {/* <FaPhone className="text-green-500 text-xl" /> */}
               <p className="text-gray-700">+91 123 9088 123</p>
             </div>
             <div className="flex items-center space-x-3">
-              {/* <FaMapMarkerAlt className="text-red-500 text-xl" /> */}
               <p className="text-gray-700">
                 123 Task Manager, Bengaluru, India
               </p>
