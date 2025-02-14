@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
+import tanmoyImg from "../assets/tanmoy.jpg"
 const teamMembers = [
   {
     name: "Gayatri Sawant",
@@ -30,7 +30,7 @@ const teamMembers = [
   {
     name: "Tanmoy Das",
     role: "Full Stack Developer",
-    image: "../public/image/myimg.jpg",
+    image: tanmoyImg,
   },
 ];
 
