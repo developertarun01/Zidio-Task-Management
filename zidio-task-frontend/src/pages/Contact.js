@@ -34,8 +34,8 @@ function Contact() {
       <div className=" contact-card max-w-4xl w-full bg-white shadow-xl rounded-lg p-8">
         <h2 className=" contact-title text-3xl font-bold text-center text-gray-800 mb-6">
           Contact Us
-          <p className="contact-p">We'd love to hear from you! Fill out the form below or reach out via email or phone.</p>
         </h2>
+        <p className="text-2xl text-center text-gray-600 mb-8">We would love to hear from you! Fill out the form below or reach out via email or phone.</p>
         
         <div className="grid md:grid-cols-2 gap-8">
         
