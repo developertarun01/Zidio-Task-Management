@@ -9,7 +9,7 @@ const Header = () => {
   const navigate = useNavigate();
 
   return (
-    <header className="bg-White text-black p-4  mt-8">
+    <header className="bg-White text-black p-4  my-8">
       <div className="container mx-auto flex justify-between items-center">
         <img className="w-1/6" src="/image/logo.png" alt="Logo" />
         <nav>

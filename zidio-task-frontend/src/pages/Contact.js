@@ -30,15 +30,15 @@ function Contact() {
   };
 
   return (
-    <div className=" contact-container flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-500 to-purple-600">
-      <div className=" contact-card max-w-4xl w-full bg-white shadow-xl rounded-lg p-8">
+    <div className=" contact-container flex flex-col items-center justify-center">
+      <div className=" contact-card max-w-4xl w-full bg-blue-50 shadow-xl rounded-lg p-8">
         <h2 className=" contact-title text-3xl font-bold text-center text-gray-800 mb-6">
           Contact Us
         </h2>
-        <p className="text-2xl text-center text-gray-600 mb-8">We would love to hear from you! Fill out the form below or reach out via email or phone.</p>
-        
+        <p className="text-xl text-center text-gray-600 mb-8">We would love to hear from you! Fill out the form below or reach out via email or phone.</p>
+
         <div className="grid md:grid-cols-2 gap-8">
-        
+
           {/* Contact Info Section */}
           <div className="space-y-6">
             <div className="flex items-center space-x-3">
@@ -53,55 +53,55 @@ function Contact() {
               </p>
             </div>
           </div>
-          
+
           <div>
-          
-            
-              {" "}
-              {/* Contact Form */}
-              <form onSubmit={handleSubmit} className=" contact-form space-y-4">
-                <div>
-                  <input
-                    type="text"
-                    name="name"
-                    placeholder="Your Name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    className=" hh w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
-                </div>
-                <div>
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="Your Email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className=" hh w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
-                </div>
-                <div>
-                  <textarea
-                    name="message"
-                    placeholder="Your Message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 h-32"
-                    required
-                  ></textarea>
-                </div>
-                <div>
-                  <button
-                    type="submit"
-                    className=" status-messgage w-full bg-blue-500 text-white py-3 rounded-md hover:bg-blue-600 transition duration-300"
-                  >
-                    Send Message
-                  </button>
-                </div>
-              </form>
-            
+
+
+            {" "}
+            {/* Contact Form */}
+            <form onSubmit={handleSubmit} className=" contact-form space-y-4">
+              <div>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Your Name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className=" hh w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+              <div>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Your Email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className=" hh w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+              <div>
+                <textarea
+                  name="message"
+                  placeholder="Your Message"
+                  value={formData.message}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 h-32"
+                  required
+                ></textarea>
+              </div>
+              <div>
+                <button
+                  type="submit"
+                  className=" status-messgage w-full bg-blue-500 text-white py-3 rounded-md hover:bg-blue-600 transition duration-300"
+                >
+                  Send Message
+                </button>
+              </div>
+            </form>
+
           </div>
         </div>
 

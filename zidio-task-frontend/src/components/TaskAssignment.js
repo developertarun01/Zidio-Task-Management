@@ -24,7 +24,7 @@ const TaskAssignment = ({ onAddTask }) => {
     };
 
     return (
-        <div className="w-1/2 bg-blue-50 rounded-lg p-4 mt-9 shadow-lg">
+        <div className="w-1/2 bg-blue-50 rounded-lg p-4 shadow-lg">
             <form onSubmit={handleSubmit}>
                 <h2 className="text-2xl font-bold text-blue-600 mb-4 text-center">Task Assignment</h2>
                 <input
