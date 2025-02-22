@@ -4,14 +4,24 @@ import tanmoyImg from "../assets/tanmoy.jpg"
 import tarunImg from "../assets/tarun.png"
 const teamMembers = [
   {
+    name: "Tarun",
+    role: "Project Manager / Team Leader",
+    image: tarunImg,
+  },
+  {
+    name: "Tanmoy Das",
+    role: "Full Stack Developer",
+    image: tanmoyImg,
+  },
+  {
     name: "Gayatri Sawant",
-    role: "Project Manager",
+    role: "Frontend Developer",
     image: "https://via.placeholder.com/150", // Replace with real image URL
   },
   {
-    name: "Tarun",
-    role: "Full Stack Developer",
-    image: tarunImg,
+    name: "Satya Prakash",
+    role: "Backend Developer",
+    image: "https://via.placeholder.com/150",
   },
   {
     name: "Pavan Gowda",
@@ -22,17 +32,7 @@ const teamMembers = [
     name: "Pradi",
     role: "Backend Developer",
     image: "https://via.placeholder.com/150",
-  },
-  {
-    name: "Satya Prakash",
-    role: "Backend Developer",
-    image: "https://via.placeholder.com/150",
-  },
-  {
-    name: "Tanmoy Das",
-    role: "Full Stack Developer",
-    image: tanmoyImg,
-  },
+  }
 ];
 
 const About = () => {
