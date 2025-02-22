@@ -5,7 +5,7 @@ import tarunImg from "../assets/tarun.png"
 const teamMembers = [
   {
     name: "Tarun",
-    role: "Project Manager / Team Leader",
+    role: "Project Manager",
     image: tarunImg,
   },
   {
