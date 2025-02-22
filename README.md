@@ -10,7 +10,7 @@ Zidio Task Management is a web-based application developed as part of the Full S
 💬 Collaboration Tools – Comment on tasks and track progress in real-time.
 
 🛠️ Tech Stack
-🎨 Frontend: React.js (for a dynamic and responsive UI)
-⚙️ Backend: Spring Boot (RESTful API & business logic)
+🎨 Frontend: React Js (for a dynamic and responsive UI)
+⚙️ Backend: Node Js (RESTful API & business logic)
 🗄️ Database: MongoDB (for efficient data storage)
 
