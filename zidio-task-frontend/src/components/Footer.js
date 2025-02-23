@@ -2,17 +2,21 @@ const Footer = () => {
   return (
     <footer className="bg-blue-50 text-black p-6 text-center mt-10">
       <div className="container mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
           {/* Location & Contact */}
           <div>
-            <h3 className="font-semibold text-lg">Bengaluru, Karnataka</h3>
-            <p className="text-gray-600">support@zidio.in</p>
+            <h2 className="font-semibold text-lg">Zidio Development</h2>
+            <ul className="text-gray-600 space-y-2 mt-2">
+              <li><a href="#">+91 123 9088 123</a></li>
+              <li><a href="#">support@zidiotaskmanager.com</a></li>
+              <li><a href="#">123 Task Manager, Bengaluru, India</a></li>
+            </ul>
           </div>
 
           {/* Company Info */}
           <div>
             <h3 className="font-semibold text-lg">Company</h3>
-            <ul className="text-gray-600 space-y-2">
+            <ul className="text-gray-600 space-y-2 mt-2">
               <li><a href="#">Our Team</a></li>
               <li><a href="#">Refund Policy</a></li>
               <li><a href="#">Terms & Conditions</a></li>
@@ -24,7 +28,7 @@ const Footer = () => {
           {/* Services */}
           <div>
             <h3 className="font-semibold text-lg">Services</h3>
-            <ul className="text-gray-600 space-y-2">
+            <ul className="text-gray-600 space-y-2 mt-2">
               <li><a href="#">IT Solutions</a></li>
               <li><a href="#">Digital Marketing</a></li>
               <li><a href="#">Data Analytics</a></li>
@@ -42,7 +46,7 @@ const Footer = () => {
           {/* Go On Top Button - Right */}
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition mt-4 md:mt-0"
+            className="bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition mt-4 md:mt-0"
           >
             <b>Go On Top</b>
           </button>
