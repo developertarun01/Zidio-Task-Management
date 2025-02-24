@@ -10,7 +10,7 @@ import ProgressChart from "../components/ProgressChart";
 import { io } from "socket.io-client";
 
 // Initialize Socket.IO
-const socket = io("http://localhost:4000"); // Backend URL
+const socket = io("https://zidio-task-management-api.vercel.app/"); // Backend URL
 
 const Home = () => {
 
@@ -30,7 +30,7 @@ const Home = () => {
   // Fetch tasks from backend
   const fetchTasks = async () => {
     try {
-      const response = await axios.get("http://localhost:4000/api/tasks");
+      const response = await axios.get("https://zidio-task-management-api.vercel.app/api/tasks");
       setTasks(response.data);
     } catch (error) {
       console.error("Error fetching tasks:", error);
@@ -41,7 +41,7 @@ const Home = () => {
   // Add a new task
   const handleAddTask = async (task) => {
     try {
-      const response = await axios.post("http://localhost:4000/api/tasks", task);
+      const response = await axios.post("https://zidio-task-management-api.vercel.app/api/tasks", task);
       const newTask = response.data;
       setTasks([...tasks, newTask]);
 
@@ -73,7 +73,7 @@ const Home = () => {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const response = await fetch("http://localhost:4000/api/tasks");
+        const response = await fetch("https://zidio-task-management-api.vercel.app/api/tasks");
         const data = await response.json();
         setTasks(data);
       } catch (error) {

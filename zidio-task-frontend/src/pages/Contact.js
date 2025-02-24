@@ -17,7 +17,7 @@ function Contact() {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/contact",
+        "https://zidio-task-management-api.vercel.app/api/contact",
         formData
       );
       if (res.data.success) {

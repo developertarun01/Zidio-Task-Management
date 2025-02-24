@@ -16,7 +16,7 @@ const TaskList = ({ tasks, setTasks }) => {
     // Function to toggle task completion in real-time
     const handleCompleteTask = async (taskId, completed) => {
         try {
-            const response = await fetch(`http://localhost:4000/api/tasks/${taskId}`, {
+            const response = await fetch(`https://zidio-task-management-api.vercel.app/api/tasks${taskId}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -41,7 +41,7 @@ const TaskList = ({ tasks, setTasks }) => {
     // Function to delete task in real-time
     const handleDeleteTask = async (taskId) => {
         try {
-            const response = await fetch(`http://localhost:4000/api/tasks/${taskId}`, {
+            const response = await fetch(`https://zidio-task-management-api.vercel.app/api/tasks${taskId}`, {
                 method: "DELETE",
             });
 
