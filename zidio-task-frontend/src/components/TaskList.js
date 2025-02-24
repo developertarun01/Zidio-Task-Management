@@ -3,9 +3,9 @@ import React, { useState, useEffect } from "react";
 const TaskList = ({ tasks, setTasks }) => {
     if (tasks.length === 0) {
         return (
-            <div className="w-full bg-blue-50 rounded-lg p-4 mt-9 shadow-lg">
-                <h2 className="text-2xl font-bold text-blue-600 mb-4 text-center">Task List</h2>
-                <p className="text-gray-600 text-center">No tasks available. Add some tasks to get started!</p>
+            <div className="w-full bg-blue-50 rounded-lg p-4 mt-6 shadow-lg text-center">
+                <h2 className="text-xl md:text-2xl font-bold text-blue-600 mb-4">Task List</h2>
+                <p className="text-gray-600">No tasks available. Add some tasks to get started!</p>
             </div>
         );
     }
@@ -13,20 +13,20 @@ const TaskList = ({ tasks, setTasks }) => {
     // Sort tasks by deadline (earliest first)
     const sortedTasks = [...tasks].sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
 
-    // Function to toggle task completion in real-time
     const handleCompleteTask = async (taskId, completed) => {
         try {
-            const response = await fetch(`https://zidio-task-management-api.vercel.app/api/tasks${taskId}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ completed: !completed }),
-            });
+            const response = await fetch(
+                `https://zidio-task-management-api.vercel.app/api/tasks/${taskId}`,
+                {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ completed: !completed }),
+                }
+            );
 
             if (response.ok) {
-                setTasks(prevTasks =>
-                    prevTasks.map(task =>
+                setTasks((prevTasks) =>
+                    prevTasks.map((task) =>
                         task._id === taskId ? { ...task, completed: !completed } : task
                     )
                 );
@@ -38,15 +38,15 @@ const TaskList = ({ tasks, setTasks }) => {
         }
     };
 
-    // Function to delete task in real-time
     const handleDeleteTask = async (taskId) => {
         try {
-            const response = await fetch(`https://zidio-task-management-api.vercel.app/api/tasks${taskId}`, {
-                method: "DELETE",
-            });
+            const response = await fetch(
+                `https://zidio-task-management-api.vercel.app/api/tasks/${taskId}`,
+                { method: "DELETE" }
+            );
 
             if (response.ok) {
-                setTasks(prevTasks => prevTasks.filter(task => task._id !== taskId));
+                setTasks((prevTasks) => prevTasks.filter((task) => task._id !== taskId));
             } else {
                 console.error("Failed to delete task.");
             }
@@ -56,36 +56,37 @@ const TaskList = ({ tasks, setTasks }) => {
     };
 
     return (
-        <div className="w-full bg-blue-50 rounded-lg p-4 mt-9 shadow-lg">
-            <h2 className="text-2xl font-bold text-blue-600 mb-4 text-center">Task List</h2>
-            <div className="max-h-80 overflow-y-auto"> {/* Scrollbar added */}
-                <ul>
+        <div className="w-full bg-blue-50 rounded-lg p-4 mt-6 shadow-lg">
+            <h2 className="text-xl md:text-2xl font-bold text-blue-600 mb-4 text-center">Task List</h2>
+            <div className="max-h-80 overflow-y-auto">
+                <ul className="flex flex-col space-y-4">
                     {sortedTasks.map((task) => (
                         <li
                             key={task._id}
-                            className="border-b py-4 flex justify-between items-center"
+                            className="border-b py-4 flex flex-wrap md:flex-nowrap justify-between items-center"
                         >
-                            <div>
+                            <div className="w-full md:w-3/4">
                                 <h3 className={`font-bold ${task.completed ? "line-through" : ""}`}>
                                     {task.title}
                                 </h3>
-                                <p className="text-sm text-gray-500">
+                                <p className="text-sm md:text-base text-gray-500">
                                     Subtasks: {task.subtasks?.join(", ")}
                                 </p>
-                                <p className="text-sm text-gray-500">
-                                    Priority: {task.priority} | Deadline:{" "}
-                                    {new Date(task.deadline).toLocaleDateString()}
+                                <p className="text-sm md:text-base text-gray-500">
+                                    Priority: {task.priority} | Deadline: {new Date(task.deadline).toLocaleDateString()}
                                 </p>
                             </div>
-                            <div>
+                            <div className="flex flex-wrap space-x-2 mt-3 md:mt-0">
                                 <button
-                                    className={`px-4 py-2 rounded ${task.completed ? "bg-green-500" : "bg-gray-400"} text-white mr-2`}
+                                    className={`px-3 py-2 text-xs md:text-sm rounded ${
+                                        task.completed ? "bg-green-500" : "bg-gray-400"
+                                    } text-white`}
                                     onClick={() => handleCompleteTask(task._id, task.completed)}
                                 >
                                     {task.completed ? "Completed" : "Mark Complete"}
                                 </button>
                                 <button
-                                    className="px-4 py-2 bg-red-500 text-white rounded mr-5"
+                                    className="px-3 py-2 text-xs md:text-sm bg-red-500 text-white rounded"
                                     onClick={() => handleDeleteTask(task._id)}
                                 >
                                     Delete
