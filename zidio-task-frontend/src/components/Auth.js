@@ -32,7 +32,7 @@ const Auth = ({ isSignup }) => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-white">
+        <div className="flex items-center justify-center bg-white">
             <div className="bg-blue-50 p-8 rounded-lg shadow-lg w-96">
                 <h2 className="text-2xl font-bold text-blue-600 mb-4 text-center">
                     {isSignup ? "Sign Up" : "Login"}

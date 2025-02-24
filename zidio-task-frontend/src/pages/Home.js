@@ -100,8 +100,8 @@ const Home = () => {
 
       </div>
       <TaskList tasks={tasks} setTasks={setTasks} />
-      {/* <Chart chartData={chartData} />
-      <ProgressChart tasks={tasks} /> */}
+      <Chart tasks={tasks} />
+      <ProgressChart tasks={tasks} />
       <CalendarView tasks={tasks} />
     </main>
   );

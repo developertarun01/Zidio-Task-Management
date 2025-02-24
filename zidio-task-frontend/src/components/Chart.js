@@ -1,66 +1,53 @@
-import React, { useEffect, useRef } from "react";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  BarController,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
+import React, { useEffect, useState } from "react";
+import { Line } from "react-chartjs-2";
+import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, Title, Tooltip, Legend, PointElement } from "chart.js";
 
-// Register required modules with Chart.js
-ChartJS.register(CategoryScale, LinearScale, BarElement, BarController, Title, Tooltip, Legend);
+ChartJS.register(LineElement, CategoryScale, LinearScale, Title, Tooltip, Legend, PointElement);
 
-const Chart = ({ chartData }) => {
-  const chartRef = useRef(null);
-  const chartInstance = useRef(null);
+const Chart = ({ tasks }) => {
+  const [chartData, setChartData] = useState({ labels: [], datasets: [] });
 
   useEffect(() => {
-    if (!chartRef.current) return;
-
-    const ctx = chartRef.current.getContext("2d");
-
-    // Destroy existing chart instance if it exists
-    if (chartInstance.current) {
-      chartInstance.current.destroy();
+    if (!tasks || tasks.length === 0) {
+      setChartData({ labels: [], datasets: [] });
+      return;
     }
 
-    // Create new chart instance
-    chartInstance.current = new ChartJS(ctx, {
-      type: "bar",
-      data: chartData,
-      options: {
-        responsive: true,
-        maintainAspectRatio: false, // Allow fixed height
-        plugins: {
-          legend: {
-            position: "top",
-          },
-          title: {
-            display: true,
-            text: "Task Progress Chart",
-          },
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-          },
-        },
-      },
-    });
+    const labels = tasks.map((task) => task.title);
+    const progressData = tasks.map((task) => (task.completed ? 100 : 0));
 
-    return () => {
-      if (chartInstance.current) {
-        chartInstance.current.destroy();
-      }
-    };
-  }, [chartData]);
+    setChartData({
+      labels,
+      datasets: [
+        {
+          label: "Completion Progress (%)",
+          data: progressData,
+          backgroundColor: "rgba(75, 192, 192, 0.2)",
+          borderColor: "rgba(75, 192, 192, 1)",
+          borderWidth: 1,
+          fill: true,
+        },
+      ],
+    });
+  }, [tasks]);
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: 100,
+      },
+    },
+  };
 
   return (
-    <div style={{ width: "100%", height: "400px" }}> {/* Set fixed height */}
-      <canvas ref={chartRef}></canvas>
+    <div className="w-full bg-blue-50 rounded-lg p-4 mt-9 shadow-lg">
+      <h2 className="text-2xl font-bold text-blue-600 mb-4 text-center">Task Chart</h2>
+      <div className="max-h-72">
+        {chartData.labels.length > 0 ? <Line data={chartData} options={options} /> : <p className="text-gray-600 text-center">No data available.</p>}
+      </div>
     </div>
   );
 };

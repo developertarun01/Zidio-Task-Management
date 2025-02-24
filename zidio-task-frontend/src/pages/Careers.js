@@ -4,7 +4,7 @@ const Careers = () => {
   return (
     <div className="flex flex-col md:flex-row gap-8">
       {/* Left Section */}
-      <div className="w-1/2 bg-blue-50 rounded-lg p-6 mr-9 flex flex-col justify-center items-center shadow-lg">
+      <div className="w-1/2 bg-blue-50 rounded-lg p-6  flex flex-col justify-center items-center shadow-lg">
         <h2 className="text-3xl font-bold text-blue-600 mb-4">Zidio Task Management</h2>
         <p className="text-lg text-gray-600 text-center px-4">
           Become part of an innovative team and shape the future of task management.

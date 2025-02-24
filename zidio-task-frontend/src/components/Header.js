@@ -1,69 +1,37 @@
 import { NavLink, useNavigate } from "react-router-dom";
-// import Info from "./Info";
-// import Search from "./Search";
-import Auth from "./Auth";
 import { Search, Info } from "lucide-react";
 
 const Header = () => {
-
   const navigate = useNavigate();
 
   return (
-    <header className="bg-White text-black p-4  my-8">
+    <header className="bg-white text-black p-4 my-8">
       <div className="container mx-auto flex justify-between items-center">
         <img className="w-1/6" src="/image/logo.png" alt="Logo" />
         <nav>
           <ul className="flex space-x-6 bg-blue-50 p-3 rounded-lg">
-            <li>
-              <NavLink
-                exact
-                to="/"
-                activeClassName="text-blue-50"
-                className="hover:text-blue-600 mx-5 grid"
-              >
-                <b className="mt-3">HOME</b>
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/about"
-                activeClassName="text-blue-50"
-                className="hover:text-blue-600 mx-5 grid"
-              >
-                <b className="mt-3">ABOUT</b>
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/services"
-                activeClassName="text-blue-50"
-                className="hover:text-blue-600 mx-5 grid"
-              >
-                <b className="mt-3">SERVICES</b>
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/careers"
-                activeClassName="text-blue-50"
-                className="hover:text-blue-600 mx-5 grid"
-              >
-                <b className="mt-3">CAREERS</b>
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/contact"
-                activeClassName="text-blue-50"
-                className="hover:text-blue-600 mx-5 grid"
-              >
-                <b className="mt-3">CONTACT</b>
-              </NavLink>
-            </li>
+            {[
+              { name: "HOME", path: "/" },
+              { name: "ABOUT", path: "/about" },
+              { name: "SERVICES", path: "/services" },
+              { name: "CAREERS", path: "/careers" },
+              { name: "CONTACT", path: "/contact" },
+            ].map((item) => (
+              <li key={item.path}>
+                <NavLink
+                  to={item.path}
+                  className={({ isActive }) =>
+                    `mx-5 grid hover:text-blue-600 ${isActive ? "text-blue-700" : "text-black"}`
+                  }
+                >
+                  <b className="mt-3">{item.name}</b>
+                </NavLink>
+              </li>
+            ))}
             <button
               type="button"
               className="bg-blue-600 text-white px-10 py-3 rounded w-full hover:bg-blue-500"
-              onClick={() => navigate("/login")} // Redirect on click
+              onClick={() => navigate("/login")}
             >
               <b>Login / Signup</b>
             </button>
