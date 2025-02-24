@@ -42,7 +42,7 @@ const CalendarView = ({ tasks }) => {
 
                                     return (
                                         <div key={month} className="mb-8">
-                                            <h3 className="text-lg font-bold text-gray-800 text-center bg-gray-200 py-2 rounded mr-5">
+                                            <h3 className="text-lg font-bold text-gray-800 text-center bg-gray-200 py-2 rounded">
                                                 {format(new Date(year, month), "MMMM yyyy")}
                                             </h3>
 
@@ -51,7 +51,7 @@ const CalendarView = ({ tasks }) => {
                                                     const date = format(new Date(year, month, day), "yyyy-MM-dd");
 
                                                     return (
-                                                        <div key={day} className="p-2 border rounded bg-white flex flex-col mr-5">
+                                                        <div key={day} className="p-2 border rounded bg-white flex flex-col">
                                                             <h4 className="font-bold text-sm">{day}</h4>
                                                             {tasksByMonthYear[year][month][date] ? (
                                                                 tasksByMonthYear[year][month][date].map((task) => (
