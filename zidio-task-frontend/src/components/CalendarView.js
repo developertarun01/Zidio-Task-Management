@@ -30,7 +30,7 @@ const CalendarView = ({ tasks }) => {
         <div className="bg-blue-50 rounded-lg p-4 mt-9 shadow-lg">
             <h2 className="text-2xl font-bold text-blue-600 mb-4 text-center">Calendar View</h2>
 
-            <div className="max-h-96 overflow-y-auto"> {/* Scrollbar added after 1 month */}
+            <div className="overflow-hidden"> {/* Scrollbar added after 1 month */}
                 {Object.keys(tasksByMonthYear)
                     .sort((a, b) => a - b) // Sort by year ascending
                     .map((year) => (
