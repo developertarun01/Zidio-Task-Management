@@ -13,7 +13,6 @@ import { io } from "socket.io-client";
 const socket = io("https://zidio-task-management-api.vercel.app/"); // Backend URL
 
 const Home = () => {
-
   const chartData = {
     labels: ["Task 1", "Task 2", "Task 3"],
     datasets: [
@@ -84,25 +83,37 @@ const Home = () => {
   }, []);
 
   return (
-    <main className="container mx-auto">
-      <div className="container item-center flex mx-auto" >
-        <div className="w-1/2 bg-blue-50 rounded-lg p-6 mr-9 flex flex-col justify-center items-center shadow-lg">
-          <h4 className="text-2xl font-semibold text-gray-700 mb-2">Welcome to</h4>
-          <h2 className="text-3xl font-bold text-blue-600 mb-4">Zidio Task Management</h2>
+    <main className="container mx-auto px-4">
+      <div className="container flex flex-col md:flex-row items-stretch mx-auto space-y-6 md:space-y-0 md:space-x-6">
+        <div className="w-full md:w-1/2 bg-blue-50 rounded-lg p-6 flex flex-col justify-center items-center shadow-lg">
+          <h4 className="text-2xl font-semibold text-gray-700 mb-2 text-center">Welcome to</h4>
+          <h2 className="text-3xl font-bold text-blue-600 mb-4 text-center">Zidio Task Management</h2>
           <p className="text-lg text-gray-600 text-center px-4">
             Stay organized and boost productivity with Zidio. Effortlessly manage, track, and complete your tasks on time.
           </p>
         </div>
 
-
-
-        <TaskAssignment onAddTask={handleAddTask} />
-
+        <div className="w-full md:w-1/2">
+          <TaskAssignment onAddTask={handleAddTask} />
+        </div>
       </div>
-      <TaskList tasks={tasks} setTasks={setTasks} />
-      <Chart tasks={tasks} />
-      <ProgressChart tasks={tasks} />
-      <CalendarView tasks={tasks} />
+
+
+      <div className="mt-6">
+        <TaskList tasks={tasks} setTasks={setTasks} />
+      </div>
+
+      <div className="mt-6">
+        <Chart tasks={tasks} />
+      </div>
+
+      <div className="mt-6">
+        <ProgressChart tasks={tasks} />
+      </div>
+
+      <div className="mt-6">
+        <CalendarView tasks={tasks} />
+      </div>
     </main>
   );
 };

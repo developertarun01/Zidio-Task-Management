@@ -30,9 +30,9 @@ function Contact() {
   };
 
   return (
-    <div className=" contact-container flex flex-col items-center justify-center">
+    <div className=" contact-container flex flex-col items-center justify-center px-4">
       <div className=" contact-card max-w-4xl w-full bg-blue-50 shadow-xl rounded-lg p-8">
-        <h2 className=" contact-title text-3xl font-bold text-center text-gray-800 mb-6">
+        <h2 className=" contact-title text-3xl font-bold text-center text-blue-700 mb-6 ">
           Contact Us
         </h2>
         <p className="text-xl text-center text-gray-600 mb-8">We would love to hear from you! Fill out the form below or reach out via email or phone.</p>

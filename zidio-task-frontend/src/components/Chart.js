@@ -45,7 +45,7 @@ const Chart = ({ tasks }) => {
   return (
     <div className="w-full bg-blue-50 rounded-lg p-4 mt-9 shadow-lg">
       <h2 className="text-2xl font-bold text-blue-600 mb-4 text-center">Task Chart</h2>
-      <div className="max-h-72">
+      <div className="h-72 sm:h-96 md:h-72 lg:h-80 w-full">
         {chartData.labels.length > 0 ? <Line data={chartData} options={options} /> : <p className="text-gray-600 text-center">No data available.</p>}
       </div>
     </div>
