@@ -38,13 +38,13 @@ const Header = () => {
                     }`
                   }
                 >
-                  <b className="mt-3">{item.name}</b>
+                  <b>{item.name}</b>
                 </NavLink>
               </li>
             ))}
             <button
               type="button"
-              className="bg-blue-600 text-white px-10 py-3 rounded w-full hover:bg-blue-500"
+              className="bg-blue-600 text-white px-10 py-3 rounded w-full hover:bg-blue-500 mt-3 lg:mt-0"
               onClick={() => navigate("/login")}
             >
               <b>Login / Signup</b>

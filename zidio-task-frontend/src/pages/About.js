@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import tanmoyImg from "../assets/tanmoy.jpg"
+import tanmoyImg from "../assets/tanmoyImg.png"
 import tarunImg from "../assets/tarun.png"
 import user from "../assets/user.png"
 const teamMembers = [

@@ -3,9 +3,9 @@ import React, { useState, useEffect } from "react";
 const TaskList = ({ tasks, setTasks }) => {
     if (tasks.length === 0) {
         return (
-            <div className="w-full bg-blue-50 rounded-lg p-4 mt-9 shadow-lg">
-                <h2 className="text-2xl font-bold text-blue-600 mb-4 text-center">Task List</h2>
-                <p className="text-gray-600 text-center">No tasks available. Add some tasks to get started!</p>
+            <div className="w-full bg-blue-50 rounded-lg p-4 mt-6 shadow-lg text-center">
+                <h2 className="text-xl md:text-2xl font-bold text-blue-600 mb-4">Task List</h2>
+                <p className="text-gray-600">No tasks available. Add some tasks to get started!</p>
             </div>
         );
     }
@@ -21,8 +21,8 @@ const TaskList = ({ tasks, setTasks }) => {
             });
 
             if (response.ok) {
-                setTasks(prevTasks =>
-                    prevTasks.map(task =>
+                setTasks((prevTasks) =>
+                    prevTasks.map((task) =>
                         task._id === taskId ? { ...task, completed: !completed } : task
                     )
                 );
@@ -36,12 +36,13 @@ const TaskList = ({ tasks, setTasks }) => {
 
     const handleDeleteTask = async (taskId) => {
         try {
-            const response = await fetch(`https://zidio-task-management-api.vercel.app/api/tasks${taskId}`, {
-                method: "DELETE",
-            });
+            const response = await fetch(
+                `https://zidio-task-management-api.vercel.app/api/tasks/${taskId}`,
+                { method: "DELETE" }
+            );
 
             if (response.ok) {
-                setTasks(prevTasks => prevTasks.filter(task => task._id !== taskId));
+                setTasks((prevTasks) => prevTasks.filter((task) => task._id !== taskId));
             } else {
                 console.error("Failed to delete task.");
             }
