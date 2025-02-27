@@ -28,8 +28,7 @@ const TaskList = ({ tasks, setTasks }) => {
                         task._id === taskId ? { ...task, status: updatedTask.data.staus } : task
                     )
                 );
-            } else {
-                console.error("Failed to update task status.");
+            } 
             }
         } catch (error) {
             console.error("Error updating task:", error);
