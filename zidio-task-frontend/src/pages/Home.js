@@ -63,7 +63,7 @@ const Home = () => {
       setTasks((prevTasks) => [...prevTasks, updatedTask]);
     });
 
-    return () => socket.disconnect("taskUpdated");
+    return () => socket.disconnect();
   }, []);
 
   const [tasks, setTasks] = useState([]);
