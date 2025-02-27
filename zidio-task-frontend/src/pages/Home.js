@@ -59,8 +59,8 @@ const Home = () => {
     fetchTasks();
 
     // Listen for real-time updates
-    socket.on("task-added", (newTask) => {
-      setTasks((prevTasks) => [...prevTasks, newTask]);
+    socket.on("task-added", (updatedTask) => {
+      setTasks((prevTasks) => [...prevTasks, updatedTask]);
     });
      socket.on("taskUpdated", (updatedTask) => {
       setTasks((prevTasks) =>
