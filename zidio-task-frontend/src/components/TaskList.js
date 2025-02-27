@@ -25,7 +25,7 @@ const TaskList = ({ tasks, setTasks }) => {
           
                 setTasks((prevTasks) =>
                     prevTasks.map((task) =>
-                        task._id === taskId ? { ...task, status: updatedTask.data.staus } : task
+                        task._id === taskId ? { ...task, status: updatedTask.data.status } : task
                     )
                 );
             } 
