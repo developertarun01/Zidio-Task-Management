@@ -59,11 +59,17 @@ const Home = () => {
     fetchTasks();
 
     // Listen for real-time updates
-    socket.on("task-updated", (updatedTask) => {
+    socket.on("task-added", (newTask) => {
       setTasks((prevTasks) => [...prevTasks, updatedTask]);
     });
+     socket.on("taskUpdated", (updatedTask) => {
+      setTasks((prevTasks) =>
+        prevTasks.map((task) => (task._id === updatedTask._id ? updatedTask : task))
+      );
+    });
 
-    return () => socket.disconnect();
+    return () =>   socket.off("taskAdded");
+      socket.off("taskUpdated");
   }, []);
 
   const [tasks, setTasks] = useState([]);
