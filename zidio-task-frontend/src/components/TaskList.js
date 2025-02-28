@@ -12,24 +12,23 @@ const TaskList = ({ tasks, setTasks }) => {
 
     const sortedTasks = [...tasks].sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
 
-    const handleCompleteTask = async (taskId, currentStatus) => {
+    const handleCompleteTask = async (taskId, completed) => {
         try {
-            const updatedTask = await fetch(`https://zidio-task-management-api.vercel.app/api/tasks${taskId}`, {
+            const response = await fetch(`https://zidio-task-management-api.vercel.app/api/tasks${taskId}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-          status: currentStatus === "pending" ? "completed" : "pending",
-        }),
+                body: JSON.stringify({completed : !completed })
+        
             });
-
-          
-                setTasks((prevTasks) =>
-                    prevTasks.map((task) =>
-                        task._id === taskId ? { ...task, status: updatedTask.data.status } : task
+               if (response.ok) {
+                    setTasks((prevTasks) =>
+                        prevTasks.map((task) =>
+                            task._id === taskId ? { ...task, status: updatedTask.data.status } : task
                     )
-                );
-            } 
-            }
+            );
+                    } else {
+                        console.error("Failed to update task status.");
+                     }
         } catch (error) {
             console.error("Error updating task:", error);
         }
@@ -74,10 +73,10 @@ const TaskList = ({ tasks, setTasks }) => {
                             </div>
                             <div className="w-full sm:w-auto flex flex-row justify-center items-center gap-2 mt-2 sm:mt-0">
                                 <button
-                                    className={`px-4 py-2 rounded ${task.status? "bg-green-500" : "bg-gray-400"} text-white`}
-                                    onClick={() => handleCompleteTask(task._id, task.status)}
+                                    className={`px-4 py-2 rounded ${task.completed? "bg-green-500" : "bg-gray-400"} text-white`}
+                                    onClick={() => handleCompleteTask(task._id, task.completed)}
                                 >
-                                    {task.status=== "completed" ? "Mark Pending" : "Complete"}
+                                    {task.completed=== "completed" ? "Mark Pending" : "Complete"}
                                 </button>
                                 <button
                                     className="px-4 py-2 mr-3 bg-red-500 text-white rounded"
