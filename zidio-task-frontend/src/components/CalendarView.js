@@ -12,18 +12,26 @@ const CalendarView = ({ tasks }) => {
     }
 
     const tasksByMonthYear = tasks.reduce((acc, task) => {
-        const date = parseISO(task.deadline);
-        const year = getYear(date);
-        const month = getMonth(date);
-        const formattedDate = format(date, "yyyy-MM-dd");
-
-        if (!acc[year]) acc[year] = {};
-        if (!acc[year][month]) acc[year][month] = {};
-        if (!acc[year][month][formattedDate]) acc[year][month][formattedDate] = [];
-
-        acc[year][month][formattedDate].push(task);
+        if (!task.deadline) return acc; // Skip if deadline is null or undefined
+    
+        try {
+            const date = parseISO(task.deadline);
+            const year = getYear(date);
+            const month = getMonth(date);
+            const formattedDate = format(date, "yyyy-MM-dd");
+    
+            if (!acc[year]) acc[year] = {};
+            if (!acc[year][month]) acc[year][month] = {};
+            if (!acc[year][month][formattedDate]) acc[year][month][formattedDate] = [];
+    
+            acc[year][month][formattedDate].push(task);
+        } catch (error) {
+            console.error("Invalid date format:", task.deadline);
+        }
+    
         return acc;
     }, {});
+    
 
     return (
         <div className="bg-blue-50 rounded-lg p-4 mt-9 shadow-lg">

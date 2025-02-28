@@ -22,7 +22,7 @@ const Header = () => {
 
         {/* Desktop Navigation (No Changes) */}
         <nav className="hidden md:block">
-          <ul className="flex space-x-6 bg-blue-50 p-3 rounded-lg my-8">
+          <ul className="flex space-x-6 bg-blue-50 p-3 rounded-lg my-8 justify-center">
             {[
               { name: "HOME", path: "/" },
               { name: "ABOUT", path: "/about" },
@@ -30,7 +30,7 @@ const Header = () => {
               { name: "CAREERS", path: "/careers" },
               { name: "CONTACT", path: "/contact" },
             ].map((item) => (
-              <li key={item.path}>
+              <li key={item.path} className="flex items-center">
                 <NavLink
                   to={item.path}
                   className={({ isActive }) =>
