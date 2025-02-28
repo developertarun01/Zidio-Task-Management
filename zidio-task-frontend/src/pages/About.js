@@ -17,7 +17,7 @@ const teamMembers = [
   {
     name: "Gayatri Sawant",
     role: "Frontend Developer",
-    image:<img src="https://your-image-host.com/img.png" alt="Gayatri Sawant" />
+    image:https://i.postimg.cc/9f49j1tL/photo.jpg
 
   },
   {
