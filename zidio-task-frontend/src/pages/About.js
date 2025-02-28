@@ -17,7 +17,7 @@ const teamMembers = [
   {
     name: "Gayatri Sawant",
     role: "Frontend Developer",
-    image: https://asset.cloudinary.com/dhz4mslgb/2feb10943359db0b4dc69ec385274229,
+    image: user,
 
   },
   {
