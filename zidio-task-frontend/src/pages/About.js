@@ -17,7 +17,8 @@ const teamMembers = [
   {
     name: "Gayatri Sawant",
     role: "Frontend Developer",
-    image: user, // Replace with real image URL
+    image:<img src="https://your-image-host.com/img.png" alt="Gayatri Sawant" />
+
   },
   {
     name: "Satya Prakash",
