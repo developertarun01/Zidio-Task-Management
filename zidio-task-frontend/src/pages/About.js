@@ -3,6 +3,7 @@ import axios from "axios";
 import tanmoyImg from "../assets/tanmoyImg.png"
 import tarunImg from "../assets/tarun.png"
 import gayatriImg from "../assets/gayatri.jpg"
+import SatyaImg from "../assets/Satya.jpg"
 import user from "../assets/user.png"
 const teamMembers = [
   {
@@ -23,7 +24,7 @@ const teamMembers = [
   {
     name: "Satya Prakash",
     role: "Backend Developer",
-    image: Satya,
+    image: SatyaImg,
   },
   {
     name: "Pavan Gowda",
