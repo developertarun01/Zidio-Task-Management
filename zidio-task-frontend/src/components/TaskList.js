@@ -5,7 +5,7 @@ const TaskList = ({ tasks, setTasks }) => {
 
     if (tasks.length === 0) {
         return (
-            <div className="w-full bg-blue-50 rounded-lg p-4 mt-6 shadow-lg text-center">
+            <div className="w-full bg-blue-50 rounded-lg p-4 mt-9 shadow-lg text-center">
                 <h2 className="text-xl md:text-2xl font-bold text-blue-600 mb-4">Task List</h2>
                 <p className="text-gray-600">No tasks available. Add some tasks to get started!</p>
             </div>
@@ -101,20 +101,7 @@ const TaskList = ({ tasks, setTasks }) => {
                                     {new Date(task.deadline).toLocaleDateString()}
                                 </p>
                             </div>
-                            <div className="w-full sm:w-auto flex flex-row justify-center items-center gap-2 mt-2 sm:mt-0">
-                                <button
-                                    className={`px-4 py-2 rounded ${task.completed ? "bg-green-500" : "bg-gray-400"} text-white`}
-                                    onClick={() => handleCompleteTask(task._id, task.completed)}
-                                >
-                                    {task.completed ? "Completed" : "Mark Complete"}
-                                </button>
-                                <button
-                                    className="px-4 py-2 mr-3 bg-red-500 text-white rounded"
-                                    onClick={() => handleDeleteTask(task._id)}
-                                >
-                                    Delete
-                                </button>
-                            </div>
+
 
                             {/* Comment Section */}
                             <div className="w-1/3 mt-4">
@@ -149,6 +136,21 @@ const TaskList = ({ tasks, setTasks }) => {
                                         Add
                                     </button>
                                 </div>
+
+                            </div>
+                            <div className="w-full sm:w-auto flex flex-row justify-center items-center gap-2 mt-2 sm:mt-0">
+                                <button
+                                    className={`px-4 py-2 rounded ${task.completed ? "bg-green-500" : "bg-gray-400"} text-white`}
+                                    onClick={() => handleCompleteTask(task._id, task.completed)}
+                                >
+                                    {task.completed ? "Completed" : "Mark Complete"}
+                                </button>
+                                <button
+                                    className="px-4 py-2 mr-3 bg-red-500 text-white rounded"
+                                    onClick={() => handleDeleteTask(task._id)}
+                                >
+                                    Delete
+                                </button>
                             </div>
                         </li>
                     ))}
