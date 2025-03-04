@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 const TaskList = ({ tasks, setTasks }) => {
+    const [comments, setComments] = useState({}); // Store comments for each task
+
     if (tasks.length === 0) {
         return (
             <div className="w-full bg-blue-50 rounded-lg p-4 mt-6 shadow-lg text-center">
@@ -51,6 +53,34 @@ const TaskList = ({ tasks, setTasks }) => {
         }
     };
 
+    const handleAddComment = async (taskId) => {
+        const comment = comments[taskId]?.trim();
+        if (!comment) return;
+
+        try {
+            const response = await fetch(`https://zidio-task-management-api.vercel.app/api/tasks/${taskId}/comment`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ comment }),
+            });
+
+            if (response.ok) {
+                setTasks((prevTasks) =>
+                    prevTasks.map((task) =>
+                        task._id === taskId
+                            ? { ...task, comments: [...(task.comments || []), comment] }
+                            : task
+                    )
+                );
+                setComments({ ...comments, [taskId]: "" }); // Clear input field after adding comment
+            } else {
+                console.error("Failed to add comment.");
+            }
+        } catch (error) {
+            console.error("Error adding comment:", error);
+        }
+    };
+
     return (
         <div className="w-full bg-blue-50 rounded-lg p-4 mt-9 shadow-lg">
             <h2 className="text-2xl font-bold text-blue-600 mb-4 text-center">Task List</h2>
@@ -59,9 +89,9 @@ const TaskList = ({ tasks, setTasks }) => {
                     {sortedTasks.map((task) => (
                         <li
                             key={task._id}
-                            className="border-b py-4 flex sm:flex-row flex-col sm:justify-between sm:items-center"
+                            className="border-b py-4 flex flex-col sm:flex-row sm:justify-between sm:items-center"
                         >
-                            <div className="w-full sm:w-auto text-center sm:text-left">
+                            <div className="w-1/3 sm:w-auto text-center sm:text-left">
                                 <h3 className={`font-bold ${task.completed ? "line-through" : ""}`}>
                                     {task.title}
                                 </h3>
@@ -86,6 +116,40 @@ const TaskList = ({ tasks, setTasks }) => {
                                 </button>
                             </div>
 
+                            {/* Comment Section */}
+                            <div className="w-1/3 mt-4">
+                                <h4 className="text-sm font-bold text-gray-600">Comments:</h4>
+                                <ul className="text-sm text-gray-700 bg-white p-2 rounded-lg shadow-sm">
+                                    {task.comments && task.comments.length > 0 ? (
+                                        task.comments.map((c, index) => (
+                                            <li key={index} className="border-b py-1">
+                                                {c}
+                                            </li>
+                                        ))
+                                    ) : (
+                                        <p className="text-gray-400">No comments yet.</p>
+                                    )}
+                                </ul>
+
+                                {/* Add Comment Input */}
+                                <div className="flex items-center mt-2">
+                                    <input
+                                        type="text"
+                                        placeholder="Add a comment..."
+                                        value={comments[task._id] || ""}
+                                        onChange={(e) =>
+                                            setComments({ ...comments, [task._id]: e.target.value })
+                                        }
+                                        className="border rounded p-2 w-full"
+                                    />
+                                    <button
+                                        onClick={() => handleAddComment(task._id)}
+                                        className="ml-2 bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700"
+                                    >
+                                        Add
+                                    </button>
+                                </div>
+                            </div>
                         </li>
                     ))}
                 </ul>
