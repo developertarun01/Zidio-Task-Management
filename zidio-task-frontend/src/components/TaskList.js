@@ -54,15 +54,18 @@ const TaskList = ({ tasks, setTasks }) => {
     };
 
     const handleAddComment = async (taskId, comment, setComment) => {
-        if (!comment.trim()) return;
-
+        if (!comment || !comment.trim()) {
+            console.error("Comment is empty or undefined");
+            return;
+        }
+    
         try {
             const response = await fetch(`https://zidio-task-management-api.vercel.app/api/tasks/${taskId}/comment`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ comment }),
             });
-
+    
             if (response.ok) {
                 setTasks((prevTasks) =>
                     prevTasks.map((task) =>
@@ -71,7 +74,7 @@ const TaskList = ({ tasks, setTasks }) => {
                             : task
                     )
                 );
-                setComment("");
+                setComment(""); // Reset comment input
             } else {
                 console.error("Failed to add comment:", await response.json());
             }
@@ -79,6 +82,7 @@ const TaskList = ({ tasks, setTasks }) => {
             console.error("Error adding comment:", error);
         }
     };
+    
 
 
     return (
