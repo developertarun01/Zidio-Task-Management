@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import tanmoyImg from "../assets/tanmoyImg.png"
 import tarunImg from "../assets/tarun.png"
+import gayatriImg from "../assets/gayatri.jpg"
 import user from "../assets/user.png"
 const teamMembers = [
   {
@@ -17,7 +18,7 @@ const teamMembers = [
   {
     name: "Gayatri Sawant",
     role: "Frontend Developer",
-    image: user, // Replace with real image URL
+    image: gayatriImg, // Replace with real image URL
   },
   {
     name: "Satya Prakash",

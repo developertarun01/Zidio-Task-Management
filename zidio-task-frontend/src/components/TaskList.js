@@ -17,15 +17,13 @@ const TaskList = ({ tasks, setTasks }) => {
             const response = await fetch(`https://zidio-task-management-api.vercel.app/api/tasks/${taskId}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ completed: !completed })
+                body: JSON.stringify({ completed: !completed }),
             });
 
             if (response.ok) {
-                const updatedTask = await response.json(); // Store response JSON in updatedTask
-
                 setTasks((prevTasks) =>
                     prevTasks.map((task) =>
-                        task._id === taskId ? { ...task, status: updatedTask.status } : task
+                        task._id === taskId ? { ...task, completed: !completed } : task
                     )
                 );
             } else {
@@ -35,7 +33,6 @@ const TaskList = ({ tasks, setTasks }) => {
             console.error("Error updating task:", error);
         }
     };
-
 
     const handleDeleteTask = async (taskId) => {
         try {
@@ -79,7 +76,7 @@ const TaskList = ({ tasks, setTasks }) => {
                                     className={`px-4 py-2 rounded ${task.completed ? "bg-green-500" : "bg-gray-400"} text-white`}
                                     onClick={() => handleCompleteTask(task._id, task.completed)}
                                 >
-                                    {task.completed === "completed" ? "Mark Pending" : "Complete"}
+                                    {task.completed ? "Completed" : "Mark Complete"}
                                 </button>
                                 <button
                                     className="px-4 py-2 mr-3 bg-red-500 text-white rounded"
