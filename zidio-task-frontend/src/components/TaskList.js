@@ -5,7 +5,7 @@ const TaskList = ({ tasks, setTasks }) => {
 
     if (tasks.length === 0) {
         return (
-            <div className="w-full bg-blue-50 rounded-lg p-4 mt-9 shadow-lg">
+            <div className="w-full bg-blue-50 rounded-lg p-4 mt-6 shadow-lg text-center">
                 <h2 className="text-xl md:text-2xl font-bold text-blue-600 mb-4">Task List</h2>
                 <p className="text-gray-600">No tasks available. Add some tasks to get started!</p>
             </div>

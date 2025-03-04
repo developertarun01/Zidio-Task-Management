@@ -7,49 +7,37 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const connectDB = require("./config/db");
 const taskRoutes = require("./routes/taskRoutes");
-const aboutRoutes = require("./routes/aboutRoutes");
+const aboutRoutes = require("./routes/aboutRoutes"); // Import About Routes
 
 dotenv.config();
 connectDB();
 
 const app = express();
 const server = http.createServer(app);
-
-// 🔹 Enable CORS with Credentials Support
-app.use(cors({
-  origin: "https://zidio-task-management-ruby.vercel.app", // ✅ Removed trailing slash
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true  // ✅ Allows cookies & auth headers
-}));
-
-app.use(bodyParser.json()); // ✅ Middleware should be before routes
-
-// 🔹 API Routes
-app.use("/api/tasks", taskRoutes);
-app.use("/api/about", aboutRoutes);
-
-// 🔹 WebSocket Setup
 const io = new Server(server, {
   cors: {
-    origin: "https://zidio-task-management-ruby.vercel.app",
+    origin: "https://zidio-task-management-ruby.vercel.app/", // React app URL
     methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true
-  }
+  },
 });
 
+app.use(cors());
+app.use(bodyParser.json());
+app.use("/api/tasks", taskRoutes);
+app.use("/api/about", aboutRoutes); // Add About API Route
+
+
 io.on("connection", (socket) => {
-  console.log(`🔗 Client connected: ${socket.id}`);
+  console.log("A user connected");
 
   socket.on("task-added", (task) => {
-    console.log("📌 Task added:", task);
-    io.emit("task-updated", task); // ✅ Notify all clients
+    io.emit("task-updated", task);
   });
 
   socket.on("disconnect", () => {
-    console.log(`❌ Client disconnected: ${socket.id}`);
+    console.log("A user disconnected");
   });
 });
 
-// 🔹 Start Server
 const PORT = process.env.PORT || 4000;
-server.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
