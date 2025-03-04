@@ -46,11 +46,13 @@ router.post("/tasks/:id/comment", async (req, res) => {
     const task = await Task.findById(id);
     if (!task) return res.status(404).json({ error: "Task not found" });
 
+    task.comments = task.comments || []; // Ensure comments array exists
     task.comments.push(comment);
     await task.save();
 
-    res.status(200).json({ message: "Comment added successfully" });
+    res.status(200).json({ message: "Comment added successfully", task });
   } catch (error) {
+    console.error("Error adding comment:", error);
     res.status(500).json({ error: "Server error" });
   }
 });

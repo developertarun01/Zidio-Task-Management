@@ -53,9 +53,8 @@ const TaskList = ({ tasks, setTasks }) => {
         }
     };
 
-    const handleAddComment = async (taskId) => {
-        const comment = comments[taskId]?.trim();
-        if (!comment) return;
+    const handleAddComment = async (taskId, comment, setComment) => {
+        if (!comment.trim()) return;
 
         try {
             const response = await fetch(`https://zidio-task-management-api.vercel.app/api/tasks/${taskId}/comment`, {
@@ -72,14 +71,15 @@ const TaskList = ({ tasks, setTasks }) => {
                             : task
                     )
                 );
-                setComments({ ...comments, [taskId]: "" }); // Clear input field after adding comment
+                setComment("");
             } else {
-                console.error("Failed to add comment.");
+                console.error("Failed to add comment:", await response.json());
             }
         } catch (error) {
             console.error("Error adding comment:", error);
         }
     };
+
 
     return (
         <div className="w-full bg-blue-50 rounded-lg p-4 mt-9 shadow-lg">
