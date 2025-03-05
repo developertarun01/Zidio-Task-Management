@@ -1,6 +1,8 @@
 🚀 Zidio Task Management
    Zidio Task Management is a powerful web-based task management system designed to help users efficiently create, track, and manage tasks. Built using the MERN (MongoDB, Express, 
    React, Node.js) stack, this platform provides a seamless experience with real-time collaboration, analytics, and task visualization.
+   Frontend: https://zidio-task-management-ruby.vercel.app/
+   Backend: https://zidio-task-management-api.vercel.app/
 
 ✨ Features
   📊 Dashboard Overview
