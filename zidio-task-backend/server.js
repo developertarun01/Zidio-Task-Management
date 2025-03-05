@@ -21,7 +21,15 @@ const io = new Server(server, {
   },
 });
 
-app.use(cors());
+const allowedOrigins = [
+  "http://127.0.0.1:3000",
+  "https://zidio-task-management-ruby.vercel.app",
+];
+
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true, // Allow cookies and authentication headers
+}));
 app.use(bodyParser.json());
 app.use("/api/tasks", taskRoutes);
 app.use("/api/about", aboutRoutes); // Add About API Route
