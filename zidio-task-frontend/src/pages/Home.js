@@ -9,22 +9,15 @@ import Chart from "../components/Chart";
 import ProgressChart from "../components/ProgressChart";
 import { io } from "socket.io-client";
 
-// Initialize Socket.IO
-const socket = io("https://zidio-task-management-api.vercel.app/"); // Backend URL
+// Initialize Socket.IO with polling to avoid WebSocket issues on Vercel
+const socket = io("https://zidio-task-management-api.vercel.app/", {
+  transports: ["polling"],
+  reconnectionAttempts: 5,
+  reconnectionDelay: 2000,
+});
 
 const Home = () => {
-  const chartData = {
-    labels: ["Task 1", "Task 2", "Task 3"],
-    datasets: [
-      {
-        label: "Completion Progress",
-        data: [30, 60, 90],
-        backgroundColor: "rgba(54, 162, 235, 0.2)",
-        borderColor: "rgba(54, 162, 235, 1)",
-        borderWidth: 1,
-      },
-    ],
-  };
+  const [tasks, setTasks] = useState([]);
 
   // Fetch tasks from backend
   const fetchTasks = async () => {
@@ -42,7 +35,7 @@ const Home = () => {
     try {
       const response = await axios.post("https://zidio-task-management-api.vercel.app/api/tasks", task);
       const newTask = response.data;
-      setTasks([...tasks, newTask]);
+      setTasks((prevTasks) => [...prevTasks, newTask]);
 
       // Emit socket event
       socket.emit("task-added", newTask);
@@ -58,28 +51,14 @@ const Home = () => {
   useEffect(() => {
     fetchTasks();
 
-    // Listen for real-time updates
+    // Listen for task updates
     socket.on("task-updated", (updatedTask) => {
-      setTasks((prevTasks) => [...prevTasks, updatedTask]);
+      setTasks((prevTasks) =>
+        prevTasks.map((task) => (task._id === updatedTask._id ? updatedTask : task))
+      );
     });
 
     return () => socket.disconnect();
-  }, []);
-
-  const [tasks, setTasks] = useState([]);
-
-  // Fetch tasks from the backend
-  useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        const response = await fetch("https://zidio-task-management-api.vercel.app/api/tasks");
-        const data = await response.json();
-        setTasks(data);
-      } catch (error) {
-        console.error("Error fetching tasks:", error);
-      }
-    };
-    fetchTasks();
   }, []);
 
   return (
@@ -97,7 +76,6 @@ const Home = () => {
           <TaskAssignment onAddTask={handleAddTask} />
         </div>
       </div>
-
 
       <div className="mt-6">
         <TaskList tasks={tasks} setTasks={setTasks} />
