@@ -10,7 +10,7 @@ import ProgressChart from "../components/ProgressChart";
 import { io } from "socket.io-client";
 
 const socket = io("https://zidio-task-management-api.vercel.app", {
-  transports: ["websocket", "polling"], // Try WebSocket first, fallback to polling
+  transports: ["polling"], // Remove "websocket"
   withCredentials: true,
 });
 
@@ -47,17 +47,17 @@ const Home = () => {
 
   useEffect(() => {
     fetchTasks();
-  
+
     socket.on("task-updated", (updatedTask) => {
       setTasks((prevTasks) =>
         prevTasks.map((task) => (task._id === updatedTask._id ? updatedTask : task))
       );
     });
-  
+
     return () => {
       socket.off("task-updated"); // Remove only the event listener
     };
-  }, []);  
+  }, []);
 
   return (
     <main className="container mx-auto px-4">

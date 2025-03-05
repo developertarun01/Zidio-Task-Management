@@ -31,7 +31,8 @@ const io = new Server(server, {
     origin: allowedOrigins,
     credentials: true,
     methods: ["GET", "POST"],
-  }
+  },
+  transports: ["websocket", "polling"], // Ensure both are allowed
 });
 
 app.use(bodyParser.json());
