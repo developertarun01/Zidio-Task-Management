@@ -20,7 +20,9 @@ const Home = () => {
   // Fetch tasks from backend
   const fetchTasks = async () => {
     try {
-      const response = await axios.get("https://zidio-task-management-api.vercel.app/api/tasks");
+      const response = await axios.get("https://zidio-task-management-api.vercel.app/api/tasks", {
+        withCredentials: true,
+      });
       setTasks(response.data);
     } catch (error) {
       console.error("Error fetching tasks:", error);
