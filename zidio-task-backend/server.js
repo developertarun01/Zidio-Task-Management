@@ -14,22 +14,26 @@ connectDB();
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: "https://zidio-task-management-ruby.vercel.app/", // React app URL
-    methods: ["GET", "POST", "PUT", "DELETE"],
-  },
-});
 
 const allowedOrigins = [
   "http://127.0.0.1:3000",
-  "https://zidio-task-management-ruby.vercel.app",
+  "https://zidio-task-management-ruby.vercel.app"
 ];
 
 app.use(cors({
   origin: allowedOrigins,
-  credentials: true, // Allow cookies and authentication headers
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE"],
 }));
+
+const io = new Server(server, {
+  cors: {
+    origin: allowedOrigins,
+    credentials: true,
+    methods: ["GET", "POST"],
+  }
+});
+
 app.use(bodyParser.json());
 app.use("/api/tasks", taskRoutes);
 app.use("/api/about", aboutRoutes); // Add About API Route

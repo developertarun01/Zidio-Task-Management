@@ -9,11 +9,9 @@ import Chart from "../components/Chart";
 import ProgressChart from "../components/ProgressChart";
 import { io } from "socket.io-client";
 
-// Initialize Socket.IO with polling to avoid WebSocket issues on Vercel
-const socket = io("https://zidio-task-management-api.vercel.app/", {
-  transports: ["polling"],
-  reconnectionAttempts: 5,
-  reconnectionDelay: 2000,
+const socket = io("https://zidio-task-management-api.vercel.app", {
+  transports: ["websocket", "polling"], // Try WebSocket first, fallback to polling
+  withCredentials: true,
 });
 
 const Home = () => {
@@ -47,19 +45,19 @@ const Home = () => {
     }
   };
 
-  // Real-time updates using Socket.IO
   useEffect(() => {
     fetchTasks();
-
-    // Listen for task updates
+  
     socket.on("task-updated", (updatedTask) => {
       setTasks((prevTasks) =>
         prevTasks.map((task) => (task._id === updatedTask._id ? updatedTask : task))
       );
     });
-
-    return () => socket.disconnect();
-  }, []);
+  
+    return () => {
+      socket.off("task-updated"); // Remove only the event listener
+    };
+  }, []);  
 
   return (
     <main className="container mx-auto px-4">
