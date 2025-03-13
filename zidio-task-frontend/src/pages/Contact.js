@@ -26,9 +26,11 @@ function Contact() {
       if (res.data.success) {
         setStatus("Message sent successfully!");
         setFormData({ name: "", email: "", message: "" });
+      }else {
+        setStatus("Failed to send feedback.");
       }
     } catch (error) {
-      setStatus("Failed to send message. Please try again.");
+      setStatus("Error sending feedback.");
     }
   };
 
