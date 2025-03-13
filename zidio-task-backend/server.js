@@ -6,6 +6,7 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const connectDB = require("./config/db");
+const Feedback = require(".models/FeedbackModel");
 const taskRoutes = require("./routes/taskRoutes");
 const aboutRoutes = require("./routes/aboutRoutes"); // Import About Routes
 
@@ -39,6 +40,23 @@ app.use(bodyParser.json());
 app.use("/api/tasks", taskRoutes);
 app.use("/api/about", aboutRoutes); // Add About API Route
 
+// Submit feedback
+app.post('/feedback', async (req, res) => {
+  try {
+    const { name, email, message } = req.body;
+    const newFeedback = new Feedback({ name, email, message });
+
+    await newFeedback.save();
+    
+    // Emit real-time update
+    io.emit('newFeedback', newFeedback);
+    console.log(newFeedback);
+    res.status(201).json({ message: 'Feedback submitted successfully', feedback: newFeedback });
+
+  } catch (error) {
+    res.status(500).json({ error: 'Error submitting feedback' });
+  }
+});
 
 io.on("connection", (socket) => {
   console.log("A user connected");
