@@ -17,21 +17,16 @@ const socket = io("https://zidio-task-management-api.vercel.app", {
 const Home = () => {
   const [tasks, setTasks] = useState([]);
 
-  const axiosInstance = axios.create({
-    baseURL: "https://zidio-task-management-api.vercel.app/api",
-    withCredentials: true, // ✅ Include credentials (cookies, auth)
-  });
-
+  // Fetch tasks from backend
   const fetchTasks = async () => {
     try {
-      const response = await axiosInstance.get("/tasks");
+      const response = await axios.get("https://zidio-task-management-api.vercel.app/api/tasks");
       setTasks(response.data);
     } catch (error) {
       console.error("Error fetching tasks:", error);
       toast.error("Failed to load tasks!");
     }
   };
-
 
   // Add a new task
   const handleAddTask = async (task) => {
