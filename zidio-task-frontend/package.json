@@ -17,7 +17,8 @@
     "react-toastify": "^11.0.3",
     "socket.io-client": "^4.8.1",
     "toast": "^0.5.4",
-    "web-vitals": "^4.2.4"
+    "web-vitals": "^4.2.4",
+    "yocto-queue": "^1.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
