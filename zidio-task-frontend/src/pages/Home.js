@@ -11,7 +11,7 @@ import { io } from "socket.io-client";
 
 const API_URL = "https://zidio-task-management-api.vercel.app/api/tasks";
 const socket = io("https://zidio-task-management-api.vercel.app", {
-  transports: ["websocket", "polling"],
+  transports: ["polling"],
   withCredentials: true,
 });
 
