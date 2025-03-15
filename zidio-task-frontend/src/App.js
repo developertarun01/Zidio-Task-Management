@@ -20,27 +20,27 @@ const App = () => {
   return (
     <AuthProvider>
       <Router>
+        <Route path="/login" element={<Auth isSignup={false} />} />
+        <Route path="/signup" element={<Auth isSignup={true} />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
         <Header />
         <main className="container mx-auto">
           <Routes>
-            <Route path="/login" element={<Auth isSignup={false} />} />
-            <Route path="/signup" element={<Auth isSignup={true} />} />
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute>
-                  <Home />
-                </ProtectedRoute>
-              }
-            />
             <Route path="/about" element={<About />} />
             <Route path="/services" element={<Services />} />
             <Route path="/careers" element={<Careers />} />
