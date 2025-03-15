@@ -6,8 +6,10 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const connectDB = require("./config/db");
+const authRoutes = require("./routes/authRoutes");
 const taskRoutes = require("./routes/taskRoutes");
-const aboutRoutes = require("./routes/aboutRoutes"); // Import About Routes
+const aboutRoutes = require("./routes/aboutRoutes");
+const authMiddleware = require("./middleware/authMiddleware"); // Middleware to protect routes
 
 dotenv.config();
 connectDB();
@@ -24,6 +26,7 @@ app.use(cors({
   origin: allowedOrigins,
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 }));
 
 const io = new Server(server, {
@@ -32,13 +35,17 @@ const io = new Server(server, {
     credentials: true,
     methods: ["GET", "POST"],
   },
-  transports: ["websocket", "polling"], // Ensure both are allowed
+  transports: ["websocket", "polling"],
 });
 
 app.use(bodyParser.json());
-app.use("/api/tasks", taskRoutes);
-app.use("/api/about", aboutRoutes); // Add About API Route
 
+// Authentication Routes
+app.use("/api/auth", authRoutes);
+
+// Protected Routes (Require authentication)
+app.use("/api/tasks", authMiddleware, taskRoutes);
+app.use("/api/about", authMiddleware, aboutRoutes);
 
 io.on("connection", (socket) => {
   console.log("A user connected");
