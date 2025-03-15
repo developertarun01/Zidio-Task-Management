@@ -1,25 +1,26 @@
-import { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
-import { io } from "socket.io-client";
 import TaskAssignment from "../components/TaskAssignment";
 import TaskList from "../components/TaskList";
 import CalendarView from "../components/CalendarView";
 import Chart from "../components/Chart";
 import ProgressChart from "../components/ProgressChart";
-
-const axiosInstance = axios.create({
-  baseURL: "https://zidio-task-management-api.vercel.app/api",
-  withCredentials: true,
-});
+import { io } from "socket.io-client";
 
 const socket = io("https://zidio-task-management-api.vercel.app", {
-  transports: ["polling"],
+  transports: ["polling"], // Remove "websocket"
   withCredentials: true,
 });
 
 const Home = () => {
   const [tasks, setTasks] = useState([]);
+
+  const axiosInstance = axios.create({
+    baseURL: "https://zidio-task-management-api.vercel.app/api",
+    withCredentials: true, // ✅ Include credentials (cookies, auth)
+  });
 
   const fetchTasks = async () => {
     try {
@@ -31,12 +32,17 @@ const Home = () => {
     }
   };
 
+
+  // Add a new task
   const handleAddTask = async (task) => {
     try {
-      const response = await axiosInstance.post("/tasks", task);
+      const response = await axios.post("https://zidio-task-management-api.vercel.app/api/tasks", task);
       const newTask = response.data;
       setTasks((prevTasks) => [...prevTasks, newTask]);
+
+      // Emit socket event
       socket.emit("task-added", newTask);
+
       toast.success("Task added successfully!");
     } catch (error) {
       console.error("Error adding task:", error);
@@ -46,11 +52,15 @@ const Home = () => {
 
   useEffect(() => {
     fetchTasks();
+
     socket.on("task-updated", (updatedTask) => {
-      setTasks((prevTasks) => prevTasks.map((task) => (task._id === updatedTask._id ? updatedTask : task)));
+      setTasks((prevTasks) =>
+        prevTasks.map((task) => (task._id === updatedTask._id ? updatedTask : task))
+      );
     });
+
     return () => {
-      socket.off("task-updated");
+      socket.off("task-updated"); // Remove only the event listener
     };
   }, []);
 
@@ -64,14 +74,27 @@ const Home = () => {
             Stay organized and boost productivity with Zidio. Effortlessly manage, track, and complete your tasks on time.
           </p>
         </div>
+
         <div className="w-full md:w-1/2">
           <TaskAssignment onAddTask={handleAddTask} />
         </div>
       </div>
-      <div className="mt-6"><TaskList tasks={tasks} setTasks={setTasks} /></div>
-      <div className="mt-6"><Chart tasks={tasks} /></div>
-      <div className="mt-6"><ProgressChart tasks={tasks} /></div>
-      <div className="mt-6"><CalendarView tasks={tasks} /></div>
+
+      <div className="mt-6">
+        <TaskList tasks={tasks} setTasks={setTasks} />
+      </div>
+
+      <div className="mt-6">
+        <Chart tasks={tasks} />
+      </div>
+
+      <div className="mt-6">
+        <ProgressChart tasks={tasks} />
+      </div>
+
+      <div className="mt-6">
+        <CalendarView tasks={tasks} />
+      </div>
     </main>
   );
 };
