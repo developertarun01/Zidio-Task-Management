@@ -9,8 +9,9 @@ import Chart from "../components/Chart";
 import ProgressChart from "../components/ProgressChart";
 import { io } from "socket.io-client";
 
+const API_URL = "https://zidio-task-management-api.vercel.app/api/tasks";
 const socket = io("https://zidio-task-management-api.vercel.app", {
-  transports: ["polling"], // Remove "websocket"
+  transports: ["websocket", "polling"],
   withCredentials: true,
 });
 
@@ -20,9 +21,7 @@ const Home = () => {
   // Fetch tasks from backend
   const fetchTasks = async () => {
     try {
-      const response = await axios.get("https://zidio-task-management-api.vercel.app/api/tasks", {
-        withCredentials: true,
-      });
+      const response = await axios.get(API_URL, { withCredentials: true });
       setTasks(response.data);
     } catch (error) {
       console.error("Error fetching tasks:", error);
@@ -33,7 +32,7 @@ const Home = () => {
   // Add a new task
   const handleAddTask = async (task) => {
     try {
-      const response = await axios.post("https://zidio-task-management-api.vercel.app/api/tasks", task);
+      const response = await axios.post(API_URL, task, { withCredentials: true });
       const newTask = response.data;
       setTasks((prevTasks) => [...prevTasks, newTask]);
 
@@ -57,7 +56,7 @@ const Home = () => {
     });
 
     return () => {
-      socket.off("task-updated"); // Remove only the event listener
+      socket.disconnect(); // Proper cleanup to prevent memory leaks
     };
   }, []);
 
