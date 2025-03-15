@@ -20,31 +20,39 @@ const App = () => {
   return (
     <AuthProvider>
       <Router>
-        <Route path="/login" element={<Auth isSignup={false} />} />
-        <Route path="/signup" element={<Auth isSignup={true} />} />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <Home />
-            </ProtectedRoute>
-          }
-        />
         <Header />
         <main className="container mx-auto">
           <Routes>
-            <Route path="/about" element={<About />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/careers" element={<Careers />} />
-            <Route path="/contact" element={<Contact />} />
+            <Route path="/login" element={<Auth isSignup={false} />} />
+            <Route path="/signup" element={<Auth isSignup={true} />} />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <Home />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/about" element={<ProtectedRoute>
+              <About />
+            </ProtectedRoute>} />
+            <Route path="/services" element={<ProtectedRoute>
+              <Services />
+            </ProtectedRoute>} />
+            <Route path="/careers" element={<ProtectedRoute>
+              <Careers />
+            </ProtectedRoute>} />
+            <Route path="/contact" element={<ProtectedRoute>
+              <Contact />
+            </ProtectedRoute>} />
           </Routes>
         </main>
         <Footer />
