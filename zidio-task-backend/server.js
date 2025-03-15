@@ -1,13 +1,12 @@
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
-const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const connectDB = require("./config/db");
 const taskRoutes = require("./routes/taskRoutes");
-const aboutRoutes = require("./routes/aboutRoutes"); // Import About Routes
+const aboutRoutes = require("./routes/aboutRoutes");
 
 dotenv.config();
 
@@ -22,26 +21,39 @@ const allowedOrigins = [
   "https://zidio-task-management-ruby.vercel.app",
 ];
 
+// **Fix 1: CORS Middleware**
 const corsOptions = {
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
+      callback(null, origin);
     } else {
       callback(new Error("Not allowed by CORS"));
     }
   },
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 };
 
 app.use(cors(corsOptions));
-app.use(bodyParser.json());
 
-// Routes
+// **Fix 2: Proper Headers**
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  next();
+});
+
+app.use(bodyParser.json());
 app.use("/api/tasks", taskRoutes);
 app.use("/api/about", aboutRoutes);
 
-// Socket.io Configuration
+// **Fix 3: Socket.io CORS Handling**
 const io = new Server(server, {
   cors: {
     origin: allowedOrigins,
@@ -63,12 +75,15 @@ io.on("connection", (socket) => {
   });
 });
 
-// Global Error Handling
+// **Fix 4: Handle Preflight Requests**
+app.options("*", cors(corsOptions));
+
+// **Fix 5: Global Error Handling**
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: "Internal Server Error" });
 });
 
-// Start Server
+// **Fix 6: Start Server**
 const PORT = process.env.PORT || 4000;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
