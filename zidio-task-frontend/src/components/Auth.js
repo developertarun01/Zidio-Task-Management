@@ -1,73 +1,74 @@
-import React, { useState } from "react";
-import { auth, googleProvider, signInWithPopup } from "../firebaseConfig";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 const Auth = ({ isSignup }) => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const { login } = useContext(AuthContext);
     const navigate = useNavigate();
+    const [formData, setFormData] = useState({ name: "", email: "", password: "" });
+    const [error, setError] = useState("");
 
-    const handleAuth = async (e) => {
-        e.preventDefault();
-        try {
-            if (isSignup) {
-                await createUserWithEmailAndPassword(auth, email, password);
-            } else {
-                await signInWithEmailAndPassword(auth, email, password);
-            }
-            navigate("/dashboard"); // Redirect to dashboard after login/signup
-        } catch (error) {
-            alert(error.message);
-        }
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleGoogleSignIn = async () => {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError("");
+
         try {
-            await signInWithPopup(auth, googleProvider);
-            navigate("/dashboard");
+            const endpoint = isSignup ? "/api/auth/signup" : "/api/auth/login";
+            const response = await fetch(endpoint, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData),
+            });
+
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message || "Error");
+
+            login(data.user);
+            navigate("/");
         } catch (error) {
-            alert(error.message);
+            setError(error.message);
         }
     };
 
     return (
-        <div className="flex items-center justify-center bg-white">
-            <div className="bg-blue-50 p-8 rounded-lg shadow-lg w-96">
-                <h2 className="text-2xl font-bold text-blue-600 mb-4 text-center">
-                    {isSignup ? "Sign Up" : "Login"}
-                </h2>
-                <form onSubmit={handleAuth}>
+        <div className="max-w-md mx-auto mt-10 p-5 border rounded shadow">
+            <h2 className="text-2xl font-bold text-center">{isSignup ? "Sign Up" : "Log In"}</h2>
+            {error && <p className="text-red-500">{error}</p>}
+            <form onSubmit={handleSubmit} className="mt-4">
+                {isSignup && (
                     <input
-                        type="email"
-                        placeholder="Email"
-                        className="w-full p-2 mb-4 border rounded"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
+                        type="text"
+                        name="name"
+                        placeholder="Name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        className="w-full p-2 mb-2 border rounded"
                     />
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        className="w-full p-2 mb-4 border rounded"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                    <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded">
-                        {isSignup ? "Sign Up" : "Login"}
-                    </button>
-                </form>
-                <button onClick={handleGoogleSignIn} className="w-full bg-red-500 text-white p-2 mt-4 rounded">
-                    Sign in with Google
+                )}
+                <input
+                    type="email"
+                    name="email"
+                    placeholder="Email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="w-full p-2 mb-2 border rounded"
+                />
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    className="w-full p-2 mb-2 border rounded"
+                />
+                <button type="submit" className="w-full p-2 bg-blue-600 text-white rounded">
+                    {isSignup ? "Sign Up" : "Log In"}
                 </button>
-                <p className="text-center mt-4">
-                    {isSignup ? "Already have an account?" : "Don't have an account?"}{" "}
-                    <a href={isSignup ? "/login" : "/signup"} className="text-blue-500">
-                        {isSignup ? "Login" : "Sign Up"}
-                    </a>
-                </p>
-            </div>
+            </form>
         </div>
     );
 };
