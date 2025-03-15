@@ -16,16 +16,21 @@ function Contact() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(
-        "https://zidio-task-management-api.vercel.app/api/contact",
-        formData
-      );
+      const res = await fetch(
+        "https://zidio-task-management-api.vercel.app/feedback",{
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+    
       if (res.data.success) {
         setStatus("Message sent successfully!");
         setFormData({ name: "", email: "", message: "" });
+      }else {
+        setStatus("Failed to send feedback.");
       }
     } catch (error) {
-      setStatus("Failed to send message. Please try again.");
+      setStatus("Error sending feedback.");
     }
   };
 
