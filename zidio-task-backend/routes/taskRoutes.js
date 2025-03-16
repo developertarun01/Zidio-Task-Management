@@ -1,10 +1,11 @@
 const express = require("express");
 const Task = require("../models/Task");
+const authenticateUser = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-// Get all tasks
-router.get("/", async (req, res) => {
+// Get all tasks (Protected)
+router.get("/", authenticateUser, async (req, res) => {
   try {
     const tasks = await Task.find();
     res.json(tasks);
@@ -13,8 +14,8 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Create a task
-router.post("/", async (req, res) => {
+// Create a task (Protected)
+router.post("/", authenticateUser, async (req, res) => {
   const { title, priority, subtasks, deadline } = req.body;
   const task = new Task({ title, priority, subtasks, deadline });
 
@@ -26,40 +27,18 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Update a task
-router.put("/:id", async (req, res) => {
+// Update a task (Protected)
+router.put("/:id", authenticateUser, async (req, res) => {
   try {
-    const task = await Task.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    const task = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true });
     res.json(task);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 });
 
-router.post("/tasks/:id/comment", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { comment } = req.body;
-
-    const task = await Task.findById(id);
-    if (!task) return res.status(404).json({ error: "Task not found" });
-
-    task.comments = task.comments || []; // Ensure comments array exists
-    task.comments.push(comment);
-    await task.save();
-
-    res.status(200).json({ message: "Comment added successfully", task });
-  } catch (error) {
-    console.error("Error adding comment:", error);
-    res.status(500).json({ error: "Server error" });
-  }
-});
-
-
-// Delete a task
-router.delete("/:id", async (req, res) => {
+// Delete a task (Protected)
+router.delete("/:id", authenticateUser, async (req, res) => {
   try {
     await Task.findByIdAndDelete(req.params.id);
     res.json({ message: "Task deleted successfully" });

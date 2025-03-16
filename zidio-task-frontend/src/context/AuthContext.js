@@ -10,7 +10,8 @@ export const AuthProvider = ({ children }) => {
     }, [user]);
 
     const login = (userData) => {
-        console.log("Login function called with:", userData); // ✅ Debugging Log
+        localStorage.setItem("token", userData.token); // ✅ Store token
+        localStorage.setItem("user", JSON.stringify(userData));
         setUser(userData);
     };
 

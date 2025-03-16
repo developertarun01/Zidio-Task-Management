@@ -28,22 +28,33 @@ const Home = () => {
     }
   };
 
-  // Add a new task
   const handleAddTask = async (task) => {
     try {
-      const response = await axios.post("https://zidio-task-management-api.vercel.app/api/tasks", task);
+      const token = localStorage.getItem("token"); // ✅ Retrieve token
+      if (!token) throw new Error("No authentication token found!");
+
+      const response = await axios.post(
+        "https://zidio-task-management-api.vercel.app/api/tasks",
+        task,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // ✅ Include token in headers
+          },
+        }
+      );
+
       const newTask = response.data;
       setTasks((prevTasks) => [...prevTasks, newTask]);
 
-      // Emit socket event
       socket.emit("task-added", newTask);
-
       toast.success("Task added successfully!");
     } catch (error) {
       console.error("Error adding task:", error);
       toast.error("Failed to add task!");
     }
   };
+
 
   useEffect(() => {
     fetchTasks();
