@@ -10,7 +10,7 @@ import ProgressChart from "../components/ProgressChart";
 import { io } from "socket.io-client";
 
 const socket = io("https://zidio-task-management-api.vercel.app", {
-  transports: ["websocket"], // Use WebSocket only
+  transports: ["websocket", "polling"], // Allow both for compatibility
   withCredentials: true,
 });
 
@@ -35,7 +35,7 @@ const Home = () => {
         toast.error("User is not authenticated!");
         return;
       }
-  
+
       const response = await axios.post(
         "https://zidio-task-management-api.vercel.app/api/tasks",
         task,
@@ -47,10 +47,10 @@ const Home = () => {
           withCredentials: true, // ✅ Allow cookies
         }
       );
-  
+
       const newTask = response.data;
       setTasks((prevTasks) => [...prevTasks, newTask]);
-  
+
       socket.emit("task-added", newTask);
       toast.success("Task added successfully!");
     } catch (error) {
@@ -58,7 +58,7 @@ const Home = () => {
       toast.error("Failed to add task! Check authentication.");
     }
   };
-  
+
 
 
   useEffect(() => {
