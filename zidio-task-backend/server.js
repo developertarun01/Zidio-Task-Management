@@ -29,6 +29,11 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization"],
 }));
 
+app.use((req, res, next) => {
+  res.setHeader("Content-Security-Policy", "default-src 'self'; font-src 'self' data:;");
+  next();
+});
+
 const io = new Server(server, {
   cors: {
     origin: allowedOrigins,
