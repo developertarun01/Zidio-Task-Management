@@ -10,7 +10,7 @@ import ProgressChart from "../components/ProgressChart";
 import { io } from "socket.io-client";
 
 const socket = io("https://zidio-task-management-api.vercel.app", {
-  transports: ["polling"], // Allow both for compatibility
+  transports: ["websocket"], // Use WebSocket only
   withCredentials: true,
 });
 
