@@ -37,17 +37,24 @@ app.use(bodyParser.json());
 
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigins,
+    origin: allowedOrigins, // Ensure this matches frontend origins
     credentials: true,
     methods: ["GET", "POST"],
   },
+  transports: ["websocket"], // Force WebSocket only, disable polling
 });
 
+// ✅ WebSocket Events
 io.on("connection", (socket) => {
-  console.log("✅ A user connected:", socket.id);
+  console.log(`🟢 New WebSocket Connection: ${socket.id}`);
+
+  socket.on("task-added", (task) => {
+    console.log("Task Added:", task);
+    io.emit("task-updated", task); // Broadcast to all clients
+  });
 
   socket.on("disconnect", () => {
-    console.log("❌ User disconnected");
+    console.log(`🔴 User Disconnected: ${socket.id}`);
   });
 });
 
@@ -66,4 +73,8 @@ mongoose.connection.on("error", (err) => {
   console.error(`❌ MongoDB Connection Error: ${err.message}`);
 });
 
-module.exports = server;
+// ✅ Start Server
+const PORT = process.env.PORT || 5000;
+server.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
