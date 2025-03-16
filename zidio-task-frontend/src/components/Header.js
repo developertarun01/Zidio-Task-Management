@@ -45,7 +45,7 @@ const Header = () => {
             <button
               type="button"
               className="bg-blue-600 text-white px-10 py-3 rounded w-full hover:bg-blue-500 mt-3 lg:mt-0"
-              onClick={() => navigate("/Dashboard")}
+              onClick={() => navigate("/dashboard")}
             >
               <b>Dashboard</b>
             </button>
