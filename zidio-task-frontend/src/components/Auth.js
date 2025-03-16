@@ -15,22 +15,25 @@ const Auth = ({ isSignup }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-
+  
     try {
       const API_BASE_URL = "https://zidio-task-management-api.vercel.app";
       const endpoint = isSignup ? `${API_BASE_URL}/api/auth/signup` : `${API_BASE_URL}/api/auth/login`;
-
+  
       const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: "test@example.com", password: "123456" })
-      }).then(res => res.json()).then(console.log).catch(console.error);
-
+        body: JSON.stringify(formData), // ✅ Use formData, not hardcoded credentials
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json(); // ✅ Extract error message safely
+        throw new Error(errorData.message || `HTTP Error: ${response.status}`);
+      }
+  
       const data = await response.json();
       console.log("API Response:", data); // ✅ Debugging Log
-
-      if (!response.ok) throw new Error(data.message || "Something went wrong!");
-
+  
       if (!isSignup) {
         login(data);  // ✅ This should update user context
         console.log("User logged in:", data); // ✅ Debugging Log
@@ -43,6 +46,7 @@ const Auth = ({ isSignup }) => {
       console.error("Login Error:", error);
     }
   };
+  
 
   return (
     <div className="flex items-center justify-center py-10">
