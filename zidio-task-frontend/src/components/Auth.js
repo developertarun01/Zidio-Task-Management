@@ -34,7 +34,7 @@ const Auth = ({ isSignup }) => {
       if (!isSignup) {
         login(data);  // ✅ This should update user context
         console.log("User logged in:", data); // ✅ Debugging Log
-        navigate("/dashboard"); // ✅ Redirect
+        navigate("/home"); // ✅ Redirect
       } else {
         navigate("/login");
       }

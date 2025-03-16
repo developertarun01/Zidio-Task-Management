@@ -29,7 +29,7 @@ const App = () => {
         <Header />
         <main className="container mx-auto">
           <Routes>
-            <Route path="/login" element={<Auth isSignup={false} />} />
+            <Route path="/" element={<Auth isSignup={false} />} />
             <Route path="/signup" element={<Auth isSignup={true} />} />
             <Route
               path="/dashboard"
@@ -40,7 +40,7 @@ const App = () => {
               }
             />
             <Route
-              path="/"
+              path="/home"
               element={
                 <ProtectedRoute>
                   <Home />
