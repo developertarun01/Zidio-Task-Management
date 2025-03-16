@@ -8,20 +8,22 @@ const dotenv = require("dotenv");
 dotenv.config();
 const router = express.Router();
 
-// ✅ **Updated: User Signup Route**
 router.post("/signup", async (req, res) => {
-  console.log("Signup request body:", req.body); // Debugging log
-
+  console.log("Signup request body:", req.body); // ✅ Check if 'username' is received
   try {
     const { username, email, password } = req.body;
+    if (!username || !email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+    
     const hash = await bcrypt.hash(password, 12);
-
     const existingUser = await User.findOne({ email });
+
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    const newUser = new User({ username, email, password: hash }); // ✅ Store hashed password
+    const newUser = new User({ username, email, password: hash });
     await newUser.save();
 
     res.status(201).json({ message: "User registered successfully" });
@@ -30,6 +32,7 @@ router.post("/signup", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
 
 // ✅ **User Login Route**
 router.post("/login", async (req, res) => {

@@ -5,7 +5,7 @@ import { AuthContext } from "../context/AuthContext";
 const Auth = ({ isSignup }) => {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({ name: "", email: "", password: "" });
+  const [formData, setFormData] = useState({ username: "", email: "", password: "" });
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
