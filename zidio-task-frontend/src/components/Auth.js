@@ -15,21 +15,23 @@ const Auth = ({ isSignup }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-  
+
     try {
-      const endpoint = isSignup ? "/api/auth/signup" : "/api/auth/login";
+      const API_BASE_URL = "https://zidio-task-management-api.vercel.app"; // Replace with actual backend URL
+      const endpoint = isSignup ? `${API_BASE_URL}/api/auth/signup` : `${API_BASE_URL}/api/auth/login`;
+
       const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-  
+
       // ✅ Check if response body is empty before parsing JSON
       const text = await response.text();
       const data = text ? JSON.parse(text) : {};
-  
+
       if (!response.ok) throw new Error(data.message || "Something went wrong!");
-  
+
       if (!isSignup) {
         login(data.user);
         navigate("/dashboard");
@@ -40,7 +42,7 @@ const Auth = ({ isSignup }) => {
       setError(error.message);
     }
   };
-  
+
   return (
     <div className="flex items-center justify-center min-h-screen">
       <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
