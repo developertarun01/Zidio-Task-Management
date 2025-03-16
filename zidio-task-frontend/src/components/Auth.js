@@ -10,14 +10,14 @@ const Auth = ({ isSignup }) => {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  };  
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
     try {
-      const API_BASE_URL = "https://zidio-task-management-api.vercel.app"; // Replace with actual backend URL
+      const API_BASE_URL = "https://zidio-task-management-api.vercel.app";
       const endpoint = isSignup ? `${API_BASE_URL}/api/auth/signup` : `${API_BASE_URL}/api/auth/login`;
 
       const response = await fetch(endpoint, {
@@ -26,20 +26,21 @@ const Auth = ({ isSignup }) => {
         body: JSON.stringify(formData),
       });
 
-      // ✅ Check if response body is empty before parsing JSON
-      const text = await response.text();
-      const data = text ? JSON.parse(text) : {};
+      const data = await response.json();
+      console.log("API Response:", data); // ✅ Debugging Log
 
       if (!response.ok) throw new Error(data.message || "Something went wrong!");
 
       if (!isSignup) {
-        login(data.user);
-        navigate("/dashboard");
+        login(data);  // ✅ This should update user context
+        console.log("User logged in:", data); // ✅ Debugging Log
+        navigate("/dashboard"); // ✅ Redirect
       } else {
         navigate("/login");
       }
     } catch (error) {
       setError(error.message);
+      console.error("Login Error:", error);
     }
   };
 

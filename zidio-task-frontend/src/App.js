@@ -13,8 +13,14 @@ import { AuthContext, AuthProvider } from "./context/AuthContext";
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useContext(AuthContext);
+
+  if (user === null) {
+    return <p>Loading...</p>; // ✅ Prevents unwanted redirection
+  }
+
   return user ? children : <Navigate to="/login" />;
 };
+
 
 const App = () => {
   return (

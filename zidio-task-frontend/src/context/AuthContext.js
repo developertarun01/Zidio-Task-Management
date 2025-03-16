@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect } from "react";
 
 export const AuthContext = createContext();
 
@@ -6,19 +6,15 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
 
     useEffect(() => {
-        const storedUser = localStorage.getItem("user");
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
-        }
-    }, []);
+        console.log("User state updated:", user); // ✅ Debugging Log
+    }, [user]);
 
     const login = (userData) => {
-        localStorage.setItem("user", JSON.stringify(userData));
+        console.log("Login function called with:", userData); // ✅ Debugging Log
         setUser(userData);
     };
 
     const logout = () => {
-        localStorage.removeItem("user");
         setUser(null);
     };
 
