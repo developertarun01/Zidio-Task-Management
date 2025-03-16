@@ -35,12 +35,13 @@ app.use(cors({
 app.use(express.json());
 app.use(bodyParser.json());
 
-// ✅ WebSocket Configuration
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigins,
+    origin: allowedOrigins, // Ensure this matches frontend origins
     credentials: true,
+    methods: ["GET", "POST"],
   },
+  transports: ["websocket"], // Force WebSocket only, disable polling
 });
 
 // ✅ WebSocket Events
