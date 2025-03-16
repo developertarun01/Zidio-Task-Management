@@ -20,7 +20,7 @@ const ProtectedRoute = ({ children }) => {
 // ✅ Component to Show Heading on Login/Signup
 const AuthLayout = ({ children }) => (
   <div className="min-h-screen flex flex-col items-center justify-center">
-    <h1 className="text-3xl font-bold text-blue-700 mb-6">Welcome to Zidio Task Management</h1>
+    <h1 className="text-2xl font-bold text-blue-700 mb-6">Welcome to Zidio Task Management</h1>
     {children}
   </div>
 );

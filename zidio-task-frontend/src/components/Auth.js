@@ -23,8 +23,8 @@ const Auth = ({ isSignup }) => {
       const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+        body: JSON.stringify({ email: "test@example.com", password: "123456" })
+      }).then(res => res.json()).then(console.log).catch(console.error);
 
       const data = await response.json();
       console.log("API Response:", data); // ✅ Debugging Log
