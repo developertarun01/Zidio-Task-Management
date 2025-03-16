@@ -24,7 +24,7 @@ const Header = () => {
         <nav className="hidden md:block">
           <ul className="flex space-x-6 bg-blue-50 p-3 rounded-lg my-8 justify-center">
             {[
-              { name: "HOME", path: "/" },
+              { name: "HOME", path: "/home" },
               { name: "ABOUT", path: "/about" },
               { name: "SERVICES", path: "/services" },
               { name: "CAREERS", path: "/careers" },
