@@ -15,7 +15,7 @@ dotenv.config();
 connectDB();
 
 const app = express();
-const server = http.createServer(app);
+module.exports = app; // ✅ Required for Vercel API
 
 const allowedOrigins = [
   "http://127.0.0.1:3000",
