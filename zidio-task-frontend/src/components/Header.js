@@ -45,9 +45,9 @@ const Header = () => {
             <button
               type="button"
               className="bg-blue-600 text-white px-10 py-3 rounded w-full hover:bg-blue-500 mt-3 lg:mt-0"
-              onClick={() => navigate("/login")}
+              onClick={() => navigate("/Dashboard")}
             >
-              <b>Login / Signup</b>
+              <b>Dashboard</b>
             </button>
           </ul>
         </nav>
