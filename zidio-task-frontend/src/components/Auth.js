@@ -9,7 +9,7 @@ const Auth = ({ isSignup }) => {
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({ ...formData, [e.target.username]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
@@ -56,7 +56,7 @@ const Auth = ({ isSignup }) => {
               type="text"
               name="name"
               placeholder="Full Name"
-              value={formData.name}
+              value={formData.username}
               onChange={handleChange}
               required
               className="w-full p-2 border border-gray-300 rounded"
