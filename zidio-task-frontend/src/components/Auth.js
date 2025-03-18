@@ -91,7 +91,7 @@ const Auth = ({ isSignup }) => {
         <p className="mt-4 text-center">
           {isSignup ? "Already have an account?" : "Don't have an account?"}{" "}
           <button
-            onClick={() => navigate(isSignup ? "/login" : "/signup")}
+            onClick={() => navigate(isSignup ? "/" : "/signup")}
             className="text-blue-500"
           >
             {isSignup ? "Login" : "Sign Up"}
