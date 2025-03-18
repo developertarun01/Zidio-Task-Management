@@ -9,61 +9,71 @@ import Chart from "../components/Chart";
 import ProgressChart from "../components/ProgressChart";
 import { io } from "socket.io-client";
 
-const socket = io("https://zidio-task-management-api.vercel.app", {
-  transports: ["polling"], 
+const API_BASE_URL = "https://zidio-task-management-api.vercel.app";
+
+// ✅ Improved Socket Connection (WebSocket Preferred)
+const socket = io(API_BASE_URL, {
+  transports: ["websocket", "polling"], // ✅ WebSocket First, Polling Fallback
   withCredentials: true,
 });
 
 const Home = () => {
   const [tasks, setTasks] = useState([]);
 
-  // Fetch tasks from backend
+  // ✅ Fetch tasks with Authorization Token
   const fetchTasks = async () => {
     try {
-      const response = await axios.get("https://zidio-task-management-api.vercel.app/api/tasks");
+      const token = localStorage.getItem("token"); // Get token
+      if (!token) {
+        toast.error("User not authenticated!");
+        return;
+      }
+
+      const response = await axios.get(`${API_BASE_URL}/api/tasks`, {
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true,
+      });
+
       setTasks(response.data);
     } catch (error) {
-      console.error("Error fetching tasks:", error);
+      console.error("❌ Error fetching tasks:", error);
       toast.error("Failed to load tasks!");
     }
   };
 
+  // ✅ Add Task with Token & Real-time Update
   const handleAddTask = async (task) => {
     try {
-      const token = localStorage.getItem("token"); // ✅ Retrieve token
+      const token = localStorage.getItem("token"); // Get token
       if (!token) {
-        toast.error("User is not authenticated!");
+        toast.error("User not authenticated!");
         return;
       }
 
-      const response = await axios.post(
-        "https://zidio-task-management-api.vercel.app/api/tasks",
-        task,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // ✅ Send token
-          },
-          withCredentials: true, // ✅ Allow cookies
-        }
-      );
+      const response = await axios.post(`${API_BASE_URL}/api/tasks`, task, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      });
 
       const newTask = response.data;
       setTasks((prevTasks) => [...prevTasks, newTask]);
 
+      // ✅ Emit real-time event
       socket.emit("task-added", newTask);
       toast.success("Task added successfully!");
     } catch (error) {
-      console.error("Error adding task:", error);
+      console.error("❌ Error adding task:", error);
       toast.error("Failed to add task! Check authentication.");
     }
   };
 
-
-
   useEffect(() => {
     fetchTasks();
 
+    // ✅ Real-time task updates
     socket.on("task-updated", (updatedTask) => {
       setTasks((prevTasks) =>
         prevTasks.map((task) => (task._id === updatedTask._id ? updatedTask : task))
@@ -71,7 +81,7 @@ const Home = () => {
     });
 
     return () => {
-      socket.off("task-updated"); // Remove only the event listener
+      socket.off("task-updated"); // ✅ Clean up event listener
     };
   }, []);
 
