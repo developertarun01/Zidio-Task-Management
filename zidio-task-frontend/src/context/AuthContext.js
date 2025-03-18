@@ -10,14 +10,22 @@ export const AuthProvider = ({ children }) => {
     }, [user]);
 
     const login = (userData) => {
-        localStorage.setItem("token", userData.token); // ✅ Store token
-        localStorage.setItem("user", JSON.stringify(userData));
-        setUser(userData);
+        if (userData.token) {
+            localStorage.setItem("token", userData.token); // ✅ Store token properly
+            localStorage.setItem("user", JSON.stringify(userData));
+            setUser(userData);
+        } else {
+            console.error("❌ Token missing in login response");
+        }
     };
+    
 
     const logout = () => {
+        localStorage.removeItem("token"); // ✅ Clear token on logout
+        localStorage.removeItem("user"); // ✅ Clear user data
         setUser(null);
     };
+    
 
     return (
         <AuthContext.Provider value={{ user, login, logout }}>
