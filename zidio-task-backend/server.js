@@ -17,18 +17,12 @@ connectDB();
 const app = express();
 const server = http.createServer(app);
 
-// ✅ Allowed Origins for API & WebSocket
-const allowedOrigins = [
-  "http://127.0.0.1:3000",
-  "https://zidio-task-management-ruby.vercel.app"
-];
-
 // ✅ CORS Middleware Fix
 app.use(cors({
-  origin: allowedOrigins,
+  origin: "https://zidio-task-management-ruby.vercel.app",
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  allowedHeaders: ["Content-Type", "Authorization"], // ✅ Ensure this is present
 }));
 
 // ✅ JSON Parser Middleware (Before Routes)
