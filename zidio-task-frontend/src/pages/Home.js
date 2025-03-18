@@ -13,7 +13,7 @@ const API_BASE_URL = "https://zidio-task-management-api.vercel.app";
 
 // ✅ Improved Socket Connection (WebSocket Preferred)
 const socket = io(API_BASE_URL, {
-  transports: ["websocket", "polling"], // ✅ WebSocket First, Polling Fallback
+  transports: ["polling", "websocket"], // ✅ WebSocket First, Polling Fallback
   withCredentials: true,
 });
 
