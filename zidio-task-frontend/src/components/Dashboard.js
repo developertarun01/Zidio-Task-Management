@@ -8,7 +8,7 @@ const Dashboard = () => {
             <h1 className="text-3xl font-bold">Welcome to the Dashboard</h1>
             <button
                 className="mt-4 bg-red-500 text-white p-2 rounded"
-                onClick={() => navigate("/login")}
+                onClick={() => navigate("/")}
             >
                 Logout
             </button>
