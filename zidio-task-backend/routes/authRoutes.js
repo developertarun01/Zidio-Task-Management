@@ -15,7 +15,7 @@ router.post("/signup", async (req, res) => {
     if (!username || !email || !password) {
       return res.status(400).json({ message: "All fields are required" });
     }
-    
+
     const hash = await bcrypt.hash(password, 12);
     const existingUser = await User.findOne({ email });
 
@@ -45,7 +45,7 @@ router.post("/login", async (req, res) => {
   if (!isPasswordValid)
     return res.status(400).json({ message: "Invalid credentials" });
 
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || "secretkey");
+  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
   res.status(200).json({
     message: "Login Successful",
