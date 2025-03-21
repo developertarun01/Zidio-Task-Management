@@ -36,7 +36,7 @@ const Auth = ({ isSignup }) => {
         console.log("User logged in:", data); // ✅ Debugging Log
         navigate("/home"); // ✅ Redirect
       } else {
-        navigate("/login");
+        navigate("/");
       }
     } catch (error) {
       setError(error.message);
