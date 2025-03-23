@@ -1,11 +1,10 @@
 const express = require("express");
 const Task = require("../models/Task");
-const authenticateUser = require("../middleware/authMiddleware");
-
+const authMiddleware = require("../middleware/authMiddleware");
 const router = express.Router();
 
-// Get all tasks (Protected)
-router.get("/", authenticateUser, async (req, res) => {
+// Get all tasks
+router.get("/", authMiddleware, async (req, res) => {
   try {
     const tasks = await Task.find();
     res.json(tasks);
@@ -14,31 +13,39 @@ router.get("/", authenticateUser, async (req, res) => {
   }
 });
 
-// Create a task (Protected)
-router.post("/", authenticateUser, async (req, res) => {
+// Create a task
+router.post("/", authMiddleware, async (req, res) => {
   const { title, priority, subtasks, deadline } = req.body;
-  const task = new Task({ title, priority, subtasks, deadline });
+  const task = new Task({
+    title,
+    priority,
+    subtasks,
+    deadline,
+    userId: req.user.id,
+  }); // Getting userId from the token
 
   try {
-    const newTask = await task.save();
+     await task.save();
     res.status(201).json(newTask);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 });
 
-// Update a task (Protected)
-router.put("/:id", authenticateUser, async (req, res) => {
+// Update a task
+router.put("/:id", async (req, res) => {
   try {
-    const task = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const task = await Task.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
     res.json(task);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 });
 
-// Delete a task (Protected)
-router.delete("/:id", authenticateUser, async (req, res) => {
+// Delete a task
+router.delete("/:id", async (req, res) => {
   try {
     await Task.findByIdAndDelete(req.params.id);
     res.json({ message: "Task deleted successfully" });

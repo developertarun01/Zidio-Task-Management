@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import tanmoyImg from "../assets/tanmoyImg.png"
 import tarunImg from "../assets/tarun.png"
-import gayatriImg from "../assets/gayatri.jpg"
-import SatyaImg from "../assets/Satya.jpg"
 import user from "../assets/user.png"
 const teamMembers = [
   {
@@ -19,12 +17,13 @@ const teamMembers = [
   {
     name: "Gayatri Sawant",
     role: "Frontend Developer",
-    image: gayatriImg, // Replace with real image URL
+    image: user,
+
   },
   {
     name: "Satya Prakash",
     role: "Backend Developer",
-    image: SatyaImg,
+    image: user,
   },
   {
     name: "Pavan Gowda",
@@ -42,7 +41,7 @@ const About = () => {
   const [aboutInfo, setAboutInfo] = useState({});
 
   useEffect(() => {
-    axios.get("https://zidio-task-management-api.vercel.app/api/about").then((response) => {
+    axios.get("http://localhost:4004/api/about").then((response) => {
       setAboutInfo(response.data);
     });
   }, []);

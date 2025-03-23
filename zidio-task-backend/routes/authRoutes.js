@@ -1,63 +1,74 @@
 const express = require("express");
-const { signup, login } = require("../controllers/authController");
-const User = require("../models/User");
+const router = express.Router();
+const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const dotenv = require("dotenv");
-
+// const verifyToken =require("../middleware/verifyToken");
 dotenv.config();
-const router = express.Router();
 
-router.post("/signup", async (req, res) => {
-  console.log("Signup request body:", req.body); // ✅ Check if 'username' is received
+// Register Endpoint
+router.post("/register", async (req, res) => {
+  console.log("Request body:", req.body); // Check if data is being received
   try {
     const { username, email, password } = req.body;
-    if (!username || !email || !password) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
+    // const hash = await bcrypt.hash(password, 12);
+    // res.redirect("http://localhost:3000/dashboard");
 
-    const hash = await bcrypt.hash(password, 12);
+    // Check if user already exists
     const existingUser = await User.findOne({ email });
-
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
+      // .redirect("http://localhost:3000/login");
     }
 
-    const newUser = new User({ username, email, password: hash });
+    const newUser = new User({ username, email, password });
     await newUser.save();
 
-    res.status(201).json({ message: "User registered successfully" });
+    res.status(201).json({
+      redirect: "/dashboard",
+      message: "User registered successfully",
+    });
   } catch (error) {
-    console.error("Signup error:", error);
-    res.status(500).json({ message: "Server error" });
+    if (error.code === 11000) {
+      res
+        .status(400)
+        .json({ redirect: "/home", message: "Email already registered" });
+    } else {
+      console.error(error);
+      res.status(500).json({ message: "Server error" });
+    }
   }
 });
 
-
-// ✅ **User Login Route**
+// Login Endpoint
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email });
-  if (!user) return res.status(400).json({ message: "Invalid credentials" });
+  if (!user)
+    return res
+      .status(400)
+      .json({ message: "Invalid credentials", redirect: "/register" });
 
   const isPasswordValid = await bcrypt.compare(password, user.password);
   if (!isPasswordValid)
-    return res.status(400).json({ message: "Invalid credentials" });
+    return res.status(401).json({ message: "Invalid credentials" });
 
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
-
+  const token = jwt.sign({ id: user._id }, "secretkey");
+  // res.json({ token });
+  //   return success response
   res.status(200).json({
     message: "Login Successful",
     email: user.email,
     token,
   });
+  console.log({ message: "login successful" });
 });
 
-// ✅ **Logout Route**
 router.get("/logout", (req, res) => {
-  res.clearCookie("token");
-  res.json({ message: "Logged out successfully" });
+  res.clearCookie("token").redirect("http://localhost:3001/");
+  console.log({ message: "Logged out successfully" });
 });
 
 module.exports = router;

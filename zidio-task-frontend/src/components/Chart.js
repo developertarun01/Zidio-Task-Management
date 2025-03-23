@@ -1,12 +1,48 @@
 import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
-import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, Title, Tooltip, Legend, PointElement, Filler } from "chart.js";
-
-ChartJS.register(LineElement, CategoryScale, LinearScale, Title, Tooltip, Legend, PointElement, Filler);
-
-const Chart = ({ tasks }) => {
+import axios from "axios";
+import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, Title, Tooltip, Legend, PointElement } from "chart.js";
+import {io} from "socket.io-client";
+ChartJS.register(LineElement, CategoryScale, LinearScale, Title, Tooltip, Legend, PointElement);
+const socket = io("http://localhost:4004");
+const Chart = () => {
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
+  const [tasks, setTasks] = useState([]);
+  useEffect(() => {
+    fetchTasks();
 
+    // ✅ Listen for new tasks added in real-time
+    socket.on("taskAdded", (newTask) => {
+      setTasks((prevTasks) => [...prevTasks, newTask]);
+    });
+
+    socket.on("taskUpdated", (updatedTask) => {
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task._id === updatedTask._id ? updatedTask : task
+        )
+      );
+    });
+
+    socket.on("taskDeleted", (taskId) => {
+      setTasks((prevTasks) => prevTasks.filter((task) => task._id !== taskId));
+    });
+
+    return () => {
+      socket.off("taskAdded");
+      socket.off("taskUpdated");
+      socket.off("taskDeleted");
+    };
+  }, []);
+
+  const fetchTasks = async () => {
+    try {
+      const response = await axios.get("http://localhost:4004/tasks");
+      setTasks(response.data);
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+    }
+  };
   useEffect(() => {
     if (!tasks || tasks.length === 0) {
       setChartData({ labels: [], datasets: [] });
@@ -14,7 +50,7 @@ const Chart = ({ tasks }) => {
     }
 
     const labels = tasks.map((task) => task.title);
-    const progressData = tasks.map((task) => (task.completed ? 100 : 0));
+    const progressData = tasks.map((task) => (task.status === 'completed' ? 100 : 0));
 
     setChartData({
       labels,

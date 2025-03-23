@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Search, Info, Menu, X } from "lucide-react";
-
+import UserAvatar from "../components/UserAvatar"
 const Header = () => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -24,7 +24,7 @@ const Header = () => {
         <nav className="hidden md:block">
           <ul className="flex space-x-6 bg-blue-50 p-3 rounded-lg my-8 justify-center">
             {[
-              { name: "HOME", path: "/home" },
+              { name: "HOME", path: "/" },
               { name: "ABOUT", path: "/about" },
               { name: "SERVICES", path: "/services" },
               { name: "CAREERS", path: "/careers" },
@@ -34,7 +34,8 @@ const Header = () => {
                 <NavLink
                   to={item.path}
                   className={({ isActive }) =>
-                    `mx-5 grid hover:text-blue-600 ${isActive ? "text-blue-700" : "text-black"
+                    `mx-5 grid hover:text-blue-600 ${
+                      isActive ? "text-blue-700" : "text-black"
                     }`
                   }
                 >
@@ -42,13 +43,7 @@ const Header = () => {
                 </NavLink>
               </li>
             ))}
-            <button
-              type="button"
-              className="bg-blue-600 text-white px-10 py-3 rounded w-full hover:bg-blue-500 mt-3 lg:mt-0"
-              onClick={() => navigate("/dashboard")}
-            >
-              <b>Dashboard</b>
-            </button>
+          <UserAvatar/>
           </ul>
         </nav>
 
@@ -69,7 +64,7 @@ const Header = () => {
           <nav>
             <ul className="flex flex-col space-y-3 bg-blue-50 p-3 rounded-lg">
               {[
-                { name: "HOME", path: "/" },
+                { name: "HOME", path: "/home" },
                 { name: "ABOUT", path: "/about" },
                 { name: "SERVICES", path: "/services" },
                 { name: "CAREERS", path: "/careers" },
@@ -79,7 +74,8 @@ const Header = () => {
                   <NavLink
                     to={item.path}
                     className={({ isActive }) =>
-                      `block text-center hover:text-blue-600 ${isActive ? "text-blue-700" : "text-black"
+                      `block text-center hover:text-blue-600 ${
+                        isActive ? "text-blue-700" : "text-black"
                       }`
                     }
                     onClick={() => setMenuOpen(false)}
@@ -88,16 +84,7 @@ const Header = () => {
                   </NavLink>
                 </li>
               ))}
-              <button
-                type="button"
-                className="bg-blue-600 text-white px-10 py-3 rounded w-full hover:bg-blue-500"
-                onClick={() => {
-                  navigate("/login");
-                  setMenuOpen(false);
-                }}
-              >
-                <b>Login / Signup</b>
-              </button>
+             <UserAvatar/>
             </ul>
           </nav>
 
