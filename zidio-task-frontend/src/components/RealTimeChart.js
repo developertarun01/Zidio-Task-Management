@@ -65,11 +65,11 @@ const RealTimeChart = () => {
     ],
   };
   return (
-    <div className="bg-white pt-2 shadow-md rounded-lg h-[400px] ">
+    <div className="bg-white p-4 shadow-md rounded-lg max-full  mt-6 ">
       <h2 className="text-lg font-bold text-gray-700 text-center">
         Task Progress
       </h2>
-      <div className=" px-2 overflow-hidden h-[320px]">
+      <div className=" px-2 overflow-hidden h-[200px]">
   <Doughnut data={data} options={{
     responsive: true,
     maintainAspectRatio: false,
