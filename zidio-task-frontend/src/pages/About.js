@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import tanmoyImg from "../assets/tanmoyImg.png"
 import tarunImg from "../assets/tarun.png"
+import gayatriImg from "../assets/gayatri.jpg"
+import SatyaImg from "../assets/Satya.jpg"
 import user from "../assets/user.png"
 const teamMembers = [
   {
@@ -17,13 +19,13 @@ const teamMembers = [
   {
     name: "Gayatri Sawant",
     role: "Frontend Developer",
-    image: user,
+    image: gayatriImg,
 
   },
   {
     name: "Satya Prakash",
     role: "Backend Developer",
-    image: user,
+    image: SatyaImg,
   },
   {
     name: "Pavan Gowda",
