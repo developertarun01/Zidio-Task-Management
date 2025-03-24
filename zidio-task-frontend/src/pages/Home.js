@@ -9,6 +9,7 @@ import Chart from "../components/Chart";
 import ProgressChart from "../components/ProgressChart";
 import { io } from "socket.io-client";
 import RealtimeChart from "../components/RealTimeChart";
+import TaskPriorityChart from "../components/TaskPriorityChart";
 
 // Initialize Socket.IO
 const socket = io("http://localhost:4004/"); // Backend URL
@@ -72,7 +73,7 @@ const Home = () => {
         )
       );
     });
-//✅Listen for deleted task in real-time
+    //✅Listen for deleted task in real-time
     socket.on("taskDeleted", (taskId) => {
       setTasks((prevTasks) => prevTasks.filter((task) => task._id !== taskId));
     });
@@ -103,9 +104,16 @@ const Home = () => {
           <TaskAssignment onAddTask={handleAddTask} />
         </div>
       </div>
-
       <div className="mt-6">
         <TaskList tasks={tasks} setTasks={setTasks} />
+      </div>
+      <div className="flex gap-3">
+        <div className="mt-6">
+          <TaskPriorityChart tasks={tasks} setTasks={setTasks} />
+        </div>
+        <div className="mt-6">
+          <RealtimeChart tasks={tasks} />
+        </div>
       </div>
 
       <div className="mt-6">
@@ -114,9 +122,6 @@ const Home = () => {
 
       <div className="mt-6">
         <ProgressChart tasks={tasks} />
-      </div>
-      <div className="mt-6">
-        <RealtimeChart tasks={tasks} />
       </div>
 
       <div className="mt-6">
