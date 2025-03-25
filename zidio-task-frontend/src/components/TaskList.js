@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import apiClient from "../../api/client"; // Updated import for configured axios instance
-import socket from "../../utils/socket"; // Using centralized socket configuration
+import apiClient from "../api/client"; // Updated import for configured axios instance
+import socket from "../utils/socket"; // Using centralized socket configuration
 import { useNavigate } from "react-router-dom";
 
 const TaskList = () => {

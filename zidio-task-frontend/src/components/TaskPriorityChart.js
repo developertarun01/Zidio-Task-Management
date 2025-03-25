@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend } from "chart.js";
-import apiClient from "../../api/client"; // Updated import for configured axios instance
-import socket from "../../utils/socket"; // Updated socket import
+import apiClient from "../api/client"; // Updated import for configured axios instance
+import socket from "../utils/socket"; // Updated socket import
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
 
