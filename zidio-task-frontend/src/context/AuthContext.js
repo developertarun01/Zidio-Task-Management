@@ -1,6 +1,5 @@
 import { createContext, useState, useEffect, useContext } from "react";
 import apiClient from "../api/client";
-import { useNavigate } from "react-router-dom";
 
 // Create Context
 export const AuthContext = createContext();
@@ -9,7 +8,6 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const navigate = useNavigate();
 
   // Initialize auth state from localStorage
   const initializeAuth = () => {
@@ -91,10 +89,11 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Logout function
+  // Logout function (now router-agnostic)
   const logout = () => {
     clearAuth();
-    navigate("/login");
+    // Redirect is now handled by components using useNavigate
+    window.location.href = '/login'; // Fallback redirect
   };
 
   // Refresh token function

@@ -33,8 +33,10 @@ app.use(express.json());
 
 // Socket.io with proper CORS config
 const io = new Server(server, {
-  cors: corsOptions,
-  path: "/api/socket.io" // Add path for Socket.io
+  cors: {
+    origin: "https://zidio-task-management-ruby.vercel.app",
+    methods: ["GET", "POST"]
+  }
 });
 
 // API Routes with consistent /api prefix
