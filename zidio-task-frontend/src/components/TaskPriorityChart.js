@@ -14,7 +14,7 @@ const TaskPriorityChart = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("https://zidio-task-management-api.vercel.app/tasks"); // Fetch tasks from backend
+        const response = await axios.get("https://zidio-task-management-api.vercel.app/api/tasks"); // Fetch tasks from backend
         const tasks = response.data;
 
         const high = tasks.filter(task => task.priority === "High").length;

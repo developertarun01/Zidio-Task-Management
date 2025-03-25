@@ -167,7 +167,7 @@ const TaskList = () => {
   const [tasks, setTasks] = useState([]);
   const [filter, setFilter] = useState("All");
   useEffect(() => {
-    let url = `https://zidio-task-management-api.vercel.app/tasks`;
+    let url = `https://zidio-task-management-api.vercel.app/api/tasks`;
     if (filter !== "All") url += `/filter/${filter}`;
 
     fetch(url)
@@ -204,7 +204,7 @@ const TaskList = () => {
   const fetchTasks = async () => {
     try {
       const response = await axios.get(
-        `https://zidio-task-management-api.vercel.app/tasks`
+        `https://zidio-task-management-api.vercel.app/api/tasks`
       );
       setTasks(response.data);
     } catch (error) {
@@ -216,7 +216,7 @@ const TaskList = () => {
   const handleDelete = async (taskId) => {
     try {
       await axios.delete(
-        `https://zidio-task-management-api.vercel.app/tasks/${taskId}`
+        `https://zidio-task-management-api.vercel.app/api/tasks/${taskId}`
       );
       setTasks(tasks.filter((task) => task._id !== taskId)); // Remove task from UI
     } catch (error) {
@@ -228,7 +228,7 @@ const TaskList = () => {
   const toggleTaskStatus = async (taskId, currentStatus, progress) => {
     try {
       const updatedTask = await axios.put(
-        `https://zidio-task-management-api.vercel.app/tasks/${taskId}`,
+        `https://zidio-task-management-api.vercel.app/api/tasks/${taskId}`,
         {
           status: currentStatus === "pending" ? "completed" : "pending",
           progress: currentStatus==="pending"? '100':'0',

@@ -42,7 +42,7 @@ const RealTimeChart = () => {
 
   const fetchTasks = async () => {
     try {
-      const response = await axios.get("https://zidio-task-management-api.vercel.app/tasks");
+      const response = await axios.get("https://zidio-task-management-api.vercel.app/api/tasks");
       setTasks(response.data);
     } catch (error) {
       console.error("Error fetching tasks:", error);

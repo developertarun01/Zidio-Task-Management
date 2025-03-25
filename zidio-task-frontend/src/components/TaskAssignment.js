@@ -32,7 +32,7 @@ const TaskAssignment = ({ onAddTask }) => {
     }
     try {
       const response = await axios.post(
-        "https://zidio-task-management-api.vercel.app/tasks",
+        "https://zidio-task-management-api.vercel.app/api/tasks",
         onAddTask
       );
       socket.emit("taskAdded", response.data);
