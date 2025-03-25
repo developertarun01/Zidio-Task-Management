@@ -1,15 +1,28 @@
-import { createContext, useState, useEffect } from "react";
-import apiClient from "../api/client"; // We'll create this file next
+import { createContext, useState, useEffect, useContext } from "react";
+import apiClient from "../api/client";
 import { useNavigate } from "react-router-dom";
 
 // Create Context
 export const AuthContext = createContext();
 
-// AuthProvider
+// AuthProvider Component
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+
+  // Initialize auth state from localStorage
+  const initializeAuth = () => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (error) {
+        console.error("Failed to parse user data:", error);
+        clearAuth();
+      }
+    }
+  };
 
   // Check authentication when the app loads
   useEffect(() => {
@@ -17,9 +30,9 @@ export const AuthProvider = ({ children }) => {
       const token = localStorage.getItem("authToken");
       if (token) {
         try {
-          // Verify token with backend
           const response = await apiClient.get("/auth/verify");
           setUser(response.data.user);
+          localStorage.setItem("user", JSON.stringify(response.data.user));
         } catch (error) {
           console.error("Session verification failed:", error);
           clearAuth();
@@ -27,17 +40,20 @@ export const AuthProvider = ({ children }) => {
       }
       setIsLoading(false);
     };
+
+    initializeAuth();
     verifyAuth();
   }, []);
 
+  // Set authentication state
   const setAuth = (token, userData) => {
     localStorage.setItem("authToken", token);
     localStorage.setItem("user", JSON.stringify(userData));
     setUser(userData);
-    // Set default auth header for axios
     apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   };
 
+  // Clear authentication state
   const clearAuth = () => {
     localStorage.removeItem("authToken");
     localStorage.removeItem("user");
@@ -45,6 +61,7 @@ export const AuthProvider = ({ children }) => {
     delete apiClient.defaults.headers.common["Authorization"];
   };
 
+  // Login function
   const login = async (credentials) => {
     try {
       const response = await apiClient.post("/auth/login", credentials);
@@ -52,13 +69,14 @@ export const AuthProvider = ({ children }) => {
       return { success: true };
     } catch (error) {
       console.error("Login failed:", error);
-      return { 
-        success: false, 
-        error: error.response?.data?.message || "Login failed" 
+      return {
+        success: false,
+        error: error.response?.data?.message || "Login failed"
       };
     }
   };
 
+  // Register function
   const register = async (userData) => {
     try {
       const response = await apiClient.post("/auth/register", userData);
@@ -73,12 +91,13 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Logout function
   const logout = () => {
     clearAuth();
     navigate("/login");
   };
 
-  // Add function to refresh token if needed
+  // Refresh token function
   const refreshToken = async () => {
     try {
       const response = await apiClient.post("/auth/refresh");
@@ -91,18 +110,31 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Context value
+  const contextValue = {
+    user,
+    isLoading,
+    isAuthenticated: !!user,
+    login,
+    register,
+    logout,
+    refreshToken,
+    setAuth,
+    clearAuth
+  };
+
   return (
-    <AuthContext.Provider 
-      value={{ 
-        user, 
-        isLoading,
-        login, 
-        register, 
-        logout,
-        refreshToken
-      }}
-    >
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );
+};
+
+// Custom hook for easy access to auth context
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
 };
