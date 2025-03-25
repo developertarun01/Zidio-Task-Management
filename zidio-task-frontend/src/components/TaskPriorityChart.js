@@ -4,7 +4,7 @@ import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Title, Toolti
 import axios from "axios";
 import { io } from "socket.io-client";
 
-const socket =io("http://localhost:4004");
+const socket =io("https://zidio-task-management-api.vercel.app/");
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
 
@@ -14,7 +14,7 @@ const TaskPriorityChart = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:4004/tasks"); // Fetch tasks from backend
+        const response = await axios.get("https://zidio-task-management-api.vercel.app/tasks"); // Fetch tasks from backend
         const tasks = response.data;
 
         const high = tasks.filter(task => task.priority === "High").length;

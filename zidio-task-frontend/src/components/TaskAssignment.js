@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:4001");
+const socket = io("https://zidio-task-management-api.vercel.app/");
 const TaskAssignment = ({ onAddTask }) => {
   const [title, setTitle] = useState("");
   const [priority, setPriority] = useState("Medium");
@@ -32,7 +32,7 @@ const TaskAssignment = ({ onAddTask }) => {
     }
     try {
       const response = await axios.post(
-        "http://localhost:4001/tasks",
+        "https://zidio-task-management-api.vercel.app/tasks",
         onAddTask
       );
       socket.emit("taskAdded", response.data);

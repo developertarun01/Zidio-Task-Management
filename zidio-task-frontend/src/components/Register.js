@@ -14,7 +14,7 @@ const Register = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:4004/api/auth/register",
+        "https://zidio-task-management-api.vercel.app/api/auth/register",
         {
           username,
           email,

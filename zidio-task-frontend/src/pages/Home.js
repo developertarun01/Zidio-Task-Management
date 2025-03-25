@@ -12,14 +12,14 @@ import RealtimeChart from "../components/RealTimeChart";
 import TaskPriorityChart from "../components/TaskPriorityChart";
 
 // Initialize Socket.IO
-const socket = io("http://localhost:4004/"); // Backend URL
+const socket = io("https://zidio-task-management-api.vercel.app/"); // Backend URL
 
 const Home = () => {
   const [tasks, setTasks] = useState([]);
 
   const fetchTasks = async () => {
     try {
-      const response = await axios.get("http://localhost:4004/tasks");
+      const response = await axios.get("https://zidio-task-management-api.vercel.app/tasks");
       setTasks(response.data);
     } catch (error) {
       console.error("❌Error fetching tasks:", error);
@@ -29,7 +29,7 @@ const Home = () => {
   // ✅ Add a new task
   const handleAddTask = async (task) => {
     try {
-      const response = await axios.post("http://localhost:4004/tasks", task);
+      const response = await axios.post("https://zidio-task-management-api.vercel.app/tasks", task);
       const newTask = response.data;
       setTasks([...tasks, newTask]);
 
@@ -47,7 +47,7 @@ const Home = () => {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const response = await fetch("http://localhost:4004/tasks");
+        const response = await fetch("https://zidio-task-management-api.vercel.app/tasks");
         const data = await response.json();
         setTasks(data);
       } catch (error) {

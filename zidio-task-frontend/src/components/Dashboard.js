@@ -11,7 +11,7 @@ const navigate = useNavigate();
     if (token) {
       localStorage.setItem("authToken", token);
       axios
-        .get("http://localhost:4004/user", {
+        .get("https://zidio-task-management-api.vercel.app/user", {
           headers: { Authorization: `Bearer ${token}` },
           withCredentials: true,
         })
@@ -23,7 +23,7 @@ const navigate = useNavigate();
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     setUser(null);
-    window.open("http://localhost:4004/api/auth/logout", "_self");
+    window.open("https://zidio-task-management-api.vercel.app/api/auth/logout", "_self");
     navigate("/");
   };
     return (

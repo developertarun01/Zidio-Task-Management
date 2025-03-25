@@ -161,13 +161,13 @@ import axios from "axios";
 // import socket from "../utils/socket";
 import { io } from "socket.io-client";
 
-const socket = io(`http://localhost:4004`);
+const socket = io(`https://zidio-task-management-api.vercel.app/`);
 
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
   const [filter, setFilter] = useState("All");
   useEffect(() => {
-    let url = `http://localhost:4004/tasks`;
+    let url = `https://zidio-task-management-api.vercel.app/tasks`;
     if (filter !== "All") url += `/filter/${filter}`;
 
     fetch(url)
@@ -204,7 +204,7 @@ const TaskList = () => {
   const fetchTasks = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:4004/tasks`
+        `https://zidio-task-management-api.vercel.app/tasks`
       );
       setTasks(response.data);
     } catch (error) {
@@ -216,7 +216,7 @@ const TaskList = () => {
   const handleDelete = async (taskId) => {
     try {
       await axios.delete(
-        `http://localhost:4004/tasks/${taskId}`
+        `https://zidio-task-management-api.vercel.app/tasks/${taskId}`
       );
       setTasks(tasks.filter((task) => task._id !== taskId)); // Remove task from UI
     } catch (error) {
@@ -228,7 +228,7 @@ const TaskList = () => {
   const toggleTaskStatus = async (taskId, currentStatus, progress) => {
     try {
       const updatedTask = await axios.put(
-        `http://localhost:4004/tasks/${taskId}`,
+        `https://zidio-task-management-api.vercel.app/tasks/${taskId}`,
         {
           status: currentStatus === "pending" ? "completed" : "pending",
           progress: currentStatus==="pending"? '100':'0',

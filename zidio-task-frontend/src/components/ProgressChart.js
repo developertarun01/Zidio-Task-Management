@@ -21,13 +21,13 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-const socket = io("http://localhost:4004");
+const socket = io("https://zidio-task-management-api.vercel.app/");
 
 const ProgressChart = () => {
   const [tasks, setTasks] = useState([]);
   const fetchTasks = async () => {
     try {
-      const response = await axios.get("http://localhost:4004/tasks");
+      const response = await axios.get("https://zidio-task-management-api.vercel.app/tasks");
       setTasks(response.data);
     } catch (error) {
       console.error("Error fetching tasks:", error);

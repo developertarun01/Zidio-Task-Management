@@ -19,7 +19,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3003", // React app URL
+    origin: "https://zidio-task-management-ruby.vercel.app/", // React app URL
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
   },
