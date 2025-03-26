@@ -215,10 +215,10 @@ const TaskList = () => {
   // ✅ Delete Task
   const handleDelete = async (taskId) => {
     try {
-      await axios.delete(
-        `http://localhost:4004/tasks/${taskId}`
+      await axios.put(
+        `http://localhost:4004/trash/${taskId}`
       );
-      setTasks(tasks.filter((task) => task._id !== taskId)); // Remove task from UI
+      setTasks(tasks.filter((task) => task._id !== taskId)); // Remove task from UI and adds to the trash-bin.
     } catch (error) {
       console.error("Error deleting task:", error);
     }
