@@ -19,7 +19,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3003", // React app URL
+    origin: ["http://localhost:3000","http://localhost:3001","http://localhost:3002","http://localhost:3003"], // React app URL
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
   },
@@ -29,9 +29,52 @@ app.use(express.json());
 app.use(cors());
 app.use(bodyParser.json());
 app.use("/api/auth", authRoutes);
-app.use("/api/feedback", feedbackRoutes);
-// app.use("/tasks", taskRoutes);
+// app.use("/api/feedback", feedbackRoutes);
+// app.use("/api/tasks", taskRoutes);
 app.use("/api/about", aboutRoutes); // Add About API Route
+
+
+// ✅ Move Task to Trash (Soft Delete)
+app.put("/trash/:id", async (req, res) => {
+  try {
+    const task = await Task.findByIdAndUpdate(req.params.id, { deleted: true }, { new: true });
+    res.json(task);
+  } catch (error) {
+    res.status(500).json({ message: "Error moving task to trash" });
+  }
+});
+
+// ✅ Restore Task from Trash
+app.put("/restore/:id", async (req, res) => {
+  try {
+    const task = await Task.findByIdAndUpdate(req.params.id, { deleted: false }, { new: true });
+    res.json(task);
+  } catch (error) {
+    res.status(500).json({ message: "Error restoring task" });
+  }
+});
+
+// ✅ Permanently Delete Task
+app.delete("/delete/:id", async (req, res) => {
+  try {
+    await Task.findByIdAndDelete(req.params.id);
+    res.json({ message: "Task deleted permanently" });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting task permanently" });
+  }
+});
+
+// ✅ Get All Deleted Tasks
+app.get("/trash", async (req, res) => {
+  try {
+    const deletedTasks = await Task.find({ deleted: true });
+    res.json(deletedTasks);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching deleted tasks" });
+  }
+});
+
+
 
 // ✅ Create a Task and Broadcast the Event
 app.post("/tasks", async (req, res) => {
@@ -45,6 +88,7 @@ app.post("/tasks", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
 app.get("/tasks", async (req, res) => {
   const tasks = await Task.find();
   res.json(tasks);

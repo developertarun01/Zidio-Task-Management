@@ -7,6 +7,7 @@ const taskSchema = new mongoose.Schema({
   status: { type: String, enum: ["pending", "completed"], default: "pending" }, // ✅ Added status field
   deadline: { type: Date },
   completed: { type: Boolean, default: false },
+  deleted: { type: Boolean, default: false },
   progress: { type: Number, default: 0 },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // Linking with user
 });
