@@ -1,6 +1,22 @@
 import axios from 'axios';
 import { clearAuth } from '../utils/auth'; // Import from utils
 
+// Add WebSocket reconnection logic
+export const setupWebSocket = (token) => {
+    const socket = io('https://zidio-task-management-api.vercel.app', {
+      path: '/api/socket.io',
+      auth: { token },
+      reconnectionAttempts: 3,
+      reconnectionDelay: 1000
+    });
+  
+    socket.on('connect_error', (err) => {
+      console.error('Socket connection error:', err);
+    });
+  
+    return socket;
+  };
+
 const apiClient = axios.create({
     baseURL: process.env.VITE_API_BASE_URL || 'https://zidio-task-management-api.vercel.app/api',
     timeout: 10000,

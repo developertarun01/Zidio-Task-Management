@@ -31,12 +31,17 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(express.json());
 
-// Socket.io with proper CORS config
+// Update Socket.io configuration
 const io = new Server(server, {
   cors: {
-    origin: "https://zidio-task-management-ruby.vercel.app",
-    methods: ["GET", "POST"]
-  }
+    origin: [
+      "https://zidio-task-management-ruby.vercel.app",
+      "http://localhost:3000" // For local development
+    ],
+    methods: ["GET", "POST"],
+    credentials: true
+  },
+  path: "/api/socket.io" // Ensure this matches frontend
 });
 
 // API Routes with consistent /api prefix
