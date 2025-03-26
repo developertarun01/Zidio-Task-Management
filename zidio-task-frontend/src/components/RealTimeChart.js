@@ -65,7 +65,7 @@ const RealTimeChart = () => {
     ],
   };
   return (
-    <div className="bg-white p-4 shadow-md rounded-lg max-full  mt-6 ">
+    <div className="bg-white p-4 shadow-md rounded-lg w-80  mt-6 ">
       <h2 className="text-lg font-bold text-gray-700 text-center">
         Task Progress
       </h2>

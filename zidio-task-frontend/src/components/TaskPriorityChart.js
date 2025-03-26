@@ -58,7 +58,7 @@ const TaskPriorityChart = () => {
   };
 
   return (
-    <div className=" p-5 bg-white rounded-lg shadow-md w-full max-w-md mt-6">
+    <div className=" p-5 bg-white rounded-lg shadow-md h-[292px] w-full max-w-md mt-6">
       <h2 className="text-xl font-semibold mb-4">📊 Task Priority Chart</h2>
       <Bar data={chartData} options={chartOptions} />
     </div>
