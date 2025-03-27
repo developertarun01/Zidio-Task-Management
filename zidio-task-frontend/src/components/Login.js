@@ -13,25 +13,32 @@ const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  // Update your login function
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setIsLoading(true);
 
     try {
-      const result = await login({ email, password });
-      
-      if (result.success) {
-        navigate("/home");
-      } else {
-        setError(result.error || "Login failed");
+      // First verify backend is reachable
+      await apiClient.get('/health');
+
+      // Then attempt login
+      const result = await apiClient.post('/auth/login', { email, password });
+
+      if (result.data.token) {
+        localStorage.setItem('authToken', result.data.token);
+        navigate('/home');
       }
     } catch (error) {
-      setError(error.response?.data?.message || "An error occurred during login");
-      
-      // Specific handling for unregistered users
-      if (error.response?.status === 400) {
-        navigate("/register");
+      if (error.code === 'ERR_NETWORK') {
+        setError("Cannot connect to server. Please check your connection.");
+      } else if (error.response?.status === 404) {
+        setError("Login service is currently unavailable");
+      } else if (error.response?.status === 400) {
+        navigate('/register');
+      } else {
+        setError(error.response?.data?.message || "Login failed");
       }
     } finally {
       setIsLoading(false);
@@ -89,7 +96,7 @@ const Login = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
-              
+
               <Textbox
                 placeholder="your password"
                 type="password"
@@ -111,7 +118,7 @@ const Login = () => {
 
             <p className="text-center text-gray-600">
               Don't have an account?{" "}
-              <span 
+              <span
                 className="text-blue-600 hover:underline cursor-pointer"
                 onClick={() => navigate("/register")}
               >
