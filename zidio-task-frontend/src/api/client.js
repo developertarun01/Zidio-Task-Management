@@ -1,46 +1,19 @@
 import axios from 'axios';
-import { clearAuth } from '../utils/auth'; // Import from utils
-
-// Add WebSocket reconnection logic
-export const setupWebSocket = (token) => {
-    const socket = io('https://zidio-task-management-api.vercel.app', {
-      path: '/api/socket.io',
-      auth: { token },
-      reconnectionAttempts: 3,
-      reconnectionDelay: 1000
-    });
-  
-    socket.on('connect_error', (err) => {
-      console.error('Socket connection error:', err);
-    });
-  
-    return socket;
-  };
 
 const apiClient = axios.create({
-    baseURL: process.env.VITE_API_BASE_URL || 'https://zidio-task-management-api.vercel.app/api',
-    timeout: 10000,
+    baseURL: 'https://zidio-task-management-api.vercel.app/api',
+    withCredentials: true,
     headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
     }
 });
 
-apiClient.interceptors.request.use(
-    (config) => {
-        const token = localStorage.getItem('authToken');
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-    },
-    (error) => Promise.reject(error)
-);
-
 apiClient.interceptors.response.use(
-    (response) => response,
-    (error) => {
+    response => response,
+    error => {
         if (error.response?.status === 401) {
-            clearAuth(); // Use the utility function
+            localStorage.removeItem('authToken');
+            window.location.href = '/login';
         }
         return Promise.reject(error);
     }

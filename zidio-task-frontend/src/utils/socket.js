@@ -1,15 +1,16 @@
 import { io } from 'socket.io-client';
 
-const socket = io('https://zidio-task-management-api.vercel.app', {
-  path: '/api/socket.io',
-  transports: ['websocket'], // Force WebSocket only
-  autoConnect: false, // Manually connect after auth
-  withCredentials: true
-});
-
-// Connect only when authenticated
 export const initSocket = (token) => {
-  socket.auth = { token };
-  socket.connect();
+  const socket = io('https://zidio-task-management-api.vercel.app', {
+    path: '/api/socket.io',
+    transports: ['websocket'],
+    auth: { token },
+    withCredentials: true
+  });
+
+  socket.on('connect_error', (err) => {
+    console.error('Socket connection error:', err);
+  });
+
   return socket;
 };

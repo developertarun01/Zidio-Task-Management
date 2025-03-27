@@ -19,29 +19,29 @@ connectDB();
 const app = express();
 const server = http.createServer(app);
 
-// Enhanced CORS configuration
 const corsOptions = {
-  origin: "https://zidio-task-management-ruby.vercel.app",
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"]
+  origin: [
+    'https://zidio-task-management-ruby.vercel.app',
+    'http://localhost:3000' // For local development
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 };
 
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
+
 app.use(bodyParser.json());
 app.use(express.json());
 
-// Update Socket.io configuration
 const io = new Server(server, {
   cors: {
-    origin: [
-      "https://zidio-task-management-ruby.vercel.app",
-      "http://localhost:3000" // For local development
-    ],
-    methods: ["GET", "POST"],
+    origin: corsOptions.origin,
+    methods: ['GET', 'POST'],
     credentials: true
   },
-  path: "/api/socket.io" // Ensure this matches frontend
+  path: '/api/socket.io'
 });
 
 // API Routes with consistent /api prefix
