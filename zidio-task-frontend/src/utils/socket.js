@@ -1,16 +1,16 @@
 import { io } from 'socket.io-client';
 
+// Create and export socket instance directly
+export const socket = io('https://zidio-task-management-api.vercel.app', {
+  path: '/api/socket.io',
+  transports: ['websocket'],
+  autoConnect: false,
+  withCredentials: true
+});
+
+// Export initialization function separately
 export const initSocket = (token) => {
-  const socket = io('https://zidio-task-management-api.vercel.app', {
-    path: '/api/socket.io',
-    transports: ['websocket'],
-    auth: { token },
-    withCredentials: true
-  });
-
-  socket.on('connect_error', (err) => {
-    console.error('Socket connection error:', err);
-  });
-
+  socket.auth = { token };
+  socket.connect();
   return socket;
 };
