@@ -15,6 +15,7 @@ import { AuthProvider } from "./context/AuthContext";
 import Navbar from "./components/navbar";
 import Trash from "./pages/Trash";
 import NotificationComponent from "./components/NotificationCompoment";
+import TaskAssignment from "./components/TaskAssignment";
 const App = () => {
   return (
     <AuthProvider>
@@ -24,9 +25,10 @@ const App = () => {
         
         <main className="container mx-auto">
           <Routes>
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/auth/google/dashboard" element={<Dashboard />} />
             <Route path="/home" element={<Home />} />
             <Route path="/about" element={<About />} />
+            <Route path="/addtask" element={<TaskAssignment />} />
             <Route path="/services" element={<Services />} />
             <Route path="/careers" element={<Careers />} />
             <Route path="/contact" element={<Contact />} />

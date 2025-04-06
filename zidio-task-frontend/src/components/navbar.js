@@ -6,7 +6,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="bg-blue-600 shadow-md text-white">
+    <nav className="bg-blue-950 shadow-md text-white">
       <div className="container mx-auto px-6 py-3 flex justify-between items-center">
         {/* Logo */}
         <Link to="/" className="text-2xl font-bold">
@@ -29,7 +29,7 @@ const Navbar = () => {
             Home
           </Link>
 
-          <Link to="/dashboard" className="hover:text-gray-200">
+          <Link to="/auth/google/dashboard" className="hover:text-gray-200">
             Dashboard
           </Link>
           <Link to="/about" className="hover:text-gray-200">

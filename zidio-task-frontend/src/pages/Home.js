@@ -1,133 +1,89 @@
-// import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import React, { useState, useEffect } from "react";
-import { ToastContainer, toast } from "react-toastify";
-import axios from "axios";
-import TaskAssignment from "../components/TaskAssignment";
-import TaskList from "../components/TaskList";
-import CalendarView from "../components/CalendarView";
-import Chart from "../components/Chart";
-import ProgressChart from "../components/ProgressChart";
-import { io } from "socket.io-client";
-import RealtimeChart from "../components/RealTimeChart";
-import TaskPriorityChart from "../components/TaskPriorityChart";
-
-// Initialize Socket.IO
-const socket = io("http://localhost:4004/"); // Backend URL
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 const Home = () => {
-  const [tasks, setTasks] = useState([]);
-
-  const fetchTasks = async () => {
-    try {
-      const response = await axios.get("http://localhost:4004/tasks");
-      setTasks(response.data);
-    } catch (error) {
-      console.error("❌Error fetching tasks:", error);
-    }
-  };
-
-  // ✅ Add a new task
-  const handleAddTask = async (task) => {
-    try {
-      const response = await axios.post("http://localhost:4004/tasks", task);
-      const newTask = response.data;
-      setTasks([...tasks, newTask]);
-
-      // Emit socket event
-      socket.emit("task-added", newTask);
-
-      toast.success("Task added successfully!");
-    } catch (error) {
-      console.error("Error adding task:", error);
-      toast.error("Failed to add task!");
-    }
-  };
-
-  // Fetch tasks from the backend
-  useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        const response = await fetch("http://localhost:4004/tasks");
-        const data = await response.json();
-        setTasks(data);
-      } catch (error) {
-        console.error("Error fetching tasks:", error);
-      }
-    };
-    fetchTasks();
-  }, []);
-
-  // Real-time updates using Socket.IO
-  useEffect(() => {
-    fetchTasks();
-
-    // ✅ Listen for new tasks added in real-time
-    socket.on("taskAdded", (newTask) => {
-      setTasks((prevTasks) => [...prevTasks, newTask]);
-    });
-    //✅Listen for updated task in real-time
-    socket.on("taskUpdated", (updatedTask) => {
-      setTasks((prevTasks) =>
-        prevTasks.map((task) =>
-          task._id === updatedTask._id ? updatedTask : task
-        )
-      );
-    });
-    //✅Listen for deleted task in real-time
-    socket.on("taskDeleted", (taskId) => {
-      setTasks((prevTasks) => prevTasks.filter((task) => task._id !== taskId));
-    });
-    return () => {
-      socket.off("taskAdded");
-      socket.off("taskUpdated");
-      socket.off("taskDeleted");
-    };
-  }, []);
-
   return (
-    <main className="container mx-auto px-4">
-      <div className="container flex flex-col md:flex-row items-stretch mx-auto space-y-6 md:space-y-0 md:space-x-6">
-        <div className="w-full md:w-1/2 bg-blue-50 rounded-lg p-6 flex flex-col justify-center items-center shadow-lg">
-          <h4 className="text-2xl font-semibold text-gray-700 mb-2 text-center">
-            Welcome to
-          </h4>
-          <h2 className="text-3xl font-bold text-blue-600 mb-4 text-center">
-            Zidio Task Management
-          </h2>
-          <p className="text-lg text-gray-600 text-center px-4">
-            Stay organized and boost productivity with Zidio. Effortlessly
-            manage, track, and complete your tasks on time.
-          </p>
-        </div>
+    <div className="min-h-screen bg-gradient-to-r from-blue-500 to-indigo-600 flex flex-col items-center justify-center text-white px-4">
+      {/* Hero Section */}
+      <motion.h1
+        className="text-5xl font-extrabold text-center"
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1 }}
+      >
+        Welcome to Zidio Task Manager 🚀
+      </motion.h1>
+      <motion.p
+        className="text-lg mt-4 text-center max-w-2xl"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, delay: 0.5 }}
+      >
+        Organize your tasks efficiently with our feature-rich task manager. Plan, track, and manage your projects in one place.
+      </motion.p>
 
-        <div className="w-full md:w-1/2">
-          <TaskAssignment onAddTask={handleAddTask} />
-        </div>
-      </div>
-      <div className="mt-6">
-        <TaskList tasks={tasks} setTasks={setTasks} />
-      </div>
-      <div className="flex gap-3">
-        <div className="mt-6">
-          <TaskPriorityChart tasks={tasks} setTasks={setTasks} />
-        </div>
-        <div className="mt-6">
-          <RealtimeChart tasks={tasks} />
-        </div>
-      </div>
+      {/* Animated Buttons */}
+      <motion.div
+        className="mt-8 flex space-x-4"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, delay: 1 }}
+      >
+        <Link to="/auth/google/dashboard">
+          <motion.button
+            className="px-6 py-3 bg-white text-blue-600 font-bold rounded-lg shadow-lg hover:bg-gray-200"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+          >
+            Go to Dashboard
+          </motion.button>
+        </Link>
+        <Link to="/addtask">
+          <motion.button
+            className="px-6 py-3 bg-gray-900 text-white font-bold rounded-lg shadow-lg hover:bg-gray-800"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+          >
+            Get Started
+          </motion.button>
+        </Link>
+      </motion.div>
 
-      <div className="mt-6">
-        <Chart tasks={tasks} />
-      </div>
+      {/* Animated Features Section */}
+      <motion.div
+        className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, delay: 1.5 }}
+      >
+        <FeatureCard
+          title="📅 Task Scheduling"
+          description="Plan your tasks and never miss a deadline."
+        />
+        <FeatureCard
+          title="✅ Real-Time Updates"
+          description="Stay updated with real-time task tracking."
+        />
+        <FeatureCard
+          title="📊 Progress Analytics"
+          description="Monitor your performance with detailed charts."
+        />
+      </motion.div>
+    </div>
+  );
+};
 
-      <div className="mt-6">
-        <ProgressChart tasks={tasks} />
-      </div>
-
-      <div className="mt-6">
-        <CalendarView tasks={tasks} />
-      </div>
-    </main>
+// Feature Card Component
+const FeatureCard = ({ title, description }) => {
+  return (
+    <motion.div
+      className="p-6 bg-white text-gray-900 rounded-lg shadow-lg text-center"
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+    >
+      <h3 className="text-xl font-bold">{title}</h3>
+      <p className="text-sm mt-2">{description}</p>
+    </motion.div>
   );
 };
 
