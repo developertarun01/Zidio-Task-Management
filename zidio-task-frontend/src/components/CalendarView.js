@@ -1,152 +1,75 @@
-import React from "react";
-import { format, parseISO, getYear, getMonth } from "date-fns";
+import React, { useEffect, useState } from "react";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import interactionPlugin from "@fullcalendar/interaction";
+// import socket from "../utils/socket";
+import axios from "axios";
+import { io } from "socket.io-client";
 
-const CalendarView = ({ tasks }) => {
-  if (!tasks || tasks.length === 0) {
-    return (
-      <div className="w-full bg-blue-50 rounded-lg p-4 mt-9 shadow-lg">
-        <h2 className="text-2xl font-bold text-blue-600 mb-4 text-center">
-          Calendar View
-        </h2>
-        <p className="text-gray-600 text-center">
-          No tasks available. Add some tasks to get started!
-        </p>
-      </div>
-    );
-  }
+const socket = io("http://localhost:4004");
 
-  const tasksByMonthYear = tasks.reduce((acc, task) => {
-    if (!task.deadline) return acc; // Skip if deadline is null or undefined
+const TaskCalendar = () => {
+  const [tasks, setTasks] = useState([]);
 
+  useEffect(() => {
+    fetchTasks();
+
+    // ✅ Listen for new tasks added in real-time
+    socket.on("taskAdded", (newTask) => {
+      setTasks((prevTasks) => [...prevTasks, newTask]);
+    });
+
+    socket.on("taskUpdated", (updatedTask) => {
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task._id === updatedTask._id ? updatedTask : task
+        )
+      );
+    });
+
+    socket.on("taskDeleted", (taskId) => {
+      setTasks((prevTasks) => prevTasks.filter((task) => task._id !== taskId));
+    });
+
+    return () => {
+      socket.off("taskAdded");
+      socket.off("taskUpdated");
+      socket.off("taskDeleted");
+    };
+  }, []);
+  const fetchTasks = async () => {
     try {
-      const date = parseISO(task.deadline);
-      const year = getYear(date);
-      const month = getMonth(date);
-      const formattedDate = format(date, "yyyy-MM-dd");
-
-      if (!acc[year]) acc[year] = {};
-      if (!acc[year][month]) acc[year][month] = {};
-      if (!acc[year][month][formattedDate])
-        acc[year][month][formattedDate] = [];
-
-      acc[year][month][formattedDate].push(task);
+      const response = await axios.get("http://localhost:4004/tasks");
+      setTasks(response.data);
     } catch (error) {
-      console.error("Invalid date format:", task.deadline);
+      console.error("Error fetching tasks:", error);
     }
-
-    return acc;
-  }, {});
+  };
 
   return (
-    <div className="bg-blue-50 rounded-lg p-4 mt-9 shadow-lg">
-      <h2 className="text-2xl font-bold text-blue-600 mb-4 text-center">
-        Calendar View
-      </h2>
-
-      <div className="overflow-x-auto">
-        {Object.keys(tasksByMonthYear)
-          .sort((a, b) => a - b)
-          .map((year) => {
-            const months = Object.keys(tasksByMonthYear[year]).sort(
-              (a, b) => a - b
-            );
-            return (
-              <div key={year} className="mb-10">
-                {/* Loop through months in pairs */}
-                {months.map((month, index) => {
-                  if (index % 2 !== 0) return null; // Skip odd indices for pairing
-
-                  const nextMonth = months[index + 1]; // Get the next month if available
-                  return (
-                    <div key={month} className="mb-8">
-                      {/* Desktop: Two Months in a Row */}
-                      <div className="hidden md:grid grid-cols-2 gap-6">
-                        {[month, nextMonth].map((m, idx) => {
-                          if (!m) return null;
-                          const taskDates = Object.keys(
-                            tasksByMonthYear[year][m]
-                          ).sort();
-
-                          return (
-                            <div
-                              key={idx}
-                              className="bg-white p-4 rounded shadow"
-                            >
-                              <h3 className="text-lg font-bold text-gray-800 text-center bg-gray-200 py-2 rounded">
-                                {format(new Date(year, m), "MMMM yyyy")}
-                              </h3>
-
-                              <div className="grid grid-cols-7 gap-2 mt-2">
-                                {taskDates.map((date) => (
-                                  <div
-                                    key={date}
-                                    className="p-2 border rounded bg-white flex flex-col text-center text-sm"
-                                  >
-                                    <h4 className="font-bold">
-                                      {format(parseISO(date), "dd")}
-                                    </h4>
-                                    {tasksByMonthYear[year][m][date].map(
-                                      (task) => (
-                                        <div
-                                          key={task._id}
-                                          className="mt-2 bg-blue-100 text-blue-600 text-xs rounded px-2 py-1"
-                                        >
-                                          {task.title}
-                                        </div>
-                                      )
-                                    )}
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-
-                      {/* Mobile: List Format (Show Both Months) */}
-                      <div className="md:hidden flex flex-col gap-4 mt-2">
-                        {[month, nextMonth].map((m, idx) => {
-                          if (!m) return null;
-                          return (
-                            <div key={idx}>
-                              <h3 className="text-lg font-bold text-gray-800 text-center bg-gray-200 py-2 rounded ">
-                                {format(new Date(year, m), "MMMM yyyy")}
-                              </h3>
-                              {Object.keys(tasksByMonthYear[year][m])
-                                .sort()
-                                .map((date) => (
-                                  <div
-                                    key={date}
-                                    className="p-2 border rounded bg-white flex flex-col items-center text-sm"
-                                  >
-                                    <h4 className="font-bold">
-                                      {format(parseISO(date), "EEE, dd MMM")}
-                                    </h4>
-                                    {tasksByMonthYear[year][m][date].map(
-                                      (task) => (
-                                        <div
-                                          key={task._id}
-                                          className="mt-2 bg-blue-100 text-blue-600 text-xs rounded px-2 py-1 text-center"
-                                        >
-                                          {task.title}
-                                        </div>
-                                      )
-                                    )}
-                                  </div>
-                                ))}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            );
-          })}
-      </div>
+    <div className="h-[70vh] w-full">
+      <FullCalendar
+        timeZone="IST"
+        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+        initialView="dayGridMonth"
+        events={tasks.map((task) => ({
+          id: task._id,
+          title: task.status === "completed" ? `✅${task.title}` : task.title,
+          start: task.deadline,
+          backgroundColor:
+            task.priority === "High"
+              ? "red"
+              : task.priority === "Medium"
+              ? "orange"
+              : "green",
+        }))}
+        editable={true}
+        eventClick={(info) => alert(`Task: ${info.event.title}`)}
+        height="100%"
+      />
     </div>
   );
 };
 
-export default CalendarView;
+export default TaskCalendar;

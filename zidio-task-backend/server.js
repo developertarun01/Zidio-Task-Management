@@ -1,6 +1,7 @@
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
+const nodemailer = require("nodemailer");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
@@ -19,11 +20,18 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:3000","http://localhost:3001","http://localhost:3002","http://localhost:3003"], // React app URL
+    origin: [
+      "http://localhost:3000",
+      "http://localhost:3001",
+      "http://localhost:3002",
+      "http://localhost:3003",
+    ], // React app URL
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
   },
 });
+
+let notifications = [];
 
 app.use(express.json());
 app.use(cors());
@@ -33,11 +41,53 @@ app.use("/api/auth", authRoutes);
 // app.use("/api/tasks", taskRoutes);
 app.use("/api/about", aboutRoutes); // Add About API Route
 
+// 📌 Send Notification via WebSockets
+const sendNotification = (message) => {
+  notifications.push(message);
+  io.emit("notification", message); // Send notification to all connected clients
+};
+
+// 📌 Task Update API (Trigger Notification)
+app.post("/update-task", (req, res) => {
+  const { taskName, status } = req.body;
+  sendNotification(`Task "${taskName}" was marked as ${status}`);
+  res.json({ message: "Notification Sent" });
+});
+
+// 📌 Email Notification (Task Reminder)
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: { user: "your-email@gmail.com", pass: "your-password" },
+});
+
+const sendEmailNotification = (email, task) => {
+  const mailOptions = {
+    from: "your-email@gmail.com",
+    to: email,
+    subject: "Task Reminder",
+    text: `Reminder: Your task "${task}" is due soon!`,
+  };
+
+  transporter.sendMail(mailOptions, (error) => {
+    if (error) console.error("Email not sent", error);
+  });
+};
+
+// 📌 Task Reminder API (Trigger Email)
+app.post("/send-reminder", (req, res) => {
+  const { email, task } = req.body;
+  sendEmailNotification(email, task);
+  res.json({ message: "Email Reminder Sent" });
+});
 
 // ✅ Move Task to Trash (Soft Delete)
 app.put("/trash/:id", async (req, res) => {
   try {
-    const task = await Task.findByIdAndUpdate(req.params.id, { deleted: true }, { new: true });
+    const task = await Task.findByIdAndUpdate(
+      req.params.id,
+      { deleted: true },
+      { new: true }
+    );
     res.json(task);
   } catch (error) {
     res.status(500).json({ message: "Error moving task to trash" });
@@ -47,7 +97,11 @@ app.put("/trash/:id", async (req, res) => {
 // ✅ Restore Task from Trash
 app.put("/restore/:id", async (req, res) => {
   try {
-    const task = await Task.findByIdAndUpdate(req.params.id, { deleted: false }, { new: true });
+    const task = await Task.findByIdAndUpdate(
+      req.params.id,
+      { deleted: false },
+      { new: true }
+    );
     res.json(task);
   } catch (error) {
     res.status(500).json({ message: "Error restoring task" });
@@ -73,8 +127,6 @@ app.get("/trash", async (req, res) => {
     res.status(500).json({ message: "Error fetching deleted tasks" });
   }
 });
-
-
 
 // ✅ Create a Task and Broadcast the Event
 app.post("/tasks", async (req, res) => {

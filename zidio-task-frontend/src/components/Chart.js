@@ -5,6 +5,7 @@ import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, Title, Toolt
 import {io} from "socket.io-client";
 ChartJS.register(LineElement, CategoryScale, LinearScale, Title, Tooltip, Legend, PointElement);
 const socket = io("http://localhost:4004");
+
 const Chart = () => {
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
   const [tasks, setTasks] = useState([]);

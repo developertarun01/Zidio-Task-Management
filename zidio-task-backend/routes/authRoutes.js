@@ -67,7 +67,7 @@ router.post("/login", async (req, res) => {
 });
 
 router.get("/logout", (req, res) => {
-  res.clearCookie("token").redirect("http://localhost:3003/");
+  res.clearCookie("token").redirect("http://localhost:3001/");
   console.log({ message: "Logged out successfully" });
 });
 

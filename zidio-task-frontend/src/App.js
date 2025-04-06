@@ -14,6 +14,7 @@ import Dashboard from "./components/Dashboard";
 import { AuthProvider } from "./context/AuthContext";
 import Navbar from "./components/navbar";
 import Trash from "./pages/Trash";
+import NotificationComponent from "./components/NotificationCompoment";
 const App = () => {
   return (
     <AuthProvider>
@@ -30,6 +31,7 @@ const App = () => {
             <Route path="/careers" element={<Careers />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/trash" element={<Trash />} />
+            <Route path= "/noti" element={<NotificationComponent />} />
             <Route path="/" element={<Login />} />
             <Route path="/register" element={<Register />} />
           </Routes>
