@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:4001");
+const socket = io("http://localhost:4004");
 const TaskAssignment = ({ onAddTask }) => {
   const [title, setTitle] = useState("");
   const [priority, setPriority] = useState("Medium");
@@ -32,7 +32,7 @@ const TaskAssignment = ({ onAddTask }) => {
     }
     try {
       const response = await axios.post(
-        "http://localhost:4001/tasks",
+        "http://localhost:4004/tasks",
         onAddTask
       );
       socket.emit("taskAdded", response.data);

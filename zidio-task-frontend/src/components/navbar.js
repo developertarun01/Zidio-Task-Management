@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X, Search, BellDot } from "lucide-react";
 import NotificationBell from "./NotificationCompoment";
+import UserAvatar from "./UserAvatar";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -48,7 +49,11 @@ const Navbar = () => {
             Trash
           </Link>
         </div>
-
+        <div className="">
+          <Link className="hover:text-gray-200">
+            <UserAvatar />
+          </Link>
+        </div>
         {/* Mobile Menu Button */}
         <button
           onClick={() => setIsOpen(!isOpen)}
@@ -57,7 +62,6 @@ const Navbar = () => {
           {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
       </div>
-
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden bg-blue-700 py-3 space-y-2">

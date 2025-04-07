@@ -1,4 +1,3 @@
-// import { useNavigate } from "react-router-dom";
 // import { useState,useEffect } from "react";
 // import axios from "axios";
 
@@ -38,9 +37,8 @@
 //         </div>
 //     );
 // };
-
-// import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import TaskAssignment from "../components/TaskAssignment";
@@ -125,6 +123,31 @@ const Dashboard = () => {
     };
   }, []);
 
+  const navigate = useNavigate();
+
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const token = new URLSearchParams(window.location.search).get("token");
+    if (token) {
+      localStorage.setItem("authToken", token);
+      axios
+        .get("http://localhost:4004/user", {
+          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true,
+        })
+        .then((res) => setUser(res.data))
+        .catch((err) => console.error(err));
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    setUser(null);
+    window.open("http://localhost:4004/api/auth/logout", "_self");
+    navigate("/");
+  };
+
   return (
     <main className="container mx-auto px-4">
       <div className="container flex flex-col md:flex-row items-stretch mx-auto space-y-6 md:space-y-0 md:space-x-6">
@@ -168,10 +191,16 @@ const Dashboard = () => {
       <div className="mt-6">
         <CalendarView tasks={tasks} />
       </div>
+      <div className="flex flex-col items-center justify-center my-20">
+        <button
+          className="mt-4 bg-red-500 text-white p-2 rounded"
+          onClick={handleLogout}
+        >
+          Logout
+        </button>
+      </div>
     </main>
   );
 };
-
-
 
 export default Dashboard;
