@@ -1,18 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-<<<<<<< HEAD
 import gayatriImg from "../assets/gayatri.jpg";
 import tanmoyImg from "../assets/tanmoyImg.png";
 import tarunImg from "../assets/tarun.png";
-import satyaImg from "../assets/Satya.jpg";
-import user from "../assets/user.png";
-=======
-import tanmoyImg from "../assets/tanmoyImg.png"
-import tarunImg from "../assets/tarun.png"
-import gayatriImg from "../assets/gayatri.jpg"
 import SatyaImg from "../assets/Satya.jpg"
 import user from "../assets/user.png"
->>>>>>> 36f2354562ca95a759c6ce55e744f0755a240506
 const teamMembers = [
   {
     name: "Tarun",
@@ -28,19 +20,12 @@ const teamMembers = [
     name: "Gayatri Sawant",
     role: "Frontend Developer",
     image: gayatriImg,
-<<<<<<< HEAD
-=======
 
->>>>>>> 36f2354562ca95a759c6ce55e744f0755a240506
   },
   {
     name: "Satya Prakash",
     role: "Backend Developer",
-<<<<<<< HEAD
-    image: satyaImg,
-=======
     image: SatyaImg,
->>>>>>> 36f2354562ca95a759c6ce55e744f0755a240506
   },
   {
     name: "Pavan Gowda",
