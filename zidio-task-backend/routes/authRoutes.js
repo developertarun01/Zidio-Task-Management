@@ -11,22 +11,26 @@ dotenv.config();
 router.post("/register", async (req, res) => {
   console.log("Request body:", req.body); // Check if data is being received
   try {
-    const { username, email, password } = req.body;
-    // const hash = await bcrypt.hash(password, 12);
-    // res.redirect("http://localhost:3000/dashboard");
+    const { role, username, email, password } = req.body;
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
-      // .redirect("http://localhost:3000/login");
     }
 
-    const newUser = new User({ username, email, password });
-    await newUser.save();
-
+    const user = new User({ role, username, email, password });
+    await user.save();
+    const token = jwt.sign(
+      { id: user._id, email: user.email, role: user.role },
+      "secretkey",
+      { expiresIn: "1d" }
+    );
+    //Store cookie
+    res.cookie("token", token);
     res.status(201).json({
       redirect: "/dashboard",
+      role: user.role,
       message: "User registered successfully",
     });
   } catch (error) {
@@ -55,11 +59,17 @@ router.post("/login", async (req, res) => {
   if (!isPasswordValid)
     return res.status(401).json({ message: "Invalid credentials" });
 
-  const token = jwt.sign({ id: user._id }, "secretkey");
-  // res.json({ token });
+  const token = jwt.sign(
+    { id: user._id, email: user.email, role: user.role },
+    "secretkey",
+    { expiresIn: "1d" }
+  );
+  //Store cookie
+  res.cookie("token", token);
   //   return success response
   res.status(200).json({
     message: "Login Successful",
+    role: user.role,
     email: user.email,
     token,
   });
