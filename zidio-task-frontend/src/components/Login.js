@@ -3,6 +3,8 @@ import Textbox from "../components/Textbox";
 import Button from "../components/Button";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { toast } from "react-toastify";
 // import { GoogleLogin } from "@react-oauth/google";
 // import { registerUser, loginUser } from "../api";
 // import { AuthContext } from "../context/AuthContext";
@@ -11,6 +13,8 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [user, setUser] = useState("");
+  const [admin, setAdmin] = useState("");
   //   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -25,26 +29,45 @@ const Login = () => {
         }
       );
       if (response.status === 200) {
-        alert(response.data.message);
+        toast.success(response.data.message);
+        if(response.data.role === "admin"){
+          navigate("/")
+        }
 
         // Store token in localStorage or sessionStorage
-        localStorage.setItem("token", response.data.token); 
+        localStorage.setItem("token", response.data.token);
 
         // Redirect to home page after login
         navigate("/home");
       }
     } catch (error) {
       if (error.response && error.response.status === 400) {
-        alert("Register first");
+        toast.error("Register first");
         navigate("/register");
-    } else {
-        alert(error || "Login failed");
+      } else {
+        toast.error(error || "Login failed");
       }
     }
   };
+  const handleReg = async (e) => {
+    e.preventDefault();
+    try {
+      navigate("/register");
+    } catch (error) {
+      toast.error("error");
+    }
+  };
+  const handleForgot = async (e) => {
+    navigate("/forget");
+  };
 
   return (
-    <div className="w-full min-h-screen flex items-center justify-center flex-col lg:flex-row bg-[#f3f4f6]">
+    <motion.div
+      className="w-full min-h-screen flex items-center justify-center flex-col lg:flex-row  bg-gradient-to-br from-gray-900 via-gray-800 to-black"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1 }}
+    >
       <div className="w-full md:w-auto flex gap-0 md:gap-40 flex-col md:flex-row items-center justify-center">
         {/* left side */}
         <div className="h-full w-full lg:w-2/3 flex flex-col items-center justify-center">
@@ -65,9 +88,12 @@ const Login = () => {
 
         {/* right side */}
         <div className="w-full md:w-1/3 p-4 md:p-1 flex flex-col justify-center items-center">
-          <form
+          <motion.form
             onSubmit={handleSubmit}
-            className="form-container w-full md:w-[400px] flex flex-col gap-y-8 bg-white px-10 pt-14 pb-14"
+            className="form-container w-full md:w-[400px] flex flex-col gap-y-8 bg-white shadow-xl rounded-2xl px-10 pt-14 pb-14"
+            initial={{ y: 50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 80, delay: 0.3 }}
           >
             <div className="">
               <p className="text-blue-600 text-3xl font-bold text-center">
@@ -79,16 +105,34 @@ const Login = () => {
             </div>
 
             <div className="flex flex-col gap-y-5">
-              {/* <Textbox
-                placeholder="username"
-                type="text"
-                name="username"
-                label="Username"
-                className="w-full rounded-full"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              ></Textbox> */}
+              <div>
+                <label
+                  placeholder=""
+                  type="radio"
+                  name="userType"
+                  label="User-Type"
+                  className="w-full rounded-full"
+                  value="user"
+                  onChange={(e) => setUser(e.target.value)}
+                  required
+                >
+                  {" "}
+                  User{" "}
+                </label>
+                <label
+                  placeholder="username"
+                  type="radio"
+                  name="userType"
+                  label="User-Type"
+                  className="w-full rounded-full"
+                  value="admin"
+                  onChange={(e) => setAdmin(e.target.value)}
+                  required
+                >
+                  {" "}
+                  Admin{" "}
+                </label>
+              </div>
 
               <Textbox
                 placeholder="email@example.com"
@@ -120,18 +164,20 @@ const Login = () => {
               ></Button>
               {/* <GoogleLogin/> */}
             </div>
-            <p
-              className="text-center"
-              //   onClick={() => setIsRegistering(!isRegistering)}
-            >
-              {/* {isRegistering
-                ? "Already have an account? Login"
-                : `Don't have an account? Register`} */}
-            </p>
-          </form>
+            <span>
+              <p className="text-center">
+                Not Registered?
+                <Button
+                  className={"text-blue-500"}
+                  onClick={handleReg}
+                  label={"Sign Up"}
+                ></Button>
+              </p>
+            </span>
+          </motion.form>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

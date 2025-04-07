@@ -1,5 +1,6 @@
 import Textbox from "../components/Textbox";
 import Button from "../components/Button";
+import { motion } from "framer-motion";
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -42,9 +43,23 @@ const Register = () => {
       }
     }
   };
+  const handleLog = async (e) => {
+    e.preventDefault();
+    try {
+      navigate("/");
+    } catch (error) {
+      alert("error");
+    }
+  };
 
   return (
-    <div className="w-full min-h-screen flex items-center justify-center flex-col lg:flex-row bg-[#f3f4f6]">
+    <motion.div
+      className="w-full min-h-screen flex items-center justify-center flex-col lg:flex-row  bg-gradient-to-br from-gray-900 via-gray-800 to-black"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1 }}
+    >
+      {" "}
       <div className="w-full md:w-auto flex gap-0 md:gap-40 flex-col md:flex-row items-center justify-center">
         {/* left side */}
         <div className="h-full w-full lg:w-2/3 flex flex-col items-center justify-center">
@@ -65,9 +80,12 @@ const Register = () => {
 
         {/* right side */}
         <div className="w-full md:w-1/3 p-4 md:p-1 flex flex-col justify-center items-center">
-          <form
+          <motion.form
             onSubmit={handleSubmit}
-            className="form-container w-full md:w-[400px] flex flex-col gap-y-8 bg-white px-10 pt-14 pb-14"
+            className="form-container w-full md:w-[400px] flex flex-col gap-y-8 bg-white shadow-2xl rounded-2xl px-10 pt-14 pb-14"
+            initial={{ y: 50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 80, delay: 0.3 }}
           >
             <div className="">
               <p className="text-blue-600 text-3xl font-bold text-center">
@@ -130,18 +148,20 @@ const Register = () => {
               cookiePolicy={"single_host_origin"}
             /> */}
             </div>
-            <p
-              className="text-center"
-              //   onClick={() => setIsRegistering(!isRegistering)}
-            >
-              {/* {isRegistering
-              ? "Already have an account? Login"
-              : `Don't have an account? Register`} */}
-            </p>
-          </form>
+            <div>
+              <p className="text-center">
+                Already Registered?
+                <Button
+                  className={"text-blue-500"}
+                  onClick={handleLog}
+                  label={"Login"}
+                ></Button>
+              </p>
+            </div>
+          </motion.form>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
