@@ -68,6 +68,12 @@ const Navbar = () => {
           <Link to="/home" className="block text-center hover:bg-blue-500 p-2">
             Home
           </Link>
+          <Link
+            to="/auth/google/dashboard"
+            className="block text-center hover:bg-blue-600 p-2"
+          >
+            Dashboard
+          </Link>
           <Link to="/about" className="block text-center hover:bg-blue-600 p-2">
             About Us
           </Link>
@@ -89,12 +95,7 @@ const Navbar = () => {
           >
             Contact Us
           </Link>
-          <Link
-            to="/dashboard"
-            className="block text-center hover:bg-blue-600 p-2"
-          >
-            Dashboard
-          </Link>
+
           <Link to="/trash" className="block text-center hover:bg-blue-500 p-2">
             Trash
           </Link>
