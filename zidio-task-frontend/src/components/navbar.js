@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X, Search, BellDot } from "lucide-react";
-import NotificationBell from "./NotificationCompoment";
+// import NotificationToast from "./NotificationCompoment";
 import UserAvatar from "./UserAvatar";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,15 +23,10 @@ const Navbar = () => {
             className="outline-none bg-transparent "
           />
         </div>
-        <NotificationBell />
         {/* Desktop Menu */}
         <div className="hidden md:flex space-x-6">
           <Link to="/home" className="hover:text-gray-200 hover:bg-slate-500">
             Home
-          </Link>
-
-          <Link to="/auth/google/dashboard" className="hover:text-gray-200">
-            Dashboard
           </Link>
           <Link to="/about" className="hover:text-gray-200">
             About Us
@@ -44,9 +39,6 @@ const Navbar = () => {
           </Link>
           <Link to="/contact" className="hover:text-gray-200">
             Contact Us
-          </Link>
-          <Link to="/trash" className="hover:text-gray-200">
-            Trash
           </Link>
         </div>
         <div className="">

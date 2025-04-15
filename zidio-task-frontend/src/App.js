@@ -14,6 +14,8 @@ import { IoClose } from "react-icons/io5";
 import { setOpenSidebar } from "./redux/slices/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import MobileSidebar from "./components/MobileSidebar";
+import ProtectedRoute from "./components/PrivateRoute";
+import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
@@ -24,28 +26,42 @@ import Services from "./pages/Services";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Dashboard from "./components/Dashboard";
+import CalendarView from "./components/CalendarView";
 import { AuthProvider } from "./context/AuthContext";
 import Navbar from "./components/navbar";
 import Trash from "./pages/Trash";
-import NotificationComponent from "./components/NotificationCompoment";
+import NotificationToast from "./components/NotificationCompoment";
 import TaskAssignment from "./components/TaskAssignment";
+import UserDashboard from "./components/UserDashboard";
+import ManagerDashboard from "./components/ManagerDashboard";
+import TaskList from "./components/TaskList";
+import TeamPage from "./components/TeamPage";
+import AnalyticsPage from "./pages/AnalyticPage"; // Add the import for AnalyticsPage
+// import { Sidebar } from "lucide-react";
 
 function Layout() {
   const { user } = useSelector((state) => state.auth);
-
   const location = useLocation();
 
   return user ? (
-    <div className="w-full h-screen flex flex-col md:flex-row">
+    <div className="flex h-screen overflow-hidden bg-gradient-to-br from-[#0f0f0f] to-[#1c1c1e] text-white">
+      {/* Fixed Sidebar (MobileSidebar handles responsive collapse) */}
+      <div className="fixed z-40 inset-y-0 left-0 w-64 bg-[#1a1a1d] bg-opacity-70 backdrop-blur-md border-r border-[#333] shadow-lg hidden md:block">
+        <MobileSidebar />
+        <Sidebar />
+      </div>
 
-      <MobileSidebar />
-
-      <div className="flex-1 overflow-y-auto">
-        <Navbar />
-
-        <div className="p-4 2xl:px-10">
-          <Outlet />
+      {/* Main content with padding for sidebar + fixed navbar */}
+      <div className="flex-1 flex flex-col md:ml-64">
+        {/* Fixed Navbar */}
+        <div className="sticky top-0 z-50 bg-[#1a1a1d] bg-opacity-70 backdrop-blur-md border-b border-[#333] shadow-md">
+          <Navbar />
         </div>
+
+        {/* Page content */}
+        <main className="flex-1 overflow-y-auto px-4 py-6 md:px-8 2xl:px-14 animate-fade-in">
+          <Outlet />
+        </main>
       </div>
     </div>
   ) : (
@@ -53,29 +69,51 @@ function Layout() {
   );
 }
 
-
-
 const App = () => {
   return (
     <AuthProvider>
       <Routes>
         <Route element={<Layout />}>
-          <Route path="/auth/google/dashboard" element={<Dashboard />} />
+          <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
+            <Route path="/auth/google/dashboard" element={<Dashboard />} />
+            <Route path="/admin/team" element={<TeamPage />} />
+          </Route>
+          <Route
+            element={<ProtectedRoute allowedRoles={["admin", "manager"]} />}
+          >
+            <Route path="manager/dashboard" element={<ManagerDashboard />} />
+          </Route>
+
+          <Route path="/employee/dashboard" element={<UserDashboard />} />
           <Route path="/home" element={<Home />} />
+          <Route path="/tasks" element={<TaskList />} />
+          <Route path="/calendar" element={<CalendarView />} />
           <Route path="/about" element={<About />} />
-          <Route path="/addtask" element={<TaskAssignment />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/task-to-do" element={<TaskAssignment />} />
           <Route path="/services" element={<Services />} />
           <Route path="/careers" element={<Careers />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/trash" element={<Trash />} />
-          <Route path="/noti" element={<NotificationComponent />} />
+          <Route path="/notification" element={<NotificationToast />} />
+          <Route path="/analytics" element={<AnalyticsPage />} />
         </Route>
 
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        {/* 404 fallback */}
+        <Route
+          path="*"
+          element={
+            <div className="h-screen text-center mt-32 text-red-500 text-2xl">
+              🚫 You are not authorized to view this page.
+            </div>
+          }
+        />
       </Routes>
 
-      <Footer />
+      {/* <Footer /> */}
     </AuthProvider>
   );
 };

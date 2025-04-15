@@ -80,7 +80,7 @@ Follow these steps to set up the project locally:
 
 🔑 Environment Variables
    Create a .env file in the backend directory and add the following:
-   PORT=5000
+   PORT=4004
    MONGO_URI=your_mongodb_connection_string
    JWT_SECRET=your_secret_key
 

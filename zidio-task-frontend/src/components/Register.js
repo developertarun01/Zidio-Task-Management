@@ -4,11 +4,13 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Register = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("user"); // 👈 Default role
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -20,46 +22,44 @@ const Register = () => {
           username,
           email,
           password,
+          role, // 👈 Send role to backend
         }
       );
-      console.log(response);
 
       if (response.status === 201) {
-        alert(response.data.message);
+        toast.success(response.data.message);
 
-        // Redirect to home page after successful registration
-        navigate("/home");
-      }
-      if (response.status === 400) {
-        navigate("/");
+        // Redirect based on role
+        if (role === "admin") {
+          navigate("/auth/google/dashboard");
+        } else if (role === "manager") {
+          navigate("/auth/google/dashboard");
+        } else {
+          navigate("/home");
+        }
       }
     } catch (error) {
       console.error(error);
-      if (error.response && error.response.status === 409) {
-        // If email already registered, redirect to login page
+      if (error.response?.status === 409) {
         navigate("/");
       } else {
         alert(error.response?.data?.message || "Registration failed");
       }
     }
   };
-  const handleLog = async (e) => {
+
+  const handleLog = (e) => {
     e.preventDefault();
-    try {
-      navigate("/");
-    } catch (error) {
-      alert("error");
-    }
+    navigate("/");
   };
 
   return (
     <motion.div
-      className="w-full min-h-screen flex items-center justify-center flex-col lg:flex-row  bg-gradient-to-br from-gray-900 via-gray-800 to-black"
+      className="w-full min-h-screen flex items-center justify-center flex-col lg:flex-row bg-gradient-to-br from-gray-900 via-gray-800 to-black"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
     >
-      {" "}
       <div className="w-full md:w-auto flex gap-0 md:gap-40 flex-col md:flex-row items-center justify-center">
         {/* left side */}
         <div className="h-full w-full lg:w-2/3 flex flex-col items-center justify-center">
@@ -71,10 +71,6 @@ const Register = () => {
               <span>Zidio</span>
               <span>Task Manager</span>
             </p>
-
-            <div className="cell">
-              <div className="circle rotate-in-up-left"></div>
-            </div>
           </div>
         </div>
 
@@ -91,63 +87,69 @@ const Register = () => {
               <p className="text-blue-600 text-3xl font-bold text-center">
                 Welcome!
               </p>
-              <p className="text-center text-base text-gray-700 ">
-                Keep all your credential safe.
+              <p className="text-center text-base text-gray-700">
+                Keep all your credentials safe.
               </p>
             </div>
 
             <div className="flex flex-col gap-y-5">
               <Textbox
                 placeholder="username"
+                className="w-full h-10 bg-blue-700  text-black rounded-full"
                 type="text"
                 name="username"
                 label="Username"
-                className="w-full rounded-full"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
-              ></Textbox>
+              />
 
               <Textbox
                 placeholder="email@example.com"
+                className="w-full h-10 bg-blue-700  text-black rounded-full"
                 type="email"
                 name="email"
                 label="Email Address"
-                className="w-full rounded-full"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
+
               <Textbox
                 placeholder="your password"
+                className="w-full h-10 bg-blue-700 text-black rounded-full"
                 type="password"
                 name="password"
                 label="Password"
-                className="w-full rounded-full"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
 
-              <span className="text-sm text-gray-500 hover:text-blue-600 hover:underline cursor-pointer">
-                {/* {isRegistering ? "" : "Forget Password"} */}
-              </span>
+              {/* 🔥 Role Selection */}
+              <div>
+                <label className="block mb-1 font-semibold text-gray-600">
+                  Select Role:
+                </label>
+                <select
+                  className="w-full px-4 py-2 rounded-full border  h-10 text-slate-400 "
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                  required
+                >
+                  <option value="user">User</option>
+                  <option value="manager">Manager</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+
               <Button
                 type="submit"
                 label="Register"
                 className="w-full h-10 bg-blue-700 text-white rounded-full"
-              ></Button>
-              {/* <Button
-              type="submit"
-              label="Submit"
-              className="w-full h-10 bg-blue-700 text-white rounded-full"
-            /> */}
-              {/* <GoogleLogin
-              onSuccess={handleGoogleSuccess}
-              onFailure={handleGoogleFailure}
-              cookiePolicy={"single_host_origin"}
-            /> */}
+              />
             </div>
+
             <div>
               <p className="text-center">
                 Already Registered?
@@ -155,7 +157,7 @@ const Register = () => {
                   className={"text-blue-500"}
                   onClick={handleLog}
                   label={"Login"}
-                ></Button>
+                />
               </p>
             </div>
           </motion.form>

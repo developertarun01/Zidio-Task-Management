@@ -1,60 +1,92 @@
-import React, { useEffect, useState } from "react";
-
+import React, { useEffect, useState, useContext } from "react";
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import { AuthProvider } from "../context/AuthContext";
 const Trash = () => {
-  const [deletedTasks, setDeletedTasks] = useState([]);
+  const [trashedTasks, setTrashedTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  // const { user } = useContext(AuthProvider);
+  const user = JSON.parse(localStorage.getItem("user"));
+  const fetchTrashedTasks = async () => {
+    try {
+      const res = await axios.get("/api/tasks/trash", {
+        withCredentials: true,
+      });
+      setTrashedTasks(res.data);
+      setLoading(false);
+    } catch (err) {
+      toast.error("Failed to load trashed tasks");
+      setLoading(false);
+    }
+  };
 
-  // Fetch deleted tasks
+  const restoreTask = async (id) => {
+    try {
+      await axios.patch(
+        `http://localhost:4004/api/tasks/restore/${id}`,
+
+        { withCredentials: true }
+      );
+      toast.success("Task restored");
+      fetchTrashedTasks();
+    } catch (err) {
+      toast.error("Restore failed");
+    }
+  };
+
+  const deleteTaskForever = async (id) => {
+    try {
+      await axios.delete(`http://localhost:4004/api/tasks/permanent/${id}`, {
+        withCredentials: true,
+      });
+      toast.success("Task permanently deleted");
+      fetchTrashedTasks();
+    } catch (err) {
+      toast.error("Delete failed");
+    }
+  };
+
   useEffect(() => {
-    fetch("http://localhost:4004/trash")
-      .then((res) => res.json())
-      .then((data) => setDeletedTasks(data))
-      .catch((err) => console.error("Error fetching deleted tasks:", err));
+    fetchTrashedTasks();
   }, []);
 
-  // Restore Task
-  const restoreTask = (id) => {
-    fetch(`http://localhost:4004/restore/${id}`, { method: "PUT" })
-      .then(() => setDeletedTasks(deletedTasks.filter(task => task._id !== id)))
-      .catch((err) => console.error("Error restoring task:", err));
-  };
-
-  // Permanently Delete Task
-  const deleteTaskPermanently = (id) => {
-    fetch(`http://localhost:4004/delete/${id}`, { method: "DELETE" })
-      .then(() => setDeletedTasks(deletedTasks.filter(task => task._id !== id)))
-      .catch((err) => console.error("Error deleting task permanently:", err));
-  };
+  if (loading)
+    return <div className="text-center text-lg mt-10">Loading trash...</div>;
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-3xl font-bold text-center">🗑 Trash</h1>
-      {deletedTasks.length === 0 ? (
-        <p className="text-center mt-4 text-gray-600">No deleted tasks</p>
+    <div className="p-6">
+      <h2 className="text-2xl font-bold mb-4">🗑️ Trashed Tasks</h2>
+      {trashedTasks.length === 0 ? (
+        <p>No tasks in trash.</p>
       ) : (
-        <ul className="mt-6 space-y-4">
-          {deletedTasks.map((task) => (
-            <li key={task._id} className="bg-gray-100 p-4 rounded-lg flex justify-between items-center">
-              <div>
-                <h2 className="font-semibold">{task.title}</h2>
-                <p className="text-sm text-gray-600">{task.description}</p>
-              </div>
-              <div className="space-x-2">
-                <button 
-                  className="bg-green-500 text-white px-3 py-1 rounded"
+        <div className="grid grid-cols-1 gap-4">
+          {trashedTasks.map((task) => (
+            <div key={task._id} className="bg-red-100 p-4 rounded-lg shadow">
+              <h3 className="text-xl font-semibold">{task.title}</h3>
+              <p className="text-sm text-gray-700 mb-2">{task.description}</p>
+              <p className="text-sm text-gray-500">
+                Deleted By: <strong>{task.deletedBy}</strong> <br />
+                At: <strong>{new Date(task.deletedAt).toLocaleString()}</strong>
+              </p>
+              <div className="flex gap-3 mt-3">
+                <button
                   onClick={() => restoreTask(task._id)}
+                  className="px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
                 >
                   Restore
                 </button>
-                <button 
-                  className="bg-red-500 text-white px-3 py-1 rounded"
-                  onClick={() => deleteTaskPermanently(task._id)}
-                >
-                  Delete
-                </button>
+                {user?.role === "admin" && (
+                  <button
+                    onClick={() => deleteTaskForever(task._id)}
+                    className="px-4 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+                  >
+                    Delete Forever
+                  </button>
+                )}
               </div>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );

@@ -1,51 +1,89 @@
-
 import React, { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:4004"); // Connect to your backend WebSocket server
+const socket = io("http://localhost:4004");
 
-const NotificationBell = () => {
+const NotificationToast = () => {
   const [notifications, setNotifications] = useState([]);
-  const [showDropdown, setShowDropdown] = useState(false);
+
+  const playSound = () => {
+    const audio = new Audio("/notify.mp3"); // Make sure the file exists in /public
+    audio.play().catch((err) => console.log("Sound error:", err));
+  };
+
+  const addNotification = (message, type = "info") => {
+    const id = Date.now();
+    setNotifications((prev) => [...prev, { id, message, type }]);
+    playSound();
+    setTimeout(() => {
+      setNotifications((prev) => prev.filter((n) => n.id !== id));
+    }, 5000);
+  };
 
   useEffect(() => {
-    // Listen for incoming notifications
-    socket.on("notification", (message) => {
-      setNotifications((prev) => [...prev, message]);
+    socket.on("taskAdded", (task) => {
+      addNotification(
+        `🆕 Task Added: "${task.title}" due ${new Date(
+          task.deadline
+        ).toLocaleDateString()}`,
+        "success"
+      );
     });
 
-    return () => socket.off("notification");
+    socket.on("taskUpdated", (task) => {
+      addNotification(
+        `🔄 Task Updated: "${task.title}" - ${task.status}`,
+        "info"
+      );
+    });
+
+    socket.on("taskDeleted", (taskId) => {
+      addNotification(`🗑️ Task Deleted`, "error");
+    });
+
+    return () => {
+      socket.off("taskAdded");
+      socket.off("taskUpdated");
+      socket.off("taskDeleted");
+    };
   }, []);
 
-  return (
-    <div className="relative">
-      {/* Notification Bell Icon */}
-      <button onClick={() => setShowDropdown(!showDropdown)} className="relative p-2">
-        <span className="text-2xl">🔔</span>
-        {notifications.length > 0 && (
-          <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-2">
-            {notifications.length}
-          </span>
-        )}
-      </button>
+  const handleDismiss = (id) => {
+    setNotifications((prev) => prev.filter((n) => n.id !== id));
+  };
 
-      {/* Notification Dropdown */}
-      {showDropdown && (
-        <div className="absolute right-0 mt-2 w-64 bg-white shadow-lg rounded-lg p-3">
-          <h3 className="font-bold mb-2">Notifications</h3>
-          {notifications.length > 0 ? (
-            notifications.map((note, index) => (
-              <p key={index} className="text-sm border-b py-1">
-                {note}
-              </p>
-            ))
-          ) : (
-            <p className="text-gray-500 text-sm">No new notifications</p>
-          )}
-        </div>
-      )}
+  return (
+    <div className="fixed top-4 right-4 z-[9999] flex flex-col gap-3">
+      <AnimatePresence>
+        {notifications.map(({ id, message, type }) => (
+          <motion.div
+            key={id}
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 50 }}
+            transition={{ duration: 0.3 }}
+            className={`relative px-5 py-3 rounded-xl shadow-lg text-white backdrop-blur-lg glass border border-white/10
+              ${
+                type === "success"
+                  ? "bg-green-500/80"
+                  : type === "error"
+                  ? "bg-red-500/80"
+                  : "bg-blue-500/80"
+              }`}
+          >
+            <button
+              onClick={() => handleDismiss(id)}
+              className="absolute top-1 right-2 text-white text-lg hover:scale-125 transition"
+            >
+              ❌
+            </button>
+            {message}
+          </motion.div>
+        ))}
+      </AnimatePresence>
     </div>
   );
 };
 
-export default NotificationBell;
+export default NotificationToast;

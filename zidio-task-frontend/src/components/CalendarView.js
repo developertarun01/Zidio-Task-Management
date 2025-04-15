@@ -3,33 +3,68 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-// import socket from "../utils/socket";
-import axios from "axios";
 import { io } from "socket.io-client";
+import axios from "axios";
+import Swal from "sweetalert2";
+import "@fullcalendar/common/main.min.css";
 
 const socket = io("http://localhost:4004");
 
-const TaskCalendar = () => {
+const CalendarView = () => {
   const [tasks, setTasks] = useState([]);
+  const [filters, setFilters] = useState({
+    priority: "all",
+    status: "all",
+  });
+
+  const formatTask = (task) => ({
+    id: task._id,
+    title: task.title,
+    start: task.deadline,
+    extendedProps: {
+      priority: task.priority,
+      status: task.status,
+      username: task.username,
+      deadline: task.deadline,
+    },
+  });
+
+  const fetchTasks = async () => {
+    try {
+      const res = await axios.get("http://localhost:4004/api/tasks");
+      setTasks(
+        res.data
+          .filter((task) => {
+            return (
+              (filters.priority === "all" ||
+                task.priority === filters.priority) &&
+              (filters.status === "all" || task.status === filters.status)
+            );
+          })
+          .map(formatTask)
+      );
+    } catch (err) {
+      console.error("Error fetching tasks:", err);
+    }
+  };
 
   useEffect(() => {
     fetchTasks();
 
-    // ✅ Listen for new tasks added in real-time
     socket.on("taskAdded", (newTask) => {
-      setTasks((prevTasks) => [...prevTasks, newTask]);
+      setTasks((prev) => [...prev, formatTask(newTask)]);
     });
 
     socket.on("taskUpdated", (updatedTask) => {
-      setTasks((prevTasks) =>
-        prevTasks.map((task) =>
-          task._id === updatedTask._id ? updatedTask : task
+      setTasks((prev) =>
+        prev.map((task) =>
+          task.id === updatedTask._id ? formatTask(updatedTask) : task
         )
       );
     });
 
-    socket.on("taskDeleted", (taskId) => {
-      setTasks((prevTasks) => prevTasks.filter((task) => task._id !== taskId));
+    socket.on("taskDeleted", (deletedId) => {
+      setTasks((prev) => prev.filter((task) => task.id !== deletedId));
     });
 
     return () => {
@@ -37,39 +72,150 @@ const TaskCalendar = () => {
       socket.off("taskUpdated");
       socket.off("taskDeleted");
     };
-  }, []);
-  const fetchTasks = async () => {
-    try {
-      const response = await axios.get("http://localhost:4004/tasks");
-      setTasks(response.data);
-    } catch (error) {
-      console.error("Error fetching tasks:", error);
+  }, [filters]);
+
+  const handleDateClick = async (arg) => {
+    const { value: title } = await Swal.fire({
+      title: "Create Task",
+      input: "text",
+      inputLabel: "Task Title",
+      inputPlaceholder: "Enter task title",
+      showCancelButton: true,
+      confirmButtonColor: "#6366f1",
+    });
+
+    if (title) {
+      try {
+        const res = await axios.post("http://localhost:4004/api/tasks", {
+          title,
+          deadline: arg.dateStr,
+          status: "pending",
+          priority: "medium",
+        });
+        socket.emit("taskAdded", res.data);
+      } catch (err) {
+        console.error("Failed to create task", err);
+      }
     }
   };
 
+  const handleEventDrop = async ({ event }) => {
+    const updatedDeadline = event.startStr;
+    try {
+      await axios.put(`http://localhost:4004/api/tasks/${event.id}`, {
+        ...event.extendedProps,
+        deadline: updatedDeadline,
+      });
+      socket.emit("taskUpdated", {
+        ...event.extendedProps,
+        _id: event.id,
+        deadline: updatedDeadline,
+      });
+    } catch (err) {
+      console.error("Failed to update task", err);
+    }
+  };
+
+  const handleEventClick = ({ event }) => {
+    const { title, extendedProps } = event;
+    Swal.fire({
+      title: title,
+      html: `
+        <strong>Priority:</strong> ${extendedProps.priority}<br/>
+        <strong>Status:</strong> ${extendedProps.status}<br/>
+        <strong>Assigned To:</strong> ${
+          extendedProps.username || "Unassigned"
+        }<br/>
+        <strong>Deadline:</strong> ${new Date(
+          extendedProps.deadline
+        ).toLocaleDateString()}
+      `,
+      icon: "info",
+      confirmButtonColor: "#00ffe0",
+    });
+  };
+
+  const handleFilterChange = (type, value) => {
+    setFilters((prevFilters) => ({ ...prevFilters, [type]: value }));
+  };
+
   return (
-    <div className="h-[70vh] w-full">
-      <FullCalendar
-        timeZone="IST"
-        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-        initialView="dayGridMonth"
-        events={tasks.map((task) => ({
-          id: task._id,
-          title: task.status === "completed" ? `✅${task.title}` : task.title,
-          start: task.deadline,
-          backgroundColor:
-            task.priority === "High"
-              ? "red"
-              : task.priority === "Medium"
-              ? "orange"
-              : "green",
-        }))}
-        editable={true}
-        eventClick={(info) => alert(`Task: ${info.event.title}`)}
-        height="100%"
-      />
+    <div className="flex">
+      {/* Sidebar for Filters */}
+      <div className="w-64 p-4 rounded-xl glass border border-white/10 shadow-lg text-white mr-4">
+        <h2 className="text-lg font-bold mb-4 text-center">Filters</h2>
+
+        {/* Priority Filter */}
+        <div className="mb-4">
+          <h3 className="text-md font-semibold">Priority</h3>
+          <select
+            value={filters.priority}
+            onChange={(e) => handleFilterChange("priority", e.target.value)}
+            className="w-full bg-transparent text-white border p-2 rounded-lg"
+          >
+            <option value="all">All</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+          </select>
+        </div>
+
+        {/* Status Filter */}
+        <div className="mb-4">
+          <h3 className="text-md font-semibold">Status</h3>
+          <select
+            value={filters.status}
+            onChange={(e) => handleFilterChange("status", e.target.value)}
+            className="w-full bg-transparent text-white border p-2 rounded-lg"
+          >
+            <option value="all">All</option>
+            <option value="pending">Pending</option>
+            <option value="completed">Completed</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Calendar */}
+      <div className="flex-grow p-4 rounded-xl glass border border-white/10 shadow-lg text-white">
+        <h1 className="text-2xl font-bold mb-4 text-center text-lime-400">
+          📅 Task Calendar with Real-Time & Drag-Drop
+        </h1>
+
+        <FullCalendar
+          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+          headerToolbar={{
+            left: "prev,next today",
+            center: "title",
+            right: "dayGridMonth,timeGridWeek,timeGridDay",
+          }}
+          initialView="dayGridMonth"
+          events={tasks}
+          editable={true}
+          selectable={true}
+          droppable={true}
+          dateClick={handleDateClick}
+          eventClick={handleEventClick}
+          eventDrop={handleEventDrop}
+          height="auto"
+          eventTimeFormat={{
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+          }}
+          eventClassNames={(arg) => {
+            const priority = arg?.event?.extendedProps?.priority;
+            const status = arg?.event?.extendedProps?.status;
+
+            if (status === "completed") return "bg-green-700 text-white";
+            if (priority === "high") return "bg-red-600 text-white";
+            if (priority === "medium") return "bg-yellow-500 text-black";
+            if (priority === "low") return "bg-blue-500 text-white";
+            return "bg-gray-500 text-white";
+          }}
+        />
+      </div>
     </div>
   );
 };
 
-export default TaskCalendar;
+export default CalendarView;

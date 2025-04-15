@@ -5,6 +5,7 @@ import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
 import { io } from "socket.io-client";
 // import socket from "../utils/socket";
 import axios from "axios";
+import api from "../api/axios";
 // Register necessary Chart.js components
 Chart.register(ArcElement, Tooltip, Legend);
  const socket = io("http://localhost:4004");
@@ -42,7 +43,7 @@ const RealTimeChart = () => {
 
   const fetchTasks = async () => {
     try {
-      const response = await axios.get("http://localhost:4004/tasks");
+      const response = await axios.get("http://localhost:4004/api/tasks");
       setTasks(response.data);
     } catch (error) {
       console.error("Error fetching tasks:", error);

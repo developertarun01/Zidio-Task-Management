@@ -1,161 +1,245 @@
 import React, { useEffect, useState } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 import axios from "axios";
-// import socket from "../utils/socket";
-import { io } from "socket.io-client";
+import { jwtDecode } from "jwt-decode";
+import { toast } from "react-toastify";
+import TaskListCardView from "./TaskListCardView";
+import TaskListTableView from "./TaskListTableView";
+import EditTaskModal from "./EditTaskModal";
+import io from "socket.io-client";
 
-const socket = io(`http://localhost:4004`);
+const socket = io("http://localhost:4004");
 
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
-  const [filter, setFilter] = useState("All");
-  useEffect(() => {
-    let url = `http://localhost:4004/tasks`;
-    if (filter !== "All") url += `/filter/${filter}`;
+  const [view, setView] = useState("card");
+  const [filters, setFilters] = useState({ priority: "", dueDate: "" });
+  const [priorityFilter, setPriorityFilter] = useState("All");
+  // const [role, setRole] = useState("");
+  const [userId, setUserId] = useState("");
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
+  const navigate = useNavigate();
 
-    fetch(url)
-      .then((res) => res.json())
-      .then((data) => setTasks(data));
-  }, [filter]);
-  useEffect(() => {
-    fetchTasks();
-
-    // ✅ Listen for new tasks added in real-time
-    socket.on("taskAdded", (newTask) => {
-      setTasks((prevTasks) => [...prevTasks, newTask]);
-    });
-
-    socket.on("taskUpdated", (updatedTask) => {
-      setTasks((prevTasks) =>
-        prevTasks.map((task) =>
-          task._id === updatedTask._id ? updatedTask : task
-        )
-      );
-    });
-
-    socket.on("taskDeleted", (taskId) => {
-      setTasks((prevTasks) => prevTasks.filter((task) => task._id !== taskId));
-    });
-
-    return () => {
-      socket.off("taskAdded");
-      socket.off("taskUpdated");
-      socket.off("taskDeleted");
-    };
-  }, []);
+  const role = localStorage.getItem("userRole");
+  const email = localStorage.getItem("userEmail"); // Storing the role in localStorage
+  const name = localStorage.getItem("userName");
+  const user = JSON.parse(localStorage.getItem("user"));
+  console.log(user.name);
 
   const fetchTasks = async () => {
     try {
-      const response = await axios.get(`http://localhost:4004/tasks`);
-      setTasks(response.data);
+      const taskRes = await axios.get("http://localhost:4004/api/tasks", {
+        withCredentials: true,
+      });
+      const allTasks = taskRes.data;
+
+      console.log("All tasks from backend:", allTasks);
+      console.log("Current user name:", name);
+
+      let visibleTasks = [];
+
+      if (role === "admin") {
+        visibleTasks = allTasks;
+      } else {
+        visibleTasks = allTasks.filter((task) => {
+          console.log("Comparing:", task.assignedTo, "with", name);
+          return task.assignedTo === name;
+        });
+      }
+
+      setTasks(visibleTasks);
     } catch (error) {
       console.error("Error fetching tasks:", error);
+      if (error.response?.status === 401) {
+        toast.error("Session expired. Redirecting to login...");
+        setTimeout(() => navigate("/"), 1500);
+      } else {
+        toast.error("Failed to fetch tasks. Please login again.");
+      }
     }
   };
 
-  // ✅ Delete Task
-  const handleDelete = async (taskId) => {
-    try {
-      await axios.put(`http://localhost:4004/trash/${taskId}`);
-      setTasks(tasks.filter((task) => task._id !== taskId)); // Remove task from UI and adds to the trash-bin.
-    } catch (error) {
-      console.error("Error deleting task:", error);
-    }
-  };
+  useEffect(() => {
+    fetchTasks();
+    socket.on("taskCreated", (newTask) => {
+      setTasks((prev) => [...prev, newTask]);
+    });
 
-  // ✅ Toggle Task Status (Complete/Pending)
-  const toggleTaskStatus = async (taskId, currentStatus, progress) => {
+    socket.on("taskUpdated", (updatedTask) => {
+      setTasks((prev) =>
+        prev.map((task) => (task._id === updatedTask._id ? updatedTask : task))
+      );
+    });
+
+    socket.on("taskDeleted", (deletedTaskId) => {
+      setTasks((prev) => prev.filter((task) => task._id !== deletedTaskId));
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
+  const handleStatusToggle = async (taskId, currentStatus) => {
+    const newStatus = currentStatus === "pending" ? "completed" : "pending";
+    const completed = newStatus === "completed";
+    const progress = completed ? "100" : "0";
+
     try {
       const updatedTask = await axios.put(
-        `http://localhost:4004/tasks/${taskId}`,
-        {
-          status: currentStatus === "pending" ? "completed" : "pending",
-          progress: currentStatus === "pending" ? "100" : "0",
-        }
+        `http://localhost:4004/api/tasks/${taskId}`,
+        { status: newStatus, completed, progress },
+        { withCredentials: true }
       );
 
-      setTasks(
-        tasks.map((task) =>
-          task._id === taskId
-            ? { ...task, status: updatedTask.data.status }
-            : task
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task._id === taskId ? { ...task, ...updatedTask.data } : task
         )
       );
+      toast.info("Task status updated!");
     } catch (error) {
       console.error("Error updating task status:", error);
+      toast.error("Failed to update task.");
     }
   };
 
+  const handleDelete = async (taskId, taskCreatedBy) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    try {
+      if (role === "manager" && taskCreatedBy !== userId) {
+        toast.error("You can only delete your own tasks.");
+        return;
+      }
+
+      await axios.delete(`http://localhost:4004/api/tasks/${taskId}`, {
+        withCredentials: true,
+      });
+
+      setTasks((prevTasks) => prevTasks.filter((task) => task._id !== taskId));
+
+      toast.success("Task deleted successfully.");
+    } catch (error) {
+      console.error("Error deleting task:", error);
+      toast.error("Failed to delete task.");
+    }
+  };
+
+  const handleEdit = (task) => {
+    console.log("Editing task:", task);
+    setSelectedTask(task);
+    setIsEditModalOpen(true);
+  };
+  const handleTaskUpdate = async (taskId, updatedData) => {
+    // update task list logic here
+    try {
+      const updatedTask = await axios.put(
+        `http://localhost:4004/api/tasks/${taskId}`,
+        { updatedData },
+        { withCredentials: true }
+      );
+
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task._id === taskId ? { ...task, ...updatedTask.data } : task
+        )
+      );
+      // socket.emit("updated task", updatedTask)
+      toast.success("Task status updated!");
+    } catch (error) {
+      console.error("Error updating task status:", error);
+      toast.error("Failed to update task.");
+    }
+  };
+
+  const handleViewChange = (selectedView) => {
+    setView(selectedView);
+  };
+
+  const handlePriorityFilterChange = (e) => {
+    setPriorityFilter(e.target.value);
+  };
+
+  const filteredTasks = tasks
+    .filter((task) => {
+      let matches = true;
+      if (filters.priority && task.priority !== filters.priority)
+        matches = false;
+      if (filters.dueDate && task.dueDate !== filters.dueDate) matches = false;
+      if (priorityFilter !== "All" && task.priority !== priorityFilter)
+        matches = false;
+      return matches;
+    })
+    .sort((a, b) => {
+      const priorities = { High: 3, Medium: 2, Low: 1 };
+      return (priorities[b.priority] || 0) - (priorities[a.priority] || 0);
+    });
+
   return (
-    <div className="bg-blue-100 px-0  pt-2 w-100 h-[400px] rounded-lg shadow-lg">
-      <h2 className="text-center text-lg font-bold ">Task List</h2>
-      <select
-        className="bg-yellow-50 mt-2 rounded-lg shadow-md border-spacing-1"
-        onChange={(e) => setFilter(e.target.value)}
-      >
-        <option value="All">All</option>
-        <option value="High">High Priority</option>
-        <option value="Medium">Medium Priority</option>
-        <option value="Low">Low Priority</option>
-      </select>
-      <div className="overflow-auto mt-2 w-100 max-h-[320px]">
-        {tasks.length === 0 ? (
-          <p className="text-center text-gray-500">No tasks found.</p>
+    <div className="p-2">
+      <div className="mb-4 flex items-center justify-between flex-wrap gap-4">
+        <div>
+          <button
+            onClick={() => handleViewChange("card")}
+            className={`mr-2 px-4 py-2 rounded-lg ${
+              view === "card"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-800"
+            }`}
+          >
+            Card View
+          </button>
+          <button
+            onClick={() => handleViewChange("table")}
+            className={`px-4 py-2 rounded-lg ${
+              view === "table"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-800"
+            }`}
+          >
+            Table View
+          </button>
+        </div>
+
+        <select
+          value={priorityFilter}
+          onChange={handlePriorityFilterChange}
+          className="border border-gray-300 text-stone-600 px-4 py-2 rounded-lg shadow-sm mb-2"
+        >
+          <option value="All">All Priorities</option>
+          <option value="High">High</option>
+          <option value="Medium">Medium</option>
+          <option value="Low">Low</option>
+        </select>
+      </div>
+      <div className="">
+        {view === "card" ? (
+          <TaskListCardView
+            tasks={filteredTasks}
+            onDelete={handleDelete}
+            onStatusToggle={handleStatusToggle}
+            onEdit={handleEdit}
+            role={role}
+          />
         ) : (
-          <ul>
-            {tasks.map((task) => (
-              <li
-                key={task._id}
-                className="flex justify-between items-center p-3 border-b"
-              >
-                <div className="w-full sm:w-auto text-center sm:text-left">
-                  <span
-                    className={`font-medium ${
-                      task.status === "completed"
-                        ? "text-green-500 line-through"
-                        : "text-gray-800"
-                    }`}
-                  >
-                    {task.title}
-                  </span>
-                  {task.subtasks && task.subtasks.length > 0 ? (
-                    <ul className="ml-4">
-                      {task.subtasks.map((subtask, index) => (
-                        <li key={index} className="text-gray-600">
-                          {subtask.title}
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="text-gray-400">No subtasks</p>
-                  )}
-                  <p className="text-sm text-gray-500">
-                    Priority: {task.priority} | Deadline:{" "}
-                    {new Date(task.deadline).toLocaleDateString()}
-                  </p>
-                </div>
-                <div className="flex gap-2">
-                  <button
-                    className={`px-3 py-1 rounded ${
-                      task.status === "completed"
-                        ? "bg-gray-400"
-                        : "bg-green-500 text-white"
-                    }`}
-                    onClick={() => toggleTaskStatus(task._id, task.status)}
-                  >
-                    {task.status === "completed" ? "Mark Pending" : "Complete"}
-                  </button>
-                  <button
-                    className="px-3 py-1 bg-red-500 text-white rounded"
-                    onClick={() => handleDelete(task._id)}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
+          <TaskListTableView
+            tasks={filteredTasks}
+            onDelete={handleDelete}
+            onStatusToggle={handleStatusToggle}
+            onEdit={handleEdit}
+            role={role}
+          />
         )}
       </div>
+      <EditTaskModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        task={selectedTask}
+        onSave={handleTaskUpdate}
+      />
     </div>
   );
 };

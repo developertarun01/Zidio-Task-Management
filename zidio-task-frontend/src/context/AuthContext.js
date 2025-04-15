@@ -1,35 +1,50 @@
-import { createContext, useState, useEffect } from "react";
+// context/AuthContext.js
+import React, { createContext, useContext, useEffect, useState } from "react";
+import api from "../api/axios";
 
-// Create Context
-export const AuthContext = createContext();
+const AuthContext = createContext();
 
-// AuthProvider
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
-  // Check local storage for token when the app loads
+  const fetchUser = async () => {
+    try {
+      const { data } = await api.get("/api/auth/users", { withCredentials: true });
+      setUser(data.user);
+    } catch (err) {
+      console.log("Not logged in");
+    }
+  };
+
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) setUser(JSON.parse(storedUser));
+    fetchUser();
   }, []);
 
-  const login = (userData) => {
-    setUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData));
-  };
-  const register = (userData) => {
-    setUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData));
+  const login = async (username, password) => {
+    try {
+      await api.post(
+        "/auth/login",
+        { username, password },
+        { withCredentials: true }
+      );
+      await fetchUser();
+      return true;
+    } catch (err) {
+      console.error("Login failed", err);
+      return false;
+    }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await api.post("/auth/logout", {}, { withCredentials: true });
     setUser(null);
-    localStorage.removeItem("user");
   };
 
   return (
-    <AuthContext.Provider value={{ user, setUser, login, register, logout }}>
+    <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
+
+export const useAuth = () => useContext(AuthContext);

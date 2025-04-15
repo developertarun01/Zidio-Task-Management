@@ -1,13 +1,14 @@
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment, useState, useEffect } from "react";
 import { FaUser, FaUserLock } from "react-icons/fa";
-import { IoLogOutOutline } from "react-icons/io5";
+import { IoArrowForwardSharp, IoLogOutOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getInitials } from "../utils";
 import { AuthContext } from "../context/AuthContext";
 import { useContext } from "react";
 import axios from "axios";
+import { toast } from "react-hot-toast";
 
 const UserAvatar = () => {
   const getInitials = (name = "") => {
@@ -29,7 +30,7 @@ const UserAvatar = () => {
     if (token) {
       localStorage.setItem("authToken", token);
       axios
-        .get("http://localhost:4004/user", {
+        .get("http://localhost:4004/api/users", {
           headers: { Authorization: `Bearer ${token}` },
           withCredentials: true,
         })
@@ -38,11 +39,19 @@ const UserAvatar = () => {
     }
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem("authToken");
-    setUser(null);
-    window.open("http://localhost:4004/api/auth/logout", "_self");
-    navigate("/");
+  const handleLogout = async () => {
+    try {
+      await axios.get("http://localhost:4004/api/auth/logout", {
+        credentials: "include",
+      });
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
+      navigate("/"); // or use window.location.href = "/login";
+      toast.success("Logout successfully");
+      console.log("logged out");
+    } catch (err) {
+      console.error("Logout failed");
+    }
   };
 
   return (
