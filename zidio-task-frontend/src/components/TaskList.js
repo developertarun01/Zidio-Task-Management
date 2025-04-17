@@ -25,7 +25,7 @@ const TaskList = () => {
   const email = localStorage.getItem("userEmail"); // Storing the role in localStorage
   const name = localStorage.getItem("userName");
   const user = JSON.parse(localStorage.getItem("user"));
-  console.log(user.name);
+  console.log(name);
 
   const fetchTasks = async () => {
     try {
@@ -35,20 +35,21 @@ const TaskList = () => {
       const allTasks = taskRes.data;
 
       console.log("All tasks from backend:", allTasks);
-      console.log("Current user name:", name);
+      console.log("Current user name:", user.name);
 
       let visibleTasks = [];
 
       if (role === "admin") {
-        visibleTasks = allTasks;
+        visibleTasks = allTasks.filter((task) => !task.deleted);
       } else {
         visibleTasks = allTasks.filter((task) => {
-          console.log("Comparing:", task.assignedTo, "with", name);
-          return task.assignedTo === name;
+          console.log("Comparing:", task.assignedTo, "with", user.name); // ← filter out soft-deleted
+          return task.assignedTo === user.name && !task.deleted; // ← also filter out
         });
       }
 
       setTasks(visibleTasks);
+      console.log(visibleTasks);
     } catch (error) {
       console.error("Error fetching tasks:", error);
       if (error.response?.status === 401) {
@@ -71,9 +72,9 @@ const TaskList = () => {
         prev.map((task) => (task._id === updatedTask._id ? updatedTask : task))
       );
     });
-
-    socket.on("taskDeleted", (deletedTaskId) => {
-      setTasks((prev) => prev.filter((task) => task._id !== deletedTaskId));
+    socket.on("taskDeleted", (deletedTask) => {
+      setTasks((prev) => prev.filter((task) => task._id !== deletedTask._id));
+      toast.info(`Task "${deletedTask.title}" was moved to trash.`);
     });
 
     return () => {
@@ -118,8 +119,7 @@ const TaskList = () => {
       await axios.delete(`http://localhost:4004/api/tasks/${taskId}`, {
         withCredentials: true,
       });
-
-      setTasks((prevTasks) => prevTasks.filter((task) => task._id !== taskId));
+      await fetchTasks();
 
       toast.success("Task deleted successfully.");
     } catch (error) {

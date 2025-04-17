@@ -10,6 +10,7 @@ import { ToastContainer, toast } from "react-toastify";
 import TaskStatusChart from "../components/TaskStatusChart";
 import MonthlyTaskTrendsChart from "../components/MonthlyTaskTrendsChart";
 import UserTaskLoadChart from "../components/UserTaskLoadChart";
+import TaskPieChart from "../components/TaskPieChart"
 
 const AnalyticsPage = () => {
   const [tasks, setTasks] = useState([]);
@@ -58,7 +59,7 @@ const AnalyticsPage = () => {
           📊 Analytics Overview
         </motion.h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6">
           {/* Task Priority Chart */}
           <div className="bg-glass p-4 rounded-2xl shadow-glass border border-white/10">
             <h2 className="text-xl font-semibold mb-4">
@@ -76,10 +77,15 @@ const AnalyticsPage = () => {
           </div>
 
           {/* Task Completion Chart */}
-          <div className="bg-glass p-4 rounded-2xl shadow-glass border border-white/10">
+          {/* <div className="bg-glass p-4 rounded-2xl shadow-glass border border-white/10">
             <h2 className="text-xl font-semibold mb-4">Task Completion Rate</h2>
             <TaskCompletionChart tasks={tasks} />
-          </div>
+          </div> */}
+          {/* Task Completion Chart */}
+          {/* <div className="bg-glass p-4 rounded-2xl shadow-glass border border-white/10">
+            <h2 className="text-xl font-semibold mb-4">Task Completion Rate</h2>
+            <TaskPieChart tasks={tasks} />
+          </div> */}
 
           {/* Overdue Task Chart */}
           <div className="bg-glass p-4 rounded-2xl shadow-glass border border-white/10">
@@ -90,13 +96,17 @@ const AnalyticsPage = () => {
             <h2 className="text-xl font-semibold mb-4">Task</h2>
             <UserTaskLoadChart tasks={tasks} />
           </div>
-          <div className="bg-glass p-4 rounded-2xl shadow-glass border border-white/10">
+          {/* <div className="bg-glass p-4 rounded-2xl shadow-glass border border-white/10">
             <h2 className="text-xl font-semibold mb-4">Tasks Status</h2>
             <TaskStatusChart tasks={tasks} />
+          </div> */}
+          <div className="bg-glass p-4 rounded-2xl shadow-glass border border-white/10">
+            <h2 className="text-xl font-semibold mb-4">Tasks Status</h2>
+            <MonthlyTaskTrendsChart tasks={tasks} />
           </div>
         </div>
       </main>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
     </div>
   );
 };

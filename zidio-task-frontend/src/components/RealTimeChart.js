@@ -1,38 +1,35 @@
-
 import React, { useState, useEffect } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
 import { io } from "socket.io-client";
-// import socket from "../utils/socket";
 import axios from "axios";
-import api from "../api/axios";
-// Register necessary Chart.js components
+
+// Register chart components
 Chart.register(ArcElement, Tooltip, Legend);
- const socket = io("http://localhost:4004");
+const socket = io("http://localhost:4004");
 
 const RealTimeChart = () => {
   const [tasks, setTasks] = useState([]);
-  
 
   useEffect(() => {
     fetchTasks();
 
-    // ✅ Listen for new tasks added in real-time
-    socket.on("taskAdded", (newTask) => {
-      setTasks((prevTasks) => [...prevTasks, newTask]);
-    });
+    // Real-time updates
+    socket.on("taskAdded", (newTask) =>
+      setTasks((prev) => [...prev, newTask])
+    );
 
-    socket.on("taskUpdated", (updatedTask) => {
-      setTasks((prevTasks) =>
-        prevTasks.map((task) =>
+    socket.on("taskUpdated", (updatedTask) =>
+      setTasks((prev) =>
+        prev.map((task) =>
           task._id === updatedTask._id ? updatedTask : task
         )
-      );
-    });
+      )
+    );
 
-    socket.on("taskDeleted", (taskId) => {
-      setTasks((prevTasks) => prevTasks.filter((task) => task._id !== taskId));
-    });
+    socket.on("taskDeleted", (taskId) =>
+      setTasks((prev) => prev.filter((task) => task._id !== taskId))
+    );
 
     return () => {
       socket.off("taskAdded");
@@ -43,43 +40,84 @@ const RealTimeChart = () => {
 
   const fetchTasks = async () => {
     try {
-      const response = await axios.get("http://localhost:4004/api/tasks");
-      setTasks(response.data);
-    } catch (error) {
-      console.error("Error fetching tasks:", error);
+      const res = await axios.get("http://localhost:4004/api/tasks");
+      setTasks(res.data);
+    } catch (err) {
+      console.error("Error fetching tasks:", err);
     }
   };
 
-  const completedTasks = tasks.filter(
-    (task) => task.status === "completed"
-  ).length;
-  const pendingTasks = tasks.length - completedTasks;
+  const completed = tasks.filter((t) => t.status === "completed").length;
+  const pending = tasks.length - completed;
+
+  const total = tasks.length || 1; // prevent division by 0
+  const completedPercent = ((completed / total) * 100).toFixed(1);
+  const pendingPercent = ((pending / total) * 100).toFixed(1);
 
   const data = {
-    labels: ["Completed", "Pending"],
+    labels: [
+      `✅ Completed (${completedPercent}%)`,
+      `🕒 Pending (${pendingPercent}%)`,
+    ],
     datasets: [
       {
-        label: "Task Progress",
-        data: [completedTasks, pendingTasks],
+        label: "Task Breakdown",
+        data: [completed, pending],
         backgroundColor: ["#4CAF50", "#FFC107"],
+        borderColor: ["#388E3C", "#FFA000"],
+        borderWidth: 2,
       },
     ],
   };
-  return (
-    <div className="bg-white p-4 shadow-md rounded-lg w-80  mt-6 ">
-      <h2 className="text-lg font-bold text-gray-700 text-center">
-        Task Progress
-      </h2>
-      <div className=" px-2 overflow-hidden h-[200px]">
-  <Doughnut data={data} options={{
+
+  const options = {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: { legend: { position: "top" } }
-  }} />
-</div>
-      <p className="text-center mt-2 text-gray-600">
-        Completed: {completedTasks} / {tasks.length}
-      </p>
+    cutout: "65%",
+    animation: {
+      animateRotate: true,
+      duration: 1200,
+    },
+    plugins: {
+      legend: {
+        position: "bottom",
+        labels: {
+          color: "#333",
+          font: {
+            size: 14,
+            family: "Inter, sans-serif",
+          },
+        },
+      },
+      tooltip: {
+        callbacks: {
+          label: function (ctx) {
+            const label = ctx.label || "";
+            const value = ctx.parsed;
+            return `${label}: ${value} task${value !== 1 ? "s" : ""}`;
+          },
+        },
+      },
+    },
+  };
+
+  return (
+    <div className="bg-white/80 backdrop-blur-md border border-white/20 p-6 rounded-2xl shadow-lg w-full max-w-xs transition-all duration-300 hover:scale-[1.02]">
+      <h2 className="text-xl font-bold text-center text-gray-800 mb-4">
+        📊 Real-Time Task Progress
+      </h2>
+      <div className="relative h-52">
+        <Doughnut data={data} options={options} />
+      </div>
+      <div className="mt-4 text-center text-sm text-gray-600">
+        <p>
+          ✅ <strong>{completed}</strong> completed • 🕒{" "}
+          <strong>{pending}</strong> pending
+        </p>
+        <p className="text-xs text-gray-500 mt-1">
+          Total: <strong>{tasks.length}</strong> task{tasks.length !== 1 ? "s" : ""}
+        </p>
+      </div>
     </div>
   );
 };

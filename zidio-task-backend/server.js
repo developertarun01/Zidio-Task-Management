@@ -14,6 +14,7 @@ const taskRoutes = require("./routes/taskRoutes");
 const authRoutes = require("./routes/authRoutes");
 const aboutRoutes = require("./routes/aboutRoutes");
 const userRoutes = require("./routes/userRoutes");
+const meetingsRoute = require("./routes/meeting");
 // import teamRoutes from "./routes/teamRoutes.js";
 const Feedback = require("./models/feedback");
 const Task = require("./models/Task");
@@ -51,6 +52,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/about", aboutRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/users", userRoutes);
+
+app.use("/api/meetings", meetingsRoute);
 // app.use("/api/team", teamRoutes);
 
 cron.schedule("0 0 * * *", async () => {
@@ -148,12 +151,11 @@ app.get("/tasks/progress/:timeframe", async (req, res) => {
   }
 });
 
-
 // 📦 Real-time Socket.IO
 io.on("connection", (socket) => {
-  console.log("User connected");
+  console.log("User connected:", socket.id);
   socket.on("disconnect", () => {
-    console.log("User disconnected");
+    console.log("User disconnected:", socket.id);
   });
 });
 

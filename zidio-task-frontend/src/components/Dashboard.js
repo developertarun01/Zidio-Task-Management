@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import axios from "axios";
 import { motion } from "framer-motion";
 import TaskAssignment from "../components/TaskAssignment";
 import TaskList from "../components/TaskList";
 import TaskPriorityChart from "../components/TaskPriorityChart";
 import RealtimeChart from "../components/RealTimeChart";
+import StatusBreakdownChart from "./StatusBreakdownchart";
 import Sidebar from "./Sidebar";
 import TaskStats from "./Taskstats";
 import socket from "../utils/socket";
@@ -15,11 +16,13 @@ import Papa from "papaparse";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { saveAs } from "file-saver";
+import LogoutConfirmModal from "./LogoutConfirmModal";
 
 // Enable sending cookies with every request
 axios.defaults.withCredentials = true;
 
 const Dashboard = () => {
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [tasks, setTasks] = useState([]);
   const [filter, setFilter] = useState("all");
   const [priorityFilter, setPriorityFilter] = useState("all");
@@ -106,10 +109,9 @@ const Dashboard = () => {
       });
 
       if (response.ok) {
+        toast.success("Logout successful!");
         localStorage.removeItem("user");
         localStorage.removeItem("token");
-
-        toast.success("Logout successful!");
         navigate("/");
       } else {
         toast.error("Logout failed");
@@ -144,57 +146,103 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="flex bg-darkBg min-h-screen text-white font-sans">
+    <div className="flex bg-gradient-to-br from-[#0f2027] via-[#203a43] to-[#2c5364] min-h-screen text-white font-sans">
       <main className="flex-1 p-6 overflow-y-auto space-y-6">
-        <div className="flex justify-between items-center">
-          <motion.h1
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-3xl font-bold text-cyan-300"
-          >
-            🚀 Welcome {name}, to Zidio Dashboard
-          </motion.h1>
-          <div className="text-right text-sm">
-            <div>
-              <h2>Name: {name}</h2>
-              <p>@email: {email}</p>
-              <p className="text-red-200">Role: {role}</p>
-            </div>
+        <motion.div
+          initial={{ opacity: 0, y: -30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="flex justify-between items-start"
+        >
+          <div>
+            <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-pink-400 to-yellow-300 animate-gradient">
+              🚀 Welcome {name}, to Zidio Dashboard
+            </h1>
+          </div>
+          <div className="bg-white/10 p-4 rounded-lg shadow-md text-sm backdrop-blur-md space-y-2">
+            <p>
+              <strong>Name:</strong> {name}
+            </p>
+            <p>
+              <strong>Email:</strong> {email}
+            </p>
+            <p className="text-red-200">
+              <strong>Role:</strong> {role}
+            </p>
             <button
-              onClick={handleLogout}
-              className="mt-1 text-red-500 underline text-xs"
+              onClick={() => setShowLogoutModal(true)}
+              className="mt-2 bg-gradient-to-r from-red-500 to-pink-500 text-white px-4 py-2 rounded-lg shadow-lg hover:scale-105 transition"
             >
               Logout
             </button>
+            <LogoutConfirmModal
+              open={showLogoutModal}
+              setOpen={setShowLogoutModal}
+              onConfirm={handleLogout}
+            />
           </div>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-3 gap-4 text-black">
+        {/* Animated Chart Section */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.3, duration: 0.6 }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-4"
+        >
+          <div className="bg-gradient-to-br from-indigo-200 via-purple-200 to-pink-200 p-4 rounded-xl shadow-lg flex items-center justify-center overflow-hidden">
+            <div className="w-full h-full max-w-full max-h-full">
+              <TaskPriorityChart tasks={tasks} />
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-br from-green-200 via-teal-200 to-cyan-200 p-4 rounded-xl shadow-lg flex items-center justify-center overflow-hidden">
+            <div className="w-full h-full max-w-full max-h-full">
+              <RealtimeChart tasks={tasks} />
+            </div>
+          </div>
+
+          <div className="col-span-1 md:col-span-2 bg-gradient-to-br from-yellow-200 via-pink-100 to-rose-200 p-4 rounded-xl shadow-lg flex items-center justify-center overflow-hidden">
+            <div className="w-full h-full max-w-full max-h-full">
+              <StatusBreakdownChart tasks={tasks} />
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Task assignment + filters */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+          className="bg-white/10 p-4 rounded-xl shadow-xl backdrop-blur-md space-y-4"
+        >
           <TaskAssignment />
-          <TaskPriorityChart tasks={tasks} />
-          <RealtimeChart tasks={tasks} />
-        </div>
+        </motion.div>
 
-        <div className="bg-glass p-4 rounded-2xl shadow-glass border border-white/10">
+        {/* Task Stats and Search */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+          className="bg-white/10 p-6 rounded-2xl shadow-xl backdrop-blur-md overflow-hidden"
+        >
           <TaskStats
             tasks={tasks}
             onFilterSelect={setFilter}
             selectedFilter={filter}
           />
-
           <div className="flex flex-wrap items-center gap-4 mt-4">
             <input
               type="text"
               placeholder="Search tasks..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="px-3 py-1 rounded text-black"
+              className="px-4 py-2 rounded-md bg-white text-black shadow-inner"
             />
             <select
               value={priorityFilter}
               onChange={(e) => setPriorityFilter(e.target.value)}
-              className="px-3 py-1 rounded text-black"
+              className="px-4 py-2 rounded-md bg-white text-black shadow-inner"
             >
               <option value="all">All Priorities</option>
               <option value="High">High</option>
@@ -204,24 +252,29 @@ const Dashboard = () => {
 
             <button
               onClick={handleExportCSV}
-              className="bg-cyan-500 text-white px-4 py-1 rounded"
+              className="bg-gradient-to-r from-blue-400 to-cyan-500 text-white px-4 py-2 rounded-lg shadow-md hover:scale-105 transition"
             >
               Export CSV
             </button>
             <button
               onClick={handleExportPDF}
-              className="bg-pink-500 text-white px-4 py-1 rounded"
+              className="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-4 py-2 rounded-lg shadow-md hover:scale-105 transition"
             >
               Export PDF
             </button>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-1 gap-6">
+        {/* Task List Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.6 }}
+          className="bg-white/10 p-6 rounded-2xl shadow-2xl backdrop-blur-md"
+        >
           <TaskList tasks={filteredTasks} />
-        </div>
+        </motion.div>
       </main>
-      <ToastContainer />
     </div>
   );
 };

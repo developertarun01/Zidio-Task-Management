@@ -38,6 +38,7 @@ import TaskList from "./components/TaskList";
 import TeamPage from "./components/TeamPage";
 import AnalyticsPage from "./pages/AnalyticPage"; // Add the import for AnalyticsPage
 // import { Sidebar } from "lucide-react";
+import CreateMeeting from "./components/CreateMeeting";
 
 function Layout() {
   const { user } = useSelector((state) => state.auth);
@@ -75,7 +76,6 @@ const App = () => {
       <Routes>
         <Route element={<Layout />}>
           <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
-            <Route path="/auth/google/dashboard" element={<Dashboard />} />
             <Route path="/admin/team" element={<TeamPage />} />
           </Route>
           <Route
@@ -83,7 +83,7 @@ const App = () => {
           >
             <Route path="manager/dashboard" element={<ManagerDashboard />} />
           </Route>
-
+          <Route path="/auth/google/dashboard" element={<Dashboard />} />
           <Route path="/employee/dashboard" element={<UserDashboard />} />
           <Route path="/home" element={<Home />} />
           <Route path="/tasks" element={<TaskList />} />
@@ -98,6 +98,7 @@ const App = () => {
           <Route path="/trash" element={<Trash />} />
           <Route path="/notification" element={<NotificationToast />} />
           <Route path="/analytics" element={<AnalyticsPage />} />
+          <Route path="/create-meeting" element={<CreateMeeting />} />
         </Route>
 
         <Route path="/" element={<Login />} />

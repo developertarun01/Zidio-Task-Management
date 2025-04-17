@@ -14,6 +14,7 @@ import {
 } from "react-icons/fa";
 
 const TeamPage = () => {
+  const role = localStorage.getItem("userRole");
   const [team, setTeam] = useState([]);
   const [editingMember, setEditingMember] = useState(null);
   const [newMember, setNewMember] = useState({
@@ -62,10 +63,11 @@ const TeamPage = () => {
   const handleCreate = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:4004/api/users/",
+        "http://localhost:4004/api/auth/register",
         newMember
       );
       setTeam([...team, response.data]);
+      setNewMember({ username: "", email: "", password: "", role: "employee" });
     } catch (error) {
       console.error("Error adding team member", error);
     }
@@ -96,6 +98,14 @@ const TeamPage = () => {
       console.error("Error deleting member", err);
     }
   };
+  // Restrict to admin or manager only
+  if (role !== "admin" && role !== "manager") {
+    return (
+      <div className="text-center text-red-500 font-bold p-6">
+        You do not have permission to assign tasks.
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 min-h-screen bg-gradient-to-tr from-[#0f0c29] via-[#302b63] to-[#24243e] text-white">
@@ -178,6 +188,7 @@ const TeamPage = () => {
               {member.username}
             </h3>
             <p className="text-sm text-white/80">{member.email}</p>
+            {/* <p className="text-sm text-white/80 ">{member.password}</p> */}
             <p className="text-sm capitalize text-white/70">
               Role: {member.role}
             </p>

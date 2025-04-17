@@ -9,10 +9,11 @@ const Trash = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const fetchTrashedTasks = async () => {
     try {
-      const res = await axios.get("/api/tasks/trash", {
+      const res = await axios.get("http://localhost:4004/api/tasks/trash", {
         withCredentials: true,
       });
       setTrashedTasks(res.data);
+      console.log("Trashed Tasks:", res.data);
       setLoading(false);
     } catch (err) {
       toast.error("Failed to load trashed tasks");
@@ -62,10 +63,10 @@ const Trash = () => {
         <div className="grid grid-cols-1 gap-4">
           {trashedTasks.map((task) => (
             <div key={task._id} className="bg-red-100 p-4 rounded-lg shadow">
-              <h3 className="text-xl font-semibold">{task.title}</h3>
+              <h3 className="text-xl font-semibold text-gray-500">{task.title}</h3>
               <p className="text-sm text-gray-700 mb-2">{task.description}</p>
               <p className="text-sm text-gray-500">
-                Deleted By: <strong>{task.deletedBy}</strong> <br />
+                Deleted By: <strong>{user.name}</strong> <br />
                 At: <strong>{new Date(task.deletedAt).toLocaleString()}</strong>
               </p>
               <div className="flex gap-3 mt-3">

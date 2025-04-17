@@ -3,6 +3,7 @@ import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   LineElement,
+  PointElement,
   CategoryScale,
   LinearScale,
   Title,
@@ -12,7 +13,15 @@ import {
 import axios from "axios";
 import socket from "../utils/socket";
 
-ChartJS.register(LineElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
+ChartJS.register(
+  LineElement,
+  PointElement,
+  CategoryScale,
+  LinearScale,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const MonthlyTaskTrendsChart = () => {
   const [taskTrends, setTaskTrends] = useState([]);
@@ -31,7 +40,9 @@ const MonthlyTaskTrendsChart = () => {
         const tasks = response.data;
 
         const trends = tasks.reduce((acc, task) => {
-          const month = new Date(task.createdAt).toLocaleString("default", { month: "short" });
+          const month = new Date(task.createdAt).toLocaleString("default", {
+            month: "short",
+          });
           acc[month] = (acc[month] || 0) + 1;
           return acc;
         }, {});
@@ -88,7 +99,9 @@ const MonthlyTaskTrendsChart = () => {
 
   return (
     <div className="glass p-6 rounded-2xl shadow-xl border border-white/10 w-full max-w-xl transition-all duration-300 hover:scale-[1.02] backdrop-blur-md text-white">
-      <h2 className="text-xl font-bold mb-4 text-lime-300">Monthly Task Trends</h2>
+      <h2 className="text-xl font-bold mb-4 text-lime-300">
+        Monthly Task Trends
+      </h2>
       <Line data={chartData} options={chartOptions} />
     </div>
   );

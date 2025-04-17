@@ -7,7 +7,6 @@ const { verifyToken, allowRoles } = require("../middleware/authMiddleware");
 const router = express.Router();
 
 // ✅ Get Tasks (Admin sees all, Manager sees their created, User sees their assigned)
-// ✅ Get Tasks (Admin sees all, Manager sees their created, User sees their assigned)
 router.get("/", verifyToken, async (req, res) => {
   const { role, id } = req.user;
   try {
@@ -183,7 +182,11 @@ router.get(
   allowRoles("admin", "manager"),
   async (req, res) => {
     try {
-      const trashedTasks = await Task.find({ deleted: true });
+      const trashedTasks = await Task.find({ deleted: true })
+        .populate("deletedBy", "name email")
+        .sort({
+          deletedAt: -1,
+        });
       res.json(trashedTasks);
     } catch (err) {
       res.status(500).json({ message: "Failed to fetch trashed tasks" });

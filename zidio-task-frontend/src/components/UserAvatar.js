@@ -3,12 +3,15 @@ import { Fragment, useState, useEffect } from "react";
 import { FaUser, FaUserLock } from "react-icons/fa";
 import { IoArrowForwardSharp, IoLogOutOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
+import { useContext } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { getInitials } from "../utils";
 import { AuthContext } from "../context/AuthContext";
-import { useContext } from "react";
-import axios from "axios";
+import UserProfileModal from "./UserProfileModal"; // adjust the path if needed
+import ChangePasswordModal from "./ChangePasswordModal"; // adjust path as needed
 import { toast } from "react-hot-toast";
+import LogoutConfirmModal from "./LogoutConfirmModal";
 
 const UserAvatar = () => {
   const getInitials = (name = "") => {
@@ -16,39 +19,50 @@ const UserAvatar = () => {
     const nameParts = name.split(" ");
     return nameParts.map((part) => part.charAt(0).toUpperCase()).join("");
   };
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+
   const [open, setOpen] = useState(false);
   const [openPassword, setOpenPassword] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [tasks, setTasks] = useState([]);
-
   const [user, setUser] = useState(null);
+  const users = localStorage.getItem("user");
+  const role = localStorage.getItem("userRole");
+  const email = localStorage.getItem("userEmail");
+  const name = localStorage.getItem("userName");
 
   useEffect(() => {
-    const token = new URLSearchParams(window.location.search).get("token");
-    if (token) {
-      localStorage.setItem("authToken", token);
-      axios
-        .get("http://localhost:4004/api/users", {
-          headers: { Authorization: `Bearer ${token}` },
-          withCredentials: true,
-        })
-        .then((res) => setUser(res.data))
-        .catch((err) => console.error(err));
-    }
+    const fetchUser = async () => {
+      const token = new URLSearchParams(window.location.search).get("token");
+      if (token) {
+        localStorage.setItem("authToken", token);
+        try {
+          const res = await axios.get("http://localhost:4004/api/users", {
+            headers: { Authorization: `Bearer ${token}` },
+            withCredentials: true,
+          });
+          setUser(res.data);
+        } catch (err) {
+          console.error("Failed to fetch user:", err);
+        }
+      }
+    };
+
+    fetchUser();
   }, []);
 
   const handleLogout = async () => {
     try {
-      await axios.get("http://localhost:4004/api/auth/logout", {
+      await axios.post("http://localhost:4004/api/auth/logout", {
         credentials: "include",
       });
+      toast.success("Logout successfully");
+      console.log("logged out");
       localStorage.removeItem("user");
       localStorage.removeItem("token");
       navigate("/"); // or use window.location.href = "/login";
-      toast.success("Logout successfully");
-      console.log("logged out");
     } catch (err) {
       console.error("Logout failed");
     }
@@ -93,23 +107,23 @@ const UserAvatar = () => {
                   {({ active }) => (
                     <button
                       onClick={() => setOpenPassword(true)}
-                      className={`tetx-gray-700 group flex w-full items-center rounded-md px-2 py-2 text-base`}
+                      className={`text-gray-700 group flex w-full items-center rounded-md px-2 py-2 text-base`}
                     >
                       <FaUserLock className="mr-2" aria-hidden="true" />
                       Change Password
                     </button>
                   )}
                 </Menu.Item>
-
                 <Menu.Item>
                   {({ active }) => (
-                    <button
-                      onClick={handleLogout}
-                      className={`text-red-600 group flex w-full items-center rounded-md px-2 py-2 text-base`}
-                    >
-                      <IoLogOutOutline className="mr-2" aria-hidden="true" />
-                      Logout
-                    </button>
+                    <div>
+                      <button
+                        onClick={() => setShowLogoutModal(true)}
+                        className={`text-red-600 group flex w-full items-center rounded-md px-2 py-2 text-base`}
+                      >
+                        <IoLogOutOutline className="mr-2" aria-hidden="true" />Logout
+                      </button>
+                    </div>
                   )}
                 </Menu.Item>
               </div>
@@ -117,6 +131,13 @@ const UserAvatar = () => {
           </Transition>
         </Menu>
       </div>
+      <UserProfileModal open={open} setOpen={setOpen} user={user} />
+      <ChangePasswordModal open={openPassword} setOpen={setOpenPassword} />
+      <LogoutConfirmModal
+        open={showLogoutModal}
+        setOpen={setShowLogoutModal}
+        onConfirm={handleLogout}
+      />
     </>
   );
 };

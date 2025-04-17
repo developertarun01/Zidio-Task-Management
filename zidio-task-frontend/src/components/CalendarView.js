@@ -11,10 +11,12 @@ import "@fullcalendar/common/main.min.css";
 const socket = io("http://localhost:4004");
 
 const CalendarView = () => {
-  const [tasks, setTasks] = useState([]);
+  const [allTasks, setAllTasks] = useState([]);
+  const [filteredTasks, setFilteredTasks] = useState([]);
   const [filters, setFilters] = useState({
     priority: "all",
     status: "all",
+    username: "all",
   });
 
   const formatTask = (task) => ({
@@ -29,20 +31,22 @@ const CalendarView = () => {
     },
   });
 
+  const applyFilters = () => {
+    const result = allTasks.filter((task) => {
+      return (
+        (filters.priority === "all" || task.extendedProps.priority === filters.priority) &&
+        (filters.status === "all" || task.extendedProps.status === filters.status) &&
+        (filters.username === "all" || task.extendedProps.username === filters.username)
+      );
+    });
+    setFilteredTasks(result);
+  };
+
   const fetchTasks = async () => {
     try {
       const res = await axios.get("http://localhost:4004/api/tasks");
-      setTasks(
-        res.data
-          .filter((task) => {
-            return (
-              (filters.priority === "all" ||
-                task.priority === filters.priority) &&
-              (filters.status === "all" || task.status === filters.status)
-            );
-          })
-          .map(formatTask)
-      );
+      const formatted = res.data.map(formatTask);
+      setAllTasks(formatted);
     } catch (err) {
       console.error("Error fetching tasks:", err);
     }
@@ -50,29 +54,29 @@ const CalendarView = () => {
 
   useEffect(() => {
     fetchTasks();
-
     socket.on("taskAdded", (newTask) => {
-      setTasks((prev) => [...prev, formatTask(newTask)]);
+      setAllTasks((prev) => [...prev, formatTask(newTask)]);
     });
-
     socket.on("taskUpdated", (updatedTask) => {
-      setTasks((prev) =>
+      setAllTasks((prev) =>
         prev.map((task) =>
           task.id === updatedTask._id ? formatTask(updatedTask) : task
         )
       );
     });
-
     socket.on("taskDeleted", (deletedId) => {
-      setTasks((prev) => prev.filter((task) => task.id !== deletedId));
+      setAllTasks((prev) => prev.filter((task) => task.id !== deletedId));
     });
-
     return () => {
       socket.off("taskAdded");
       socket.off("taskUpdated");
       socket.off("taskDeleted");
     };
-  }, [filters]);
+  }, []);
+
+  useEffect(() => {
+    applyFilters();
+  }, [filters, allTasks]);
 
   const handleDateClick = async (arg) => {
     const { value: title } = await Swal.fire({
@@ -123,12 +127,8 @@ const CalendarView = () => {
       html: `
         <strong>Priority:</strong> ${extendedProps.priority}<br/>
         <strong>Status:</strong> ${extendedProps.status}<br/>
-        <strong>Assigned To:</strong> ${
-          extendedProps.username || "Unassigned"
-        }<br/>
-        <strong>Deadline:</strong> ${new Date(
-          extendedProps.deadline
-        ).toLocaleDateString()}
+        <strong>Assigned To:</strong> ${extendedProps.username || "Unassigned"}<br/>
+        <strong>Deadline:</strong> ${new Date(extendedProps.deadline).toLocaleDateString()}
       `,
       icon: "info",
       confirmButtonColor: "#00ffe0",
@@ -136,16 +136,15 @@ const CalendarView = () => {
   };
 
   const handleFilterChange = (type, value) => {
-    setFilters((prevFilters) => ({ ...prevFilters, [type]: value }));
+    setFilters((prev) => ({ ...prev, [type]: value }));
   };
 
   return (
     <div className="flex">
-      {/* Sidebar for Filters */}
+      {/* Filters Sidebar */}
       <div className="w-64 p-4 rounded-xl glass border border-white/10 shadow-lg text-white mr-4">
         <h2 className="text-lg font-bold mb-4 text-center">Filters</h2>
 
-        {/* Priority Filter */}
         <div className="mb-4">
           <h3 className="text-md font-semibold">Priority</h3>
           <select
@@ -160,7 +159,6 @@ const CalendarView = () => {
           </select>
         </div>
 
-        {/* Status Filter */}
         <div className="mb-4">
           <h3 className="text-md font-semibold">Status</h3>
           <select
@@ -171,6 +169,20 @@ const CalendarView = () => {
             <option value="all">All</option>
             <option value="pending">Pending</option>
             <option value="completed">Completed</option>
+          </select>
+        </div>
+
+        <div className="mb-4">
+          <h3 className="text-md font-semibold">User</h3>
+          <select
+            value={filters.username}
+            onChange={(e) => handleFilterChange("username", e.target.value)}
+            className="w-full bg-transparent text-white border p-2 rounded-lg"
+          >
+            <option value="all">All</option>
+            {[...new Set(allTasks.map(t => t.extendedProps.username).filter(Boolean))].map((u) => (
+              <option key={u} value={u}>{u}</option>
+            ))}
           </select>
         </div>
       </div>
@@ -189,7 +201,7 @@ const CalendarView = () => {
             right: "dayGridMonth,timeGridWeek,timeGridDay",
           }}
           initialView="dayGridMonth"
-          events={tasks}
+          events={filteredTasks}
           editable={true}
           selectable={true}
           droppable={true}
@@ -197,20 +209,16 @@ const CalendarView = () => {
           eventClick={handleEventClick}
           eventDrop={handleEventDrop}
           height="auto"
-          eventTimeFormat={{
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: true,
-          }}
           eventClassNames={(arg) => {
-            const priority = arg?.event?.extendedProps?.priority;
-            const status = arg?.event?.extendedProps?.status;
+            const priority = arg.event.extendedProps.priority;
+            const status = arg.event.extendedProps.status;
 
-            if (status === "completed") return "bg-green-700 text-white";
-            if (priority === "high") return "bg-red-600 text-white";
-            if (priority === "medium") return "bg-yellow-500 text-black";
-            if (priority === "low") return "bg-blue-500 text-white";
-            return "bg-gray-500 text-white";
+            let base = "rounded-md px-1 text-xs";
+            if (status === "completed") return `${base} bg-green-600 text-white border border-white`;
+            if (priority === "high") return `${base} bg-red-600 text-white`;
+            if (priority === "medium") return `${base} bg-yellow-400 text-black`;
+            if (priority === "low") return `${base} bg-blue-500 text-white`;
+            return `${base} bg-gray-500 text-white`;
           }}
         />
       </div>
