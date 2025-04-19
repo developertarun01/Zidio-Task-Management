@@ -16,6 +16,7 @@ import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion"; // Optional but great for animations
 
 const Sidebar = () => {
+  const user = JSON.parse(localStorage.getItem("user"))
   const [expanded, setExpanded] = useState(true);
 
   const menu = [
@@ -37,45 +38,45 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`h-screen p-5 pt-8 duration-300 ${
+      className={`h-screen p-5 pt-8 transition-all duration-300 ${
         expanded ? "w-64" : "w-20"
-      } bg-gradient-to-b from-[#0f172a] to-[#1e293b] backdrop-blur-md shadow-xl border-r border-white/10 transition-all`}
+      } bg-white border-r border-gray-200 shadow-xl`}
     >
       {/* Header */}
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex justify-between items-center mb-10">
         <motion.h1
-          className={`text-2xl font-extrabold tracking-wider text-cyan-400 ${
+          className={`text-2xl font-bold tracking-wider text-indigo-600 ${
             !expanded && "hidden"
           }`}
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
         >
-          Zidio
+          Zidio {[user.role]} Dashboard
         </motion.h1>
         <button
           onClick={() => setExpanded(!expanded)}
-          className="text-cyan-300 hover:text-cyan-400 transition"
+          className="text-indigo-500 hover:text-indigo-700 text-xl"
         >
           ☰
         </button>
       </div>
 
       {/* Menu Items */}
-      <ul className="space-y-5">
+      <ul className="space-y-3">
         {menu.map((item, i) => (
           <NavLink
             key={i}
             to={item.path}
             className={({ isActive }) =>
-              `flex items-center gap-4 px-4 py-3 rounded-xl group transition-all hover:bg-cyan-800/20 hover:shadow-md ${
+              `flex items-center gap-4 px-4 py-3 rounded-lg transition-all hover:bg-cyan-800/20 hover:shadow-md duration-200 group ${
                 isActive
-                  ? "bg-cyan-700/20 text-cyan-300 font-semibold shadow-inner"
-                  : "text-slate-200"
+                  ? "bg-gradient-to-r from indigo-100 to indigo-200 text-indigo-800 font-semibold shadow-glass"
+                  : "text-gray-700 hover:bg-gradient-to-r hover: from-blue-50 hover:to-blue-100"
               }`
             }
           >
-            <span className="text-xl group-hover:scale-110 transition-all">
+            <span className="text-xl group-hover:scale-110 transition-transform durantion-200">
               {item.icon}
             </span>
             <span

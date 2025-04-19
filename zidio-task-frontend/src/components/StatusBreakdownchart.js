@@ -29,8 +29,8 @@ const StatusBreakdownChart = ({ tasks }) => {
   };
 
   return (
-    <div className="bg-glass p-4 rounded-xl text-white shadow-md w-full">
-      <h3 className="text-lg font-bold text-white mb-2">
+    <div className="bg-glass p-4 rounded-xl text-black shadow-md w-full">
+      <h3 className="text-lg font-bold text-black mb-2">
         🧮 Task Status Breakdown
       </h3>
       <Bar
@@ -38,11 +38,11 @@ const StatusBreakdownChart = ({ tasks }) => {
         options={{
           responsive: true,
           plugins: {
-            legend: { labels: { color: "#ffffff" } },
+            legend: { labels: { color: "" } },
           },
           scales: {
-            x: { ticks: { color: "#ffffff" } },
-            y: { ticks: { color: "#ffffff" } },
+            x: { ticks: { color: "" } },
+            y: { ticks: { color: "" } },
           },
         }}
       />

@@ -45,22 +45,22 @@ function Layout() {
   const location = useLocation();
 
   return user ? (
-    <div className="flex h-screen overflow-hidden bg-gradient-to-br from-[#0f0f0f] to-[#1c1c1e] text-white">
-      {/* Fixed Sidebar (MobileSidebar handles responsive collapse) */}
-      <div className="fixed z-40 inset-y-0 left-0 w-64 bg-[#1a1a1d] bg-opacity-70 backdrop-blur-md border-r border-[#333] shadow-lg hidden md:block">
+    <div className="flex h-screen overflow-hidden bg-gradient-to-br from-white to-gray-100 text-gray-900">
+      {/* Fixed Sidebar */}
+      <div className="fixed z-40 inset-y-0 left-0 w-64 bg-white border-r border-gray-200 shadow-lg hidden md:block">
         <MobileSidebar />
         <Sidebar />
       </div>
 
-      {/* Main content with padding for sidebar + fixed navbar */}
+      {/* Main content area */}
       <div className="flex-1 flex flex-col md:ml-64">
-        {/* Fixed Navbar */}
-        <div className="sticky top-0 z-50 bg-[#1a1a1d] bg-opacity-70 backdrop-blur-md border-b border-[#333] shadow-md">
+        {/* Navbar */}
+        <div className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
           <Navbar />
         </div>
 
         {/* Page content */}
-        <main className="flex-1 overflow-y-auto px-4 py-6 md:px-8 2xl:px-14 animate-fade-in">
+        <main className="flex-1 overflow-y-auto px-4 py-6 md:px-8 2xl:px-14 bg-white animate-fade-in">
           <Outlet />
         </main>
       </div>
@@ -84,7 +84,7 @@ const App = () => {
             <Route path="manager/dashboard" element={<ManagerDashboard />} />
           </Route>
           <Route path="/auth/google/dashboard" element={<Dashboard />} />
-          <Route path="/employee/dashboard" element={<UserDashboard />} />
+          {/* <Route path="/employee/dashboard" element={<UserDashboard />} /> */}
           <Route path="/home" element={<Home />} />
           <Route path="/tasks" element={<TaskList />} />
           <Route path="/calendar" element={<CalendarView />} />
@@ -108,7 +108,7 @@ const App = () => {
           path="*"
           element={
             <div className="h-screen text-center mt-32 text-red-500 text-2xl">
-              🚫 You are not authorized to view this page.
+              404 Server error
             </div>
           }
         />

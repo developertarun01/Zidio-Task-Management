@@ -26,6 +26,7 @@ const TaskList = () => {
   const name = localStorage.getItem("userName");
   const user = JSON.parse(localStorage.getItem("user"));
   console.log(name);
+  console.log(user.id);
 
   const fetchTasks = async () => {
     try {
@@ -35,12 +36,15 @@ const TaskList = () => {
       const allTasks = taskRes.data;
 
       console.log("All tasks from backend:", allTasks);
-      console.log("Current user name:", user.name);
-
+      // console.log("Current user name:", user.name);
+      console.log("User name:", user.name);
+      console.log("Task assignedTo:", allTasks.map(t => t.assignedTo));
+      
       let visibleTasks = [];
 
-      if (role === "admin") {
+      if (role === "admin" ) {
         visibleTasks = allTasks.filter((task) => !task.deleted);
+        console.log(visibleTasks);
       } else {
         visibleTasks = allTasks.filter((task) => {
           console.log("Comparing:", task.assignedTo, "with", user.name); // ← filter out soft-deleted

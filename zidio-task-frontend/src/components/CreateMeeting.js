@@ -52,8 +52,8 @@ const CreateMeeting = () => {
   };
 
   return (
-    <div className="max-w-xl mx-auto bg-white/10 backdrop-blur-md shadow-lg p-8 rounded-lg mt-10 text-white">
-      <h2 className="text-2xl font-bold mb-6 text-cyan-300">Create Meeting</h2>
+    <div className="max-w-xl mx-auto bg-white/10 backdrop-blur-md shadow-lg p-8 rounded-lg mt-10 text-black">
+      <h2 className="text-2xl font-bold mb-6 text-cyan-400">Create Meeting</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block mb-1">Meeting Title *</label>

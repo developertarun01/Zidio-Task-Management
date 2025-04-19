@@ -4,6 +4,8 @@ module.exports = {
     extend: {
       colors: {
         neon: "#0ff",
+        primary: "#4F46E5", // Example: indigo
+        secondary: "#F3F4F6", // light gray bg
         darkBg: "#0f172a",
         glass: "rgba(255, 255, 255, 0.05)",
       },

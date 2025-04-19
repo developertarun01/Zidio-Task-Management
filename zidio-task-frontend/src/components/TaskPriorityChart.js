@@ -11,7 +11,7 @@ import {
 } from "chart.js";
 import axios from "axios";
 import socket from "../utils/socket";
-import { motion } from "framer-motion";
+import { color, motion } from "framer-motion";
 
 ChartJS.register(
   BarElement,
@@ -76,8 +76,8 @@ const TaskPriorityChart = () => {
           "rgba(76, 175, 80, 0.8)",
         ],
         borderColor: ["#ff1f1f", "#ffc107", "#4caf50"],
-        borderWidth: 2,
-        borderRadius: 6,
+        borderWidth: 4,
+        borderRadius: 12,
       },
     ],
   };
@@ -88,14 +88,14 @@ const TaskPriorityChart = () => {
       legend: {
         position: "bottom",
         labels: {
-          color: "#fff",
+          color: "indigo",
           font: { size: 14 },
         },
       },
       title: {
         display: true,
-        text: "🔥 Live Task Priority Distribution",
-        color: "#fff",
+        text: " Live Task Priority Distribution",
+        color: "gray",
         font: { size: 20 },
         padding: { bottom: 20 },
       },
@@ -107,12 +107,12 @@ const TaskPriorityChart = () => {
     },
     scales: {
       x: {
-        ticks: { color: "#fff" },
+        ticks: { color: "black" },
         grid: { color: "rgba(255,255,255,0.1)" },
       },
       y: {
         beginAtZero: true,
-        ticks: { color: "#fff" },
+        ticks: { color: "black" },
         grid: { color: "rgba(255,255,255,0.1)" },
       },
     },
@@ -123,15 +123,15 @@ const TaskPriorityChart = () => {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="glass-neon rounded-2xl p-6 w-full max-w-xl shadow-xl border border-white/10"
+      className="glass-neon rounded-2xl p-6 w-full h-full shadow-xl border border-white/10"
     >
-      <h2 className="text-2xl font-semibold text-white mb-3 flex items-center gap-2">
+      <h2 className="text-2xl font-semibold text-black mb-3 flex items-center gap-2">
         📊 Task Priority Chart
       </h2>
 
       <Bar data={chartData} options={chartOptions} />
 
-      <div className="text-sm text-white mt-4 flex justify-between font-medium">
+      <div className="text-sm text-gray-500 mt-4 flex justify-between font-medium">
         <span>🔴 High: {taskData.high}</span>
         <span>🟡 Medium: {taskData.medium}</span>
         <span>🟢 Low: {taskData.low}</span>

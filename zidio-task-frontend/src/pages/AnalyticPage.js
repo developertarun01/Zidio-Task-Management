@@ -61,17 +61,17 @@ const AnalyticsPage = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6">
           {/* Task Priority Chart */}
-          <div className="bg-glass p-4 rounded-2xl shadow-glass border border-white/10">
+          <div className="bg-emerald-50 p-4 rounded-2xl shadow-glass border border-white/10">
             <h2 className="text-xl font-semibold mb-4">
-              Task Priority Distribution
+              {/* Task Priority Distribution */}
             </h2>
             <TaskPriorityChart tasks={tasks} />
           </div>
 
           {/* Real-Time Chart */}
-          <div className="bg-glass p-4 rounded-2xl shadow-glass border border-white/10">
+          <div className="bg-emerald-50 p-4 rounded-2xl shadow-glass border border-white/10">
             <h2 className="text-xl font-semibold mb-4">
-              Real-Time Task Progress
+              {/* Real-Time Task Progress */}
             </h2>
             <RealtimeChart tasks={tasks} />
           </div>
@@ -88,20 +88,20 @@ const AnalyticsPage = () => {
           </div> */}
 
           {/* Overdue Task Chart */}
-          <div className="bg-glass p-4 rounded-2xl shadow-glass border border-white/10">
-            <h2 className="text-xl font-semibold mb-4">Overdue Tasks</h2>
+          <div className="bg-emerald-50 p-4 rounded-2xl shadow-glass border border-white/10">
+            <h2 className="text-black text-xl font-semibold mb-4">Overdue Tasks</h2>
             <OverdueTaskChart tasks={tasks} />
           </div>
-          <div className="bg-glass p-4 rounded-2xl shadow-glass border border-white/10">
-            <h2 className="text-xl font-semibold mb-4">Task</h2>
+          <div className="bg-emerald-50 p-4 rounded-2xl shadow-glass border border-white/10 h-full">
+            {/* <h2 className="text-xl font-semibold mb-4">Task</h2> */}
             <UserTaskLoadChart tasks={tasks} />
           </div>
           {/* <div className="bg-glass p-4 rounded-2xl shadow-glass border border-white/10">
             <h2 className="text-xl font-semibold mb-4">Tasks Status</h2>
             <TaskStatusChart tasks={tasks} />
           </div> */}
-          <div className="bg-glass p-4 rounded-2xl shadow-glass border border-white/10">
-            <h2 className="text-xl font-semibold mb-4">Tasks Status</h2>
+          <div className="bg-emerald-50 p-4 rounded-2xl shadow-glass border border-white/10">
+            {/* <h2 className="text-xl font-semibold mb-4">Tasks Status</h2> */}
             <MonthlyTaskTrendsChart tasks={tasks} />
           </div>
         </div>

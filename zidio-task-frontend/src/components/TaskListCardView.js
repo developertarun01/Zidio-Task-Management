@@ -10,19 +10,7 @@ const TaskListCardView = ({
   role,
 }) => {
   // Role-based filtering logic
-  const filteredTasks = tasks.filter((task) => {
-    if (role === "admin") {
-      // Admin can see all tasks
-      return true;
-    } else if (role === "manager") {
-      // Manager can see all tasks they are assigned to
-      return task.assignedTo === "manager"; // Replace this with actual logic for managers
-    } else if (role === "employee") {
-      // Employees can only see their own tasks
-      return task.assignedTo === "employee"; // Replace with logic for employee-specific tasks
-    }
-    return false;
-  });
+  const filteredTasks = tasks;
 
   return (
     <div className="min-w-full grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 max-h-[550px] overflow-auto">

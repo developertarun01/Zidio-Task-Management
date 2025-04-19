@@ -20,6 +20,7 @@ const UserAvatar = () => {
     return nameParts.map((part) => part.charAt(0).toUpperCase()).join("");
   };
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  // const [isProfileOpen, setProfileOpen] = useState(false);
 
   const [open, setOpen] = useState(false);
   const [openPassword, setOpenPassword] = useState(false);
@@ -121,7 +122,8 @@ const UserAvatar = () => {
                         onClick={() => setShowLogoutModal(true)}
                         className={`text-red-600 group flex w-full items-center rounded-md px-2 py-2 text-base`}
                       >
-                        <IoLogOutOutline className="mr-2" aria-hidden="true" />Logout
+                        <IoLogOutOutline className="mr-2" aria-hidden="true" />
+                        Logout
                       </button>
                     </div>
                   )}
@@ -131,7 +133,7 @@ const UserAvatar = () => {
           </Transition>
         </Menu>
       </div>
-      <UserProfileModal open={open} setOpen={setOpen} user={user} />
+      <UserProfileModal open={open} setOpen={setOpen} user={users} />
       <ChangePasswordModal open={openPassword} setOpen={setOpenPassword} />
       <LogoutConfirmModal
         open={showLogoutModal}

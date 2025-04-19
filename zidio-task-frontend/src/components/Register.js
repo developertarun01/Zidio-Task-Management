@@ -55,7 +55,7 @@ const Register = () => {
 
   return (
     <motion.div
-      className="w-full min-h-screen flex items-center justify-center flex-col lg:flex-row bg-gradient-to-br from-gray-900 via-gray-800 to-black"
+      className="w-full min-h-screen flex items-center justify-center flex-col lg:flex-row bg-gradient-to-br from-lime-100 via-slate-50 to-blue-100 overflow-hidden"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
@@ -73,9 +73,14 @@ const Register = () => {
             </p>
           </div>
         </div>
-
+        {/* 🔵 Animated Background Blobs */}
+        <div className="absolute inset-0 z-0">
+          <div className="absolute top-0 -left-10 w-80 h-80 bg-rose-700 opacity-30 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000" />
+          <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-600 opacity-30 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000" />
+          <div className="absolute top-1/2 left-1/3 w-72 h-72 bg-pink-500 opacity-20 rounded-full mix-blend-multiply filter blur-2xl animate-blob" />
+        </div>
         {/* right side */}
-        <div className="w-full md:w-1/3 p-4 md:p-1 flex flex-col justify-center items-center">
+        <div className="z-10 w-full md:w-1/3 p-4 md:p-1 flex flex-col justify-center items-center">
           <motion.form
             onSubmit={handleSubmit}
             className="form-container w-full md:w-[400px] flex flex-col gap-y-8 bg-white shadow-2xl rounded-2xl px-10 pt-14 pb-14"
@@ -163,6 +168,32 @@ const Register = () => {
           </motion.form>
         </div>
       </div>
+      {/* 🌟 Animate blob keyframes */}
+      <style>{`
+        @keyframes blob {
+          0% {
+            transform: translate(0px, 0px) scale(1);
+          }
+          33% {
+            transform: translate(30px, -50px) scale(1.1);
+          }
+          66% {
+            transform: translate(-20px, 20px) scale(0.9);
+          }
+          100% {
+            transform: translate(0px, 0px) scale(1);
+          }
+        }
+        .animate-blob {
+          animation: blob 7s infinite;
+        }
+        .animation-delay-2000 {
+          animation-delay: 2s;
+        }
+        .animation-delay-4000 {
+          animation-delay: 4s;
+        }
+      `}</style>
     </motion.div>
   );
 };

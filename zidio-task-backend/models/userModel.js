@@ -10,6 +10,12 @@ const UserSchema = new mongoose.Schema({
     enum: ["admin", "employee","manager"], //Differentiate the role for every individual, and delfault to employee.
     default: "employee",
   },
+  phone: Number,
+  location: String,
+  birthday: Date,
+  bio: String,
+  // avatar: File,
+  
   password: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
 });

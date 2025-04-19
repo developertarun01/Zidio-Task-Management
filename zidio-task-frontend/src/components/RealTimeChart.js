@@ -15,15 +15,11 @@ const RealTimeChart = () => {
     fetchTasks();
 
     // Real-time updates
-    socket.on("taskAdded", (newTask) =>
-      setTasks((prev) => [...prev, newTask])
-    );
+    socket.on("taskAdded", (newTask) => setTasks((prev) => [...prev, newTask]));
 
     socket.on("taskUpdated", (updatedTask) =>
       setTasks((prev) =>
-        prev.map((task) =>
-          task._id === updatedTask._id ? updatedTask : task
-        )
+        prev.map((task) => (task._id === updatedTask._id ? updatedTask : task))
       )
     );
 
@@ -102,7 +98,7 @@ const RealTimeChart = () => {
   };
 
   return (
-    <div className="bg-white/80 backdrop-blur-md border border-white/20 p-6 rounded-2xl shadow-lg w-full max-w-xs transition-all duration-300 hover:scale-[1.02]">
+    <div className="bg-white/80 backdrop-blur-md border border-white/20 p-6 rounded-2xl shadow-lg w-full  transition-all duration-300 hover:scale-[1.02]">
       <h2 className="text-xl font-bold text-center text-gray-800 mb-4">
         📊 Real-Time Task Progress
       </h2>
@@ -115,7 +111,8 @@ const RealTimeChart = () => {
           <strong>{pending}</strong> pending
         </p>
         <p className="text-xs text-gray-500 mt-1">
-          Total: <strong>{tasks.length}</strong> task{tasks.length !== 1 ? "s" : ""}
+          Total: <strong>{tasks.length}</strong> task
+          {tasks.length !== 1 ? "s" : ""}
         </p>
       </div>
     </div>
