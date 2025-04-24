@@ -147,9 +147,9 @@ const CalendarView = () => {
   };
 
   return (
-    <div className="flex">
+    <div className="flex  bg-gradient-to-br from-[#2bda42] via-[#11399f] to-[#2d61cfce] ">
       {/* Filters Sidebar */}
-      <div className="w-64 p-4 rounded-xl glass border border-white/10 shadow-lg text-white mr-4">
+      <div className="bg-gradient-to-br from-[#c2b60f] via-[#214753] to-[#58cc97e5] w-64 p-4 rounded-xl glass border border-white/10 shadow-lg text-white mr-4">
         <h2 className="text-lg font-bold mb-4 text-center">Filters</h2>
 
         <div className="mb-4">
@@ -201,7 +201,7 @@ const CalendarView = () => {
       </div>
 
       {/* Calendar */}
-      <div className="flex-grow bg-gradient-to-br from-[#042330] via-[#214753] to-[#06041e] p-4 rounded-xl glass border border-white/10 shadow-lg text-white">
+      <div className="rounded-xl glass border border-white/10 shadow-lg text-gray-900">
         <h1 className="text-2xl font-bold mb-4 text-center text-lime-400">
           📅 Task Calendar with Real-Time & Drag-Drop
         </h1>

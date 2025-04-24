@@ -29,7 +29,7 @@ function Contact() {
   };
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center overflow-hidden shadow-md rounded-md">
+    <div className="bg-gradient-to-br from-[#079cdd] via-[#0d8ab0] to-[#1c0fac] relative min-h-screen flex items-center justify-center overflow-hidden shadow-md rounded-md ">
       {/* Blurred background effects */}
       <div className="absolute w-72 h-72 bg-blue-300 opacity-30 rounded-full top-10 left-10 blur-3xl animate-pulse" />
       <div className="absolute w-64 h-64 bg-green-300 opacity-30 rounded-full bottom-10 right-10 blur-3xl animate-pulse" />
@@ -38,7 +38,7 @@ function Contact() {
         initial={{ opacity: 0, y: 80 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="bg-white backdrop-blur-md bg-opacity-70 shadow-xl rounded-lg max-w-4xl w-full mx-4 p-10 z-10"
+        className="bg-blue-100 backdrop-blur-md bg-opacity-70 shadow-xl rounded-lg max-w-4xl w-full mx-4 p-10 z-10"
       >
         <h2 className="text-4xl font-bold text-center mb-6 text-gray-800">
           Get In Touch
