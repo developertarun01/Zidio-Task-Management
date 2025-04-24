@@ -25,6 +25,7 @@ module.exports = {
           "50%": { backgroundPosition: "100% 50%" },
         },
       },
+      darkMode: "class",
     },
   },
 

@@ -25,9 +25,9 @@ const Navbar = () => {
         </div>
         {/* Desktop Menu */}
         <div className="hidden md:flex space-x-6 text-gray-700 font-medium">
-          <Link to="/home" className="hover:text-indigo-600 transition ">
+          {/* <Link to="/home" className="hover:text-indigo-600 transition ">
             Home
-          </Link>
+          </Link> */}
           <Link to="/about" className="hover:text-indigo-600 transition">
             About Us
           </Link>
@@ -57,9 +57,9 @@ const Navbar = () => {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden bg-gray-50 border-gray-200 py-3 space-y-1 text-center text-gray-700 font-medium ">
-          <Link to="/home" className="block hover:bg-indigo-100 p-2">
+        {/* <Link to="/home" className="block hover:bg-indigo-100 p-2">
             Home
-          </Link>
+          </Link> */}
           <Link
             to="/auth/google/dashboard"
             className="block hover:bg-indigo-100 p-2"

@@ -8,16 +8,16 @@ const router = express.Router();
 
 // ✅ Get Tasks (Admin sees all, Manager sees their created, User sees their assigned)
 router.get("/", verifyToken, async (req, res) => {
-  const { role, id } = req.user;
+  const { role, name } = req.user;
   try {
     let tasks = [];
 
     if (role === "admin") {
       tasks = await Task.find({ deleted: false });
     } else if (role === "manager") {
-      tasks = await Task.find({ createdBy: id, deleted: false });
+      tasks = await Task.find({ assignedTo: name, deleted: false });
     } else {
-      tasks = await Task.find({ assignedTo: id, deleted: false });
+      tasks = await Task.find({ assignedTo: name, deleted: false });
     }
 
     res.json(tasks);
@@ -43,16 +43,17 @@ router.post(
         createdBy: req.user.id,
       };
 
-      const task = new Task(taskData);
-      await task.save();
+      const newTask = new Task(taskData);
+      await newTask.save();
 
       // ✅ Emit correct object
       const io = req.app.get("io");
       if (io) {
-        io.emit("taskCreated", task); // Correct event + object
+        io.emit("taskCreated", newTask); // Correct event + object
       }
+      console.log("Task Created:", newTask); // ✅ Log created task
 
-      res.status(201).json(task);
+      res.status(201).json(newTask);
     } catch (err) {
       console.error("Error creating task:", err); // ✅ Log actual error
       res.status(500).json({ message: "Failed to create task" });
@@ -64,7 +65,7 @@ router.post(
 router.put(
   "/:id",
   verifyToken,
-  allowRoles("admin", "manager"),
+  allowRoles("admin", "manager","employee"),
   async (req, res) => {
     try {
       const updatedTask = await Task.findByIdAndUpdate(
@@ -84,8 +85,9 @@ router.put(
       // Access io from request app context
       const io = req.app.get("io");
       if (io) {
-        io.emit("taskCreated", updatedTask);
+        io.emit("taskUpdated", updatedTask);
       }
+      console.log("Task Updated:", updatedTask); // ✅ Log updated task
       res.json(updatedTask);
     } catch (err) {
       res.status(500).json({ message: "Failed to update task" });
@@ -115,6 +117,7 @@ router.patch(
       const io = req.app.get("io");
       if (io) {
         io.emit("taskUpdated", task);
+        console.log("Task Restored:", task); // ✅ Log restored task
       } // Emit 'taskRestored' to all connected clients
 
       res.json({ message: "Task restored", task });
@@ -141,6 +144,7 @@ router.delete(
       const io = req.app.get("io");
       if (io) {
         io.emit("taskDeleted", task);
+        console.log("Task Soft Deleted:", task); // ✅ Log soft deleted task  
       }
       res.json({ message: "Task moved to trash" });
     } catch (err) {
@@ -167,6 +171,7 @@ router.delete(
       const io = req.app.get("io");
       if (io) {
         io.emit("taskPermanentlydeleted", task);
+        console.log("Task Permanently Deleted:", task); // ✅ Log permanently deleted task  
       }
       res.json({ message: "Task permanently deleted" });
     } catch (err) {

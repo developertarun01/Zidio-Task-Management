@@ -52,8 +52,8 @@ const CreateMeeting = () => {
   };
 
   return (
-    <div className="max-w-xl mx-auto bg-white/10 backdrop-blur-md shadow-lg p-8 rounded-lg mt-10 text-black">
-      <h2 className="text-2xl font-bold mb-6 text-cyan-400">Create Meeting</h2>
+    <div className="w-full h-screen bg-gradient-to-br from-[#042330] via-[#214753] to-[#06041e] backdrop-blur-md shadow-lg p-48 rounded-lg text-neon">
+      <h2 className="text-2xl font-bold mb-6 text-indigo-300">Create Meeting</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block mb-1">Meeting Title *</label>
@@ -116,7 +116,7 @@ const CreateMeeting = () => {
 
         <button
           type="submit"
-          className="bg-cyan-500 hover:bg-cyan-600 text-white px-6 py-2 rounded-lg shadow transition duration-300"
+          className="bg-indigo-500 hover:bg-cyan-600 text-white px-6 py-2 rounded-lg shadow transition duration-300"
         >
           Create Meeting
         </button>

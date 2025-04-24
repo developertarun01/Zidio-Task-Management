@@ -2,16 +2,14 @@ import React from "react";
 import { Edit, Trash2, CheckCircle, Undo2 } from "lucide-react";
 import { getPriorityColor } from "../utils/colors"; // If you use a utility for priority colors
 
-const TaskListCardView = ({
-  tasks,
-  onDelete,
-  onStatusToggle,
-  onEdit,
-  role,
-}) => {
+const TaskListCardView = ({ tasks, onDelete, onStatusToggle, onEdit }) => {
   // Role-based filtering logic
   const filteredTasks = tasks;
-
+  // const role = localStorage.getItem("userRole");
+  // const email = localStorage.getItem("userEmail"); // Storing the role in localStorage
+  // const name = localStorage.getItem("userName");
+  // const user = JSON.parse(localStorage.getItem("user"));
+  
   return (
     <div className="min-w-full grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 max-h-[550px] overflow-auto">
       {filteredTasks.map((task) => (
@@ -23,7 +21,7 @@ const TaskListCardView = ({
           <p className="text-sm text-gray-300 mb-2">{task.description}</p>
           {/* ✅ Show assigned user's name */}
           <p className="text-sm text-gray-400">
-            Assigned to: {task.assignedTo?.name || "Unassigned"} (
+            Assigned to: {task.assignedTo || "Unassigned"} (
             {task.assignedTo?.email})
           </p>
           <p className="text-sm text-gray-400">

@@ -34,9 +34,12 @@ const CalendarView = () => {
   const applyFilters = () => {
     const result = allTasks.filter((task) => {
       return (
-        (filters.priority === "all" || task.extendedProps.priority === filters.priority) &&
-        (filters.status === "all" || task.extendedProps.status === filters.status) &&
-        (filters.username === "all" || task.extendedProps.username === filters.username)
+        (filters.priority === "all" ||
+          task.extendedProps.priority === filters.priority) &&
+        (filters.status === "all" ||
+          task.extendedProps.status === filters.status) &&
+        (filters.username === "all" ||
+          task.extendedProps.username === filters.username)
       );
     });
     setFilteredTasks(result);
@@ -127,8 +130,12 @@ const CalendarView = () => {
       html: `
         <strong>Priority:</strong> ${extendedProps.priority}<br/>
         <strong>Status:</strong> ${extendedProps.status}<br/>
-        <strong>Assigned To:</strong> ${extendedProps.username || "Unassigned"}<br/>
-        <strong>Deadline:</strong> ${new Date(extendedProps.deadline).toLocaleDateString()}
+        <strong>Assigned To:</strong> ${
+          extendedProps.username || "Unassigned"
+        }<br/>
+        <strong>Deadline:</strong> ${new Date(
+          extendedProps.deadline
+        ).toLocaleDateString()}
       `,
       icon: "info",
       confirmButtonColor: "#00ffe0",
@@ -180,15 +187,21 @@ const CalendarView = () => {
             className="w-full bg-transparent text-white border p-2 rounded-lg"
           >
             <option value="all">All</option>
-            {[...new Set(allTasks.map(t => t.extendedProps.username).filter(Boolean))].map((u) => (
-              <option key={u} value={u}>{u}</option>
+            {[
+              ...new Set(
+                allTasks.map((t) => t.extendedProps.username).filter(Boolean)
+              ),
+            ].map((u) => (
+              <option key={u} value={u}>
+                {u}
+              </option>
             ))}
           </select>
         </div>
       </div>
 
       {/* Calendar */}
-      <div className="flex-grow p-4 rounded-xl glass border border-white/10 shadow-lg text-white">
+      <div className="flex-grow bg-gradient-to-br from-[#042330] via-[#214753] to-[#06041e] p-4 rounded-xl glass border border-white/10 shadow-lg text-white">
         <h1 className="text-2xl font-bold mb-4 text-center text-lime-400">
           📅 Task Calendar with Real-Time & Drag-Drop
         </h1>
@@ -214,9 +227,11 @@ const CalendarView = () => {
             const status = arg.event.extendedProps.status;
 
             let base = "rounded-md px-1 text-xs";
-            if (status === "completed") return `${base} bg-green-600 text-white border border-white`;
+            if (status === "completed")
+              return `${base} bg-green-600 text-white border border-white`;
             if (priority === "high") return `${base} bg-red-600 text-white`;
-            if (priority === "medium") return `${base} bg-yellow-400 text-black`;
+            if (priority === "medium")
+              return `${base} bg-yellow-400 text-black`;
             if (priority === "low") return `${base} bg-blue-500 text-white`;
             return `${base} bg-gray-500 text-white`;
           }}

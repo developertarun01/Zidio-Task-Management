@@ -9,7 +9,21 @@ const EditTaskModal = ({ isOpen, onClose, task, onSave }) => {
     description: "",
     priority: "Low",
     deadline: "",
+    assignedTo: "",
   });
+  const [users, setUsers] = useState([]);
+  const [userRole, setUserRole] = useState("");
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    const user = storedUser ? JSON.parse(storedUser) : null;
+    if (!user || (user.role !== "admin" && user.role !== "manager")) {
+      toast.error("❌ Unauthorized: Only admins or managers can edit tasks.");
+      onClose();
+      return;
+    }
+    setUserRole(user.role);
+  }, [onClose]);
 
   useEffect(() => {
     if (task) {
@@ -17,33 +31,44 @@ const EditTaskModal = ({ isOpen, onClose, task, onSave }) => {
         title: task.title || "",
         description: task.description || "",
         priority: task.priority || "Low",
+        assignedTo: task.assignedTo || "",
         deadline: task.deadline ? task.deadline.slice(0, 10) : "",
       });
     }
   }, [task]);
+
   useEffect(() => {
-    const handleEsc = (e) => e.key === "Escape" && onClose();
-    window.addEventListener("keydown", handleEsc);
-    return () => window.removeEventListener("keydown", handleEsc);
-  }, [onClose]);
+    if (userRole === "admin" || userRole === "manager") {
+      axios
+        .get("http://localhost:4004/api/auth/users", { withCredentials: true })
+        .then((res) => setUsers(res.data))
+        .catch((err) => {
+          console.error("Failed to fetch users:", err);
+          toast.error("⚠️ Failed to load users");
+        });
+    }
+  }, [userRole]);
 
   const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
-  const handleSubmit = async () => {
-    const storedUser = localStorage.getItem("user");
-    const user = storedUser ? JSON.parse(storedUser) : null;
-    console.log(user);
-    console.log(user.role);
+    const { name, value, selectedOptions } = e.target;
 
-    if (!user || (user.role !== "admin" && user.role !== "manager")) {
-      toast.error("❌ Unauthorized: Only admins or managers can update tasks.");
-      return;
+    if (name === "assignedTo") {
+      const selectedValues = Array.from(selectedOptions).map(
+        (opt) => opt.value
+      );
+      setFormData((prev) => ({
+        ...prev,
+        assignedTo: selectedValues,
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
     }
+  };
 
+  const handleSubmit = async () => {
     if (!formData.title) {
       toast.warning("⚠️ Title is required");
       return;
@@ -69,11 +94,12 @@ const EditTaskModal = ({ isOpen, onClose, task, onSave }) => {
     }
   };
 
-  if (!isOpen || !task) return null;
+  if (!isOpen || !task || (userRole !== "admin" && userRole !== "manager"))
+    return null;
 
   return (
     <AnimatePresence>
-      {isOpen && task && (
+      {isOpen && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -98,6 +124,7 @@ const EditTaskModal = ({ isOpen, onClose, task, onSave }) => {
               className="w-full mb-4 px-4 py-2 rounded-lg bg-white/20 border border-white/30 text-white placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-400"
               placeholder="Title"
             />
+
             <textarea
               name="description"
               value={formData.description}
@@ -105,6 +132,7 @@ const EditTaskModal = ({ isOpen, onClose, task, onSave }) => {
               className="w-full mb-4 px-4 py-2 rounded-lg bg-white/20 border border-white/30 text-white placeholder:text-gray-300 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-400"
               placeholder="Description"
             />
+
             <select
               name="priority"
               value={formData.priority}
@@ -115,13 +143,29 @@ const EditTaskModal = ({ isOpen, onClose, task, onSave }) => {
               <option value="Medium">🟠 Medium</option>
               <option value="High">🔴 High</option>
             </select>
+
             <input
               type="date"
               name="deadline"
               value={formData.deadline}
               onChange={handleChange}
-              className="w-full mb-6 px-4 py-2 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-cyan-400"
+              className="w-full mb-4 px-4 py-2 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-cyan-400"
             />
+
+            <select
+              multiple
+              name="assignedTo"
+              value={formData.assignedTo}
+              onChange={handleChange}
+             className="w-full mb-6 px-4 py-2 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-cyan-400 h-32"
+            >
+              <option value="">👤 Assign to...</option>
+              {users.map((u) => (
+                <option className="text-gray-700" key={u._id} value={u._id}>
+                  {u.username} ({u.email})
+                </option>
+              ))}
+            </select>
 
             <div className="flex justify-end gap-4">
               <button

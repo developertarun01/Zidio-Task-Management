@@ -4,7 +4,7 @@ const User = require("../models/userModel"); // Adjust path if needed
 const { verifyToken, allowRoles } = require("../middleware/authMiddleware"); // If you have auth middleware
 const multer = require("multer");
 const upload = require("../middleware/cloudinaryUpload");
-
+const Submit = require("../models/submit")
 router.put(
   "/update-profile",
   verifyToken,
@@ -137,5 +137,12 @@ router.get("/", verifyToken, allowRoles("admin"), async (req, res) => {
     res.status(500).json({ error: "Failed to fetch team members" });
   }
 });
+router.post("/submit", async (req, res)=>{
+  const {name, email} = req.body;
+  const iSubmit = new Submit ({name, email});
+  await iSubmit.save();
+  // submit= new Submit(req.body)
+
+})
 
 module.exports = router;

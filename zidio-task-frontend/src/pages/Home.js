@@ -19,7 +19,8 @@ const Home = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 1, delay: 0.5 }}
       >
-        Organize your tasks efficiently with our feature-rich task manager. Plan, track, and manage your projects in one place.
+        Organize your tasks efficiently with our feature-rich task manager.
+        Plan, track, and manage your projects in one place.
       </motion.p>
 
       {/* Animated Buttons */}
@@ -29,16 +30,16 @@ const Home = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 1 }}
       >
-        <Link to="/auth/google/dashboard">
+        <Link to="/register">
           <motion.button
             className="px-6 py-3 bg-white text-blue-600 font-bold rounded-lg shadow-lg hover:bg-gray-200"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
           >
-            Go to Dashboard
+            Signup here
           </motion.button>
         </Link>
-        <Link to="/task-to-do">
+        <Link to="/login">
           <motion.button
             className="px-6 py-3 bg-gray-900 text-white font-bold rounded-lg shadow-lg hover:bg-gray-800"
             whileHover={{ scale: 1.1 }}
@@ -68,6 +69,9 @@ const Home = () => {
           title="📊 Progress Analytics"
           description="Monitor your performance with detailed charts."
         />
+        <div className="h-36">
+          <h2>Get the best soloution at our site</h2>
+        </div>
       </motion.div>
     </div>
   );

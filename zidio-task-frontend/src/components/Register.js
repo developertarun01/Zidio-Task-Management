@@ -1,17 +1,25 @@
+import "./../styles/register.css";
 import Textbox from "../components/Textbox";
 import Button from "../components/Button";
 import { motion } from "framer-motion";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+
+// import toggleSoundFile from "../assets/toggle-sound.mp3";
 
 const Register = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("user"); // 👈 Default role
+  const [role, setRole] = useState("user");
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem("theme") === "dark";
+  });
+
   const navigate = useNavigate();
+  const soundRef = useRef(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,77 +30,101 @@ const Register = () => {
           username,
           email,
           password,
-          role, // 👈 Send role to backend
+          role,
         }
       );
 
       if (response.status === 201) {
         toast.success(response.data.message);
-
-        // Redirect based on role
-        if (role === "admin") {
-          navigate("/auth/google/dashboard");
-        } else if (role === "manager") {
-          navigate("/auth/google/dashboard");
-        } else {
-          navigate("/home");
-        }
+        navigate("/auth/google/dashboard");
       }
     } catch (error) {
-      console.error(error);
-      if (error.response?.status === 409) {
-        navigate("/");
-      } else {
-        alert(error.response?.data?.message || "Registration failed");
-      }
+      if (error.response?.status === 409) navigate("/login");
+      else alert(error.response?.data?.message || "Registration failed");
     }
   };
 
   const handleLog = (e) => {
     e.preventDefault();
-    navigate("/");
+    navigate("/login");
   };
+
+  const toggleDarkMode = () => {
+    const newMode = !darkMode;
+    setDarkMode(newMode);
+    localStorage.setItem("theme", newMode ? "dark" : "light");
+    soundRef.current?.play();
+  };
+
+  useEffect(() => {
+    document.body.classList.toggle("dark", darkMode);
+  }, [darkMode]);
 
   return (
     <motion.div
-      className="w-full min-h-screen flex items-center justify-center flex-col lg:flex-row bg-gradient-to-br from-lime-100 via-slate-50 to-blue-100 overflow-hidden"
+      className={`w-full min-h-screen flex items-center justify-center flex-col lg:flex-row overflow-hidden relative ${
+        darkMode ? "dark" : ""
+      }`}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
     >
-      <div className="w-full md:w-auto flex gap-0 md:gap-40 flex-col md:flex-row items-center justify-center">
-        {/* left side */}
-        <div className="h-full w-full lg:w-2/3 flex flex-col items-center justify-center">
+      {/* 🔊 Audio ref */}
+      {/* <audio ref={soundRef} src={toggleSoundFile} preload="auto" /> */}
+
+      {/* Toggle Button */}
+      <button
+        onClick={toggleDarkMode}
+        className="absolute top-4 right-4 z-50 px-4 py-2 bg-white/30 text-white backdrop-blur-md rounded-full text-sm shadow hover:bg-white/50 transition-all duration-300"
+      >
+        {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
+      </button>
+
+      {/* 🎇 Starfield */}
+      <div className={`starfield z-0 ${darkMode ? "dark-stars" : ""}`}>
+        <div />
+      </div>
+
+      {/* 🫧 Bubbles */}
+      <div className="absolute inset-2 z-0 flex items-center justify-center overflow-hidden">
+        <div className={`bubble-effect ${darkMode ? "dark-bubbles" : ""}`} />
+      </div>
+
+      {/* 🎨 Background */}
+      <div
+        className={`absolute inset-0 z-[-2] ${
+          darkMode ? "dark-bg" : "light-bg"
+        }`}
+      />
+
+      {/* Page Content */}
+      <div className="w-full md:w-auto flex gap-0 md:gap-40 flex-col md:flex-row items-center justify-center z-10">
+        <div className="h-full w-full lg:w-2/3 flex flex-col items-center justify-center text-white text-center px-4 transition-all duration-500">
           <div className="w-full md:max-w-lg 2xl:max-w-3xl flex flex-col items-center justify-center gap-5 md:gap-y-10 2xl:-mt-20">
-            <span className="flex gap-1 py-1 px-3 border rounded-full text-sm md:text-base bordergray-300 text-gray-600">
+            <span className="flex gap-1 py-1 px-3 border rounded-full text-sm md:text-base border-white/50 text-white bg-white/20 backdrop-blur-md">
               Manage all your task in one place!
             </span>
-            <p className="flex flex-col gap-0 md:gap-4 text-4xl md:text-6xl 2xl:text-7xl font-black text-center text-blue-700">
+            <p className="flex flex-col gap-0 md:gap-4 text-4xl md:text-6xl 2xl:text-7xl font-black">
               <span>Zidio</span>
               <span>Task Manager</span>
             </p>
           </div>
         </div>
-        {/* 🔵 Animated Background Blobs */}
-        <div className="absolute inset-0 z-0">
-          <div className="absolute top-0 -left-10 w-80 h-80 bg-rose-700 opacity-30 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000" />
-          <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-600 opacity-30 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000" />
-          <div className="absolute top-1/2 left-1/3 w-72 h-72 bg-pink-500 opacity-20 rounded-full mix-blend-multiply filter blur-2xl animate-blob" />
-        </div>
-        {/* right side */}
-        <div className="z-10 w-full md:w-1/3 p-4 md:p-1 flex flex-col justify-center items-center">
+
+        {/* Right Form */}
+        <div className="z-10 w-full md:w-1/3 p-4 md:p-1 flex flex-col justify-center items-center relative">
           <motion.form
             onSubmit={handleSubmit}
-            className="form-container w-full md:w-[400px] flex flex-col gap-y-8 bg-white shadow-2xl rounded-2xl px-10 pt-14 pb-14"
+            className="form-container w-full md:w-[400px] flex flex-col gap-y-8 glass-card px-10 pt-14 pb-14"
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ type: "spring", stiffness: 80, delay: 0.3 }}
           >
-            <div className="">
+            <div>
               <p className="text-blue-600 text-3xl font-bold text-center">
                 Welcome!
               </p>
-              <p className="text-center text-base text-gray-700">
+              <p className="text-center text-base text-gray-700 dark:text-gray-300">
                 Keep all your credentials safe.
               </p>
             </div>
@@ -131,13 +163,12 @@ const Register = () => {
                 required
               />
 
-              {/* 🔥 Role Selection */}
               <div>
-                <label className="block mb-1 font-semibold text-gray-600">
+                <label className="block mb-1 font-semibold text-gray-600 dark:text-gray-300">
                   Select Role:
                 </label>
                 <select
-                  className="w-full px-4 py-2 rounded-full border  h-10 text-slate-400 "
+                  className="w-full px-4 py-2 rounded-full border h-10 text-slate-400"
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
                   required
@@ -155,45 +186,17 @@ const Register = () => {
               />
             </div>
 
-            <div>
-              <p className="text-center">
-                Already Registered?
-                <Button
-                  className={"text-blue-500"}
-                  onClick={handleLog}
-                  label={"Login"}
-                />
-              </p>
+            <div className="text-center">
+              <button
+                className="text-blue-500 text-center hover:underline"
+                onClick={handleLog}
+              >
+                Already have an account? Login
+              </button>
             </div>
           </motion.form>
         </div>
       </div>
-      {/* 🌟 Animate blob keyframes */}
-      <style>{`
-        @keyframes blob {
-          0% {
-            transform: translate(0px, 0px) scale(1);
-          }
-          33% {
-            transform: translate(30px, -50px) scale(1.1);
-          }
-          66% {
-            transform: translate(-20px, 20px) scale(0.9);
-          }
-          100% {
-            transform: translate(0px, 0px) scale(1);
-          }
-        }
-        .animate-blob {
-          animation: blob 7s infinite;
-        }
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-        .animation-delay-4000 {
-          animation-delay: 4s;
-        }
-      `}</style>
     </motion.div>
   );
 };

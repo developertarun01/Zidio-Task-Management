@@ -17,6 +17,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { saveAs } from "file-saver";
 import LogoutConfirmModal from "./LogoutConfirmModal";
+import { useTheme } from "../context/ThemeContext";
 
 // Enable sending cookies with every request
 axios.defaults.withCredentials = true;
@@ -31,6 +32,7 @@ const Dashboard = () => {
   const role = localStorage.getItem("userRole");
   const email = localStorage.getItem("userEmail");
   const name = localStorage.getItem("userName");
+  const { darkMode, toggleDarkMode } = useTheme();
 
   const fetchTasks = async () => {
     try {
@@ -146,7 +148,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="flex bg-gradient-to-br from-[#0f2027] via-[#203a43] to-[#2c5364] min-h-screen text-white font-sans">
+    <div className="flex bg-gradient-to-br from-[#042330] via-[#214753] to-[#06041e] min-h-screen font-sans bg-white dark:bg-gray-900 text-black dark:text-white">
       <main className="flex-1 p-6 overflow-y-auto space-y-6">
         <motion.div
           initial={{ opacity: 0, y: -30 }}
@@ -154,12 +156,25 @@ const Dashboard = () => {
           transition={{ duration: 0.8 }}
           className="flex justify-between items-start"
         >
+          {/* <div
+            className={` ${
+              darkMode ? "bg-[#0f172a] text-white" : "bg-gray-100 text-gray-800"
+            }`}
+          >
+            <header
+              className={`p-4 ${darkMode ? "bg-gray-900" : "bg-white"} shadow`}
+            >
+              Welcome back!
+            </header> */}
+          {/* Content */}
+          {/* </div> */}
+
           <div>
             <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-pink-400 to-yellow-300 animate-gradient">
-              🚀 Welcome {name}, to Zidio Dashboard
+               Welcome back! {name}, to Zidio Dashboard
             </h1>
           </div>
-          <div className="bg-white/10 p-4 rounded-lg shadow-md text-sm backdrop-blur-md space-y-2">
+          <div className="text-white bg-gradient-to-r from-black via-indigo-800 to-blue-700 animate-gradient p-4 rounded-lg shadow-md text-sm backdrop-blur-md space-y-2">
             <p>
               <strong>Name:</strong> {name}
             </p>
@@ -171,7 +186,7 @@ const Dashboard = () => {
             </p>
             <button
               onClick={() => setShowLogoutModal(true)}
-              className="mt-2 bg-gradient-to-r from-red-500 to-pink-500 text-white px-4 py-2 rounded-lg shadow-lg hover:scale-105 transition"
+              className="mt-2 bg-gradient-to-r from-red-600 to-pink-600 text-white px-4 py-2 rounded-lg shadow-lg hover:scale-105 transition"
             >
               Logout
             </button>
@@ -202,8 +217,8 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <div className="col-span-1 md:col-span-2 bg-gradient-to-br from-yellow-200 via-pink-100 to-rose-200 p-4 rounded-xl shadow-lg flex items-center justify-center overflow-hidden">
-            <div className="w-full h-full max-w-full max-h-full">
+          <div className="col-span-2 md:col-span-2 gap-2 bg-gradient-to-br from-yellow-100 via-pink-100 to-rose-100 p-4 rounded-xl shadow-lg flex items-center justify-center overflow-auto">
+            <div className="">
               <StatusBreakdownChart tasks={tasks} />
             </div>
           </div>

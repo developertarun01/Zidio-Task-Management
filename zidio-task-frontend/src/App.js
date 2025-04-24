@@ -9,7 +9,7 @@ import {
 // import { useState, useEffect } from "react";
 import { Transition } from "@headlessui/react";
 import clsx from "clsx";
-import React, { Fragment, useRef } from "react";
+import React, { Fragment, useRef, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { setOpenSidebar } from "./redux/slices/authSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -43,30 +43,30 @@ import CreateMeeting from "./components/CreateMeeting";
 function Layout() {
   const { user } = useSelector((state) => state.auth);
   const location = useLocation();
-
+const [expanded, setExpanded] = useState(true);
   return user ? (
-    <div className="flex h-screen overflow-hidden bg-gradient-to-br from-white to-gray-100 text-gray-900">
+    <div className="flex h-screen bg-gradient-to-br from-blue-200 to-gray-100 text-gray-900">
       {/* Fixed Sidebar */}
-      <div className="fixed z-40 inset-y-0 left-0 w-64 bg-white border-r border-gray-200 shadow-lg hidden md:block">
+      <div className="fixed z-40 inset-y-0 left-0 bg-white border-r border-gray-200 shadow-lg hidden md:block">
         <MobileSidebar />
-        <Sidebar />
+        <Sidebar/>
       </div>
 
       {/* Main content area */}
-      <div className="flex-1 flex flex-col md:ml-64">
+      <div className={`flex-1 bg-white rounded-xl shadow-lg flex flex-col ${expanded? "md:ml-64":"md:ml-20"}`}>
         {/* Navbar */}
-        <div className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+        <div className="sticky top-0 z-50 bg-white border-b border-gray-200">
           <Navbar />
         </div>
 
         {/* Page content */}
-        <main className="flex-1 overflow-y-auto px-4 py-6 md:px-8 2xl:px-14 bg-white animate-fade-in">
+        <main className="flex-1 overflow-y-auto bg-animate-fade-in">
           <Outlet />
         </main>
       </div>
     </div>
   ) : (
-    <Navigate to="/" state={{ from: location }} replace />
+    <Navigate to="/login" state={{ from: location }} replace />
   );
 }
 
@@ -85,7 +85,7 @@ const App = () => {
           </Route>
           <Route path="/auth/google/dashboard" element={<Dashboard />} />
           {/* <Route path="/employee/dashboard" element={<UserDashboard />} /> */}
-          <Route path="/home" element={<Home />} />
+
           <Route path="/tasks" element={<TaskList />} />
           <Route path="/calendar" element={<CalendarView />} />
           <Route path="/about" element={<About />} />
@@ -100,8 +100,8 @@ const App = () => {
           <Route path="/analytics" element={<AnalyticsPage />} />
           <Route path="/create-meeting" element={<CreateMeeting />} />
         </Route>
-
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         {/* 404 fallback */}
         <Route

@@ -17,7 +17,7 @@ const ADMIN_EMAILS = [
 
 // ✅ Generate JWT Token
 const generateToken = (user) => {
-  return jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
+  return jwt.sign({ id: user._id, role: user.role,  name: user.username }, process.env.JWT_SECRET, {
     expiresIn: "7d",
   });
 };
@@ -114,6 +114,7 @@ router.post("/login", async (req, res) => {
     console.log("Sending user data:", {
       // token,
       user: {
+        token: token,
         id: user._id,
         name: user.username,
         email: user.email,

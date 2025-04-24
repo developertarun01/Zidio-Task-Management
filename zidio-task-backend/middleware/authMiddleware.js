@@ -1,6 +1,8 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
-const JWT_SECRET = process.env.JWT_SECRET;
+const dotenv = require("dotenv");
+dotenv.config();
+// const JWT_SECRET = process.env.JWT_SECRET;
 
 const verifyToken = async (req, res, next) => {
   const token =
@@ -16,11 +18,17 @@ const verifyToken = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.id).select("-password");
     if (!user) return res.status(404).json({ message: "User not found" });
-
-    req.user = user;
+    req.user = {
+      id: user._id,
+      role: user.role,
+      name: decoded.name, // <-- 👈 this is what was missing
+      email: user.email,
+    };
+    // console.log("User verified:", req.user); // Log the verified user
     next();
   } catch (err) {
     console.error("Token verification failed:", err.message);
+
     return res.status(403).json({ message: "Invalid or expired token" });
   }
 };

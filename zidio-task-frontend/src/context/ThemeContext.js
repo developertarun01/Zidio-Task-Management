@@ -1,22 +1,26 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
+// Create context
 const ThemeContext = createContext();
 
-export const useTheme = () => useContext(ThemeContext);
-
 export const ThemeProvider = ({ children }) => {
-  const [dark, setDark] = useState(() => {
+  const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem("theme") === "dark";
   });
 
   useEffect(() => {
-    localStorage.setItem("theme", dark ? "dark" : "light");
-    document.documentElement.classList.toggle("dark", dark);
-  }, [dark]);
+    document.body.classList.toggle("dark", darkMode);
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
+  }, [darkMode]);
+
+  const toggleDarkMode = () => setDarkMode((prev) => !prev);
 
   return (
-    <ThemeContext.Provider value={{ dark, setDark }}>
+    <ThemeContext.Provider value={{ darkMode, toggleDarkMode }}>
       {children}
     </ThemeContext.Provider>
   );
 };
+
+// Custom hook for cleaner usage
+export const useTheme = () => useContext(ThemeContext);

@@ -3,8 +3,8 @@ import { ClipboardList, GitBranch, Users, BarChart } from 'lucide-react';
 
 const Services = () => {
   return (
-    <div className="flex flex-col items-center bg-white">
-      <div className="bg-blue-50 p-10 rounded-2xl shadow-lg max-w-4xl w-full">
+    <div className="flex flex-col items-center bg-gradient-to-br from-[#042330] via-[#214753] to-[#06041e]">
+      <div className="p-10 rounded-2xl shadow-lg max-w-4xl w-full">
         <h1 className="text-3xl font-bold text-center text-blue-600 mb-6">Our Services</h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -61,7 +61,7 @@ const Services = () => {
         </div>
 
         <div className="mt-8 text-center">
-          <p className="text-gray-600 italic">
+          <p className="text-gray-100 italic">
             "Empowering teams to achieve more through efficient task management and seamless collaboration."
           </p>
         </div>

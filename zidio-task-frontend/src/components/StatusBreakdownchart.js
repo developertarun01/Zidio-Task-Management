@@ -29,7 +29,7 @@ const StatusBreakdownChart = ({ tasks }) => {
   };
 
   return (
-    <div className="bg-glass p-4 rounded-xl text-black shadow-md w-full">
+    <div className="bg-glass p-4 rounded-xl text-black shadow-md w-[600px] h-[400px]">
       <h3 className="text-lg font-bold text-black mb-2">
         🧮 Task Status Breakdown
       </h3>
