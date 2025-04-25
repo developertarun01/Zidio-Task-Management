@@ -9,7 +9,7 @@ import {
 // import { useState, useEffect } from "react";
 import { Transition } from "@headlessui/react";
 import clsx from "clsx";
-import React, { Fragment, useRef, useState } from "react";
+import React, { Fragment, useRef, useState, useEffect } from "react";
 import { IoClose } from "react-icons/io5";
 import { setOpenSidebar } from "./redux/slices/authSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -39,6 +39,8 @@ import TeamPage from "./components/TeamPage";
 import AnalyticsPage from "./pages/AnalyticPage"; // Add the import for AnalyticsPage
 // import { Sidebar } from "lucide-react";
 import CreateMeeting from "./components/CreateMeeting";
+import Settings from "./pages/Setting";
+import { useAuth } from "./context/AuthContext";
 
 function Layout() {
   const { user } = useSelector((state) => state.auth);
@@ -99,6 +101,7 @@ const App = () => {
           <Route path="/notification" element={<NotificationToast />} />
           <Route path="/analytics" element={<AnalyticsPage />} />
           <Route path="/create-meeting" element={<CreateMeeting />} />
+          <Route path="/settings" element={<Settings />} />
         </Route>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />

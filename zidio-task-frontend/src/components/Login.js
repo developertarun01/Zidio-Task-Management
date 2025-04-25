@@ -119,6 +119,7 @@ const Login = () => {
               Welcome Back
             </h2>
             <Textbox
+              name="email"
               label="Email"
               type="email"
               value={email}
@@ -134,7 +135,7 @@ const Login = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
-               className="text-white w-full"
+              className="text-white w-full"
               required
             />
             <button

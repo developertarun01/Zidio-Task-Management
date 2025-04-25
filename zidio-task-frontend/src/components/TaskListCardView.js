@@ -25,6 +25,10 @@ const TaskListCardView = ({ tasks, onDelete, onStatusToggle, onEdit }) => {
             {task.assignedTo?.email})
           </p>
           <p className="text-sm text-gray-400">
+            Created by: {task.createdByName || "Unassigned"} (
+            {task.assignedTo?.email})
+          </p>
+          <p className="text-sm text-gray-400">
             Deadline: {new Date(task.deadline).toLocaleDateString()}
           </p>
           <p

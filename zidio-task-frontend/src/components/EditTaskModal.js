@@ -9,7 +9,7 @@ const EditTaskModal = ({ isOpen, onClose, task, onSave }) => {
     description: "",
     priority: "Low",
     deadline: "",
-    assignedTo: "",
+    assignedTo: [],
   });
   const [users, setUsers] = useState([]);
   const [userRole, setUserRole] = useState("");
@@ -31,7 +31,11 @@ const EditTaskModal = ({ isOpen, onClose, task, onSave }) => {
         title: task.title || "",
         description: task.description || "",
         priority: task.priority || "Low",
-        assignedTo: task.assignedTo || "",
+        assignedTo: Array.isArray(task.assignedTo)
+          ? task.assignedTo
+          : task.assignedTo
+          ? [task.assignedTo]
+          : [],
         deadline: task.deadline ? task.deadline.slice(0, 10) : "",
       });
     }
@@ -149,6 +153,7 @@ const EditTaskModal = ({ isOpen, onClose, task, onSave }) => {
               name="deadline"
               value={formData.deadline}
               onChange={handleChange}
+              min={new Date().toISOString().split("T")[0]}
               className="w-full mb-4 px-4 py-2 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-cyan-400"
             />
 
@@ -157,12 +162,16 @@ const EditTaskModal = ({ isOpen, onClose, task, onSave }) => {
               name="assignedTo"
               value={formData.assignedTo}
               onChange={handleChange}
-             className="w-full mb-6 px-4 py-2 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-cyan-400 h-32"
+              className="w-full mb-6 px-4 py-2 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-cyan-400 h-64 overflow-auto"
             >
               <option value="">👤 Assign to...</option>
               {users.map((u) => (
-                <option className="text-gray-700" key={u._id} value={u._id}>
-                  {u.username} ({u.email})
+                <option
+                  className="text-gray-700"
+                  key={u._id}
+                  value={u.username}
+                >
+                  {u.name || u.username} ({u.email})
                 </option>
               ))}
             </select>

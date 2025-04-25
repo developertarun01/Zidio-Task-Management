@@ -1,13 +1,9 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import socket from "../utils/socket";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import debounce from "lodash.debounce";
-import { useEffect, useRef } from "react";
-
-// Optional: If you have user role stored in context
-import { useAuth } from "../context/AuthContext";
 
 const TaskAssignment = () => {
   const [title, setTitle] = useState("");
@@ -17,17 +13,16 @@ const TaskAssignment = () => {
   const [dueTime, setDueTime] = useState("");
   const [subtasks, setSubtasks] = useState([]);
   const [subtaskInput, setSubtaskInput] = useState("");
-  const [assignedTo, setAssignedTo] = useState("");
+  const [assignedTo, setAssignedTo] = useState([]); // Change to an array
   const [userOptions, setUserOptions] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef();
 
-  // On page load, retrieve the role from localStorage and set it in context
   const role = localStorage.getItem("userRole");
   const user = localStorage.getItem("user");
 
-  console.log("User:", user); // Log the role to make sure it's being fetched correctly
-  console.log("User Role:", role); // Log the role to make sure it's being fetched correctly
+  console.log("User:", user);
+  console.log("User Role:", role);
 
   const handleAddSubtask = () => {
     if (subtaskInput.trim()) {
@@ -42,7 +37,7 @@ const TaskAssignment = () => {
 
   const handleAddTask = async (e) => {
     e.preventDefault();
-    if (!title.trim() || !assignedTo.trim()) {
+    if (!title.trim() || assignedTo.length === 0) { // Check if at least one user is assigned
       toast.error("Please fill out required fields.");
       return;
     }
@@ -55,7 +50,7 @@ const TaskAssignment = () => {
       dueTime,
       subtasks,
       status: "pending",
-      assignedTo,
+      assignedTo, // Now an array of usernames or user IDs
     };
 
     try {
@@ -65,7 +60,6 @@ const TaskAssignment = () => {
         { withCredentials: true }
       );
       socket.emit("taskAdded", response.data);
-      console.log("taskAdded", response.data);
       toast.success("Task Assigned Successfully 🎉");
 
       // Reset form
@@ -76,7 +70,7 @@ const TaskAssignment = () => {
       setDueTime("");
       setSubtasks([]);
       setSubtaskInput("");
-      setAssignedTo("");
+      setAssignedTo([]); // Reset assigned users array
     } catch (error) {
       console.error("Error adding task:", error);
       toast.error(error.response?.data?.message || "Failed to add task");
@@ -87,20 +81,19 @@ const TaskAssignment = () => {
     try {
       const res = await axios.get(
         `http://localhost:4004/api/users/search?query=${query}`,
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
-      setUserOptions(res.data.users); // assuming users is returned
+      setUserOptions(Array.isArray(res.data.users) ? res.data.users : []);
       setShowDropdown(true);
     } catch (err) {
       console.error("Failed to fetch users:", err);
+      setUserOptions([]); // fallback
     }
   }, 300);
 
   useEffect(() => {
-    if (assignedTo.trim()) {
-      fetchUsers(assignedTo);
+    if (assignedTo.length > 0) { // Trigger search when user types
+      fetchUsers(assignedTo.join(" ")); // Fetch users based on the input text
     } else {
       setShowDropdown(false);
     }
@@ -116,7 +109,17 @@ const TaskAssignment = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Restrict to admin or manager only
+  const handleAddAssignedUser = (user) => {
+    if (!assignedTo.includes(user.username)) {
+      setAssignedTo([...assignedTo, user.username]); // Add user to assigned list
+    }
+    setShowDropdown(false);
+  };
+
+  const handleRemoveAssignedUser = (username) => {
+    setAssignedTo(assignedTo.filter((user) => user !== username)); // Remove user from assigned list
+  };
+
   if (role !== "admin" && role !== "manager") {
     return (
       <div className="text-center text-red-500 font-bold p-6">
@@ -130,14 +133,13 @@ const TaskAssignment = () => {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className=" bg-gradient-to-br from-[#042330] via-[#214753] to-[#06041e] backdrop-blur-md border border-white/30 shadow-xl neon-glow text-white p-16 px-48 rounded-2xl w-full "
+      className="bg-gradient-to-br from-[#042330] via-[#214753] to-[#06041e] backdrop-blur-md border border-white/30 shadow-xl neon-glow text-white p-16 px-48 rounded-2xl w-full"
     >
       <h2 className="text-2xl font-bold mb-4 text-center text-cyan-200">
         🚀 Assign a New Task
       </h2>
 
       <form onSubmit={handleAddTask} className="space-y-4">
-        {/* Title */}
         <input
           type="text"
           placeholder="Task Title"
@@ -147,7 +149,6 @@ const TaskAssignment = () => {
           required
         />
 
-        {/* Description */}
         <textarea
           placeholder="Task Description"
           value={description}
@@ -156,23 +157,22 @@ const TaskAssignment = () => {
           required
         />
 
-        {/* Priority */}
         <select
           value={priority}
           onChange={(e) => setPriority(e.target.value)}
-          className="w-full p-3 rounded-xl bg-white/10 border border-white/30 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+          className="w-full text-gray-400 p-3 rounded-xl bg-white/10 border border-white/30 focus:outline-none focus:ring-2 focus:ring-cyan-400"
         >
           <option value="High">🔥 High</option>
           <option value="Medium">⚡ Medium</option>
           <option value="Low">✅ Low</option>
         </select>
 
-        {/* Deadline and Time */}
         <div className="flex flex-wrap gap-4">
           <input
             type="date"
             value={deadline}
             onChange={(e) => setDeadline(e.target.value)}
+            min={new Date().toISOString().split("T")[0]}
             className="flex-1 p-3 rounded-xl bg-white/10 border border-white/30 focus:outline-none focus:ring-2 focus:ring-cyan-400"
             required
           />
@@ -184,7 +184,6 @@ const TaskAssignment = () => {
           />
         </div>
 
-        {/* Subtask Input */}
         <div>
           <div className="flex gap-2 flex-wrap">
             <input
@@ -222,15 +221,14 @@ const TaskAssignment = () => {
           </ul>
         </div>
 
-        {/* Assign To */}
         <div className="relative" ref={dropdownRef}>
           <input
             type="text"
             placeholder="Assign to (username)"
-            value={assignedTo}
-            onChange={(e) => setAssignedTo(e.target.value)}
-            className="w-full p-3 rounded-xl bg-white/10 border border-white/30 focus:outline-none focus:ring-2 focus:ring-cyan-400 "
-            required
+            value={assignedTo.join(", ")} // Show selected users in the input
+            onChange={(e) => setAssignedTo(e.target.value.split(", ").map(item => item.trim()))}
+            onFocus={() => setShowDropdown(true)}
+            className="w-full p-3 rounded-xl bg-white/10 border border-white/30 focus:outline-none focus:ring-2 focus:ring-cyan-400"
           />
 
           {showDropdown && userOptions.length > 0 && (
@@ -244,10 +242,7 @@ const TaskAssignment = () => {
                 <li
                   key={index}
                   className="flex items-center gap-3 p-2 hover:bg-cyan-500/30 cursor-pointer text-blue-100 transition duration-200 rounded-lg"
-                  onClick={() => {
-                    setAssignedTo(user.username);
-                    setShowDropdown(false);
-                  }}
+                  onClick={() => handleAddAssignedUser(user)}
                 >
                   <img
                     src={user.avatar || "/default-avatar.png"}
@@ -261,7 +256,6 @@ const TaskAssignment = () => {
           )}
         </div>
 
-        {/* Submit Button */}
         <button
           type="submit"
           className="w-full bg-blue-500 text-white px-4 py-3 rounded-xl hover:bg-blue-600 transition"

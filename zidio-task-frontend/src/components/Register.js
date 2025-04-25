@@ -23,6 +23,9 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
     try {
       const response = await axios.post(
         "http://localhost:4004/api/auth/register",
@@ -36,7 +39,10 @@ const Register = () => {
 
       if (response.status === 201) {
         toast.success(response.data.message);
-        navigate("/auth/google/dashboard");
+        const { user, token } = response.data;
+        // localStorage.setItem("user", JSON.stringify(user));
+        // localStorage.setItem("token", token);
+        navigate("/login");
       }
     } catch (error) {
       if (error.response?.status === 409) navigate("/login");
@@ -132,7 +138,7 @@ const Register = () => {
             <div className="flex flex-col gap-y-5">
               <Textbox
                 placeholder="username"
-                className="w-full h-10 bg-blue-700  text-black rounded-full"
+                className="w-full h-10 bg-blue-700  text-gray-200 rounded-full"
                 type="text"
                 name="username"
                 label="Username"
@@ -143,7 +149,7 @@ const Register = () => {
 
               <Textbox
                 placeholder="email@example.com"
-                className="w-full h-10 bg-blue-700  text-black rounded-full"
+                className="w-full h-10 bg-blue-700  text-gray-200 rounded-full"
                 type="email"
                 name="email"
                 label="Email Address"
@@ -154,7 +160,7 @@ const Register = () => {
 
               <Textbox
                 placeholder="your password"
-                className="w-full h-10 bg-blue-700 text-black rounded-full"
+                className="w-full h-10 bg-blue-700 text-gray-200 rounded-full"
                 type="password"
                 name="password"
                 label="Password"
@@ -164,7 +170,7 @@ const Register = () => {
               />
 
               <div>
-                <label className="block mb-1 font-semibold text-gray-600 dark:text-gray-300">
+                <label className="block mb-1 font-semibold text-gray-200 dark:text-gray-300">
                   Select Role:
                 </label>
                 <select

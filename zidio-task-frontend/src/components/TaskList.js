@@ -22,6 +22,8 @@ const TaskList = () => {
 
   const role = localStorage.getItem("userRole");
   const user = JSON.parse(localStorage.getItem("user"));
+  console.log("Username:", user.name);
+  // console.log("Username:", user.username);
 
   const fetchTasks = async () => {
     try {

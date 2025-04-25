@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -130,9 +130,7 @@ const CalendarView = () => {
       html: `
         <strong>Priority:</strong> ${extendedProps.priority}<br/>
         <strong>Status:</strong> ${extendedProps.status}<br/>
-        <strong>Assigned To:</strong> ${
-          extendedProps.username || "Unassigned"
-        }<br/>
+        <strong>Assigned To:</strong> ${"Unassigned"}<br/>
         <strong>Deadline:</strong> ${new Date(
           extendedProps.deadline
         ).toLocaleDateString()}
@@ -147,9 +145,9 @@ const CalendarView = () => {
   };
 
   return (
-    <div className="flex  bg-gradient-to-br from-[#2bda42] via-[#11399f] to-[#2d61cfce] ">
+    <div className="flex bg-glass bg-gradient-to-br from-[#2f363062] via-[#11399f] to-[#2d61cfce] ">
       {/* Filters Sidebar */}
-      <div className="bg-gradient-to-br from-[#c2b60f] via-[#214753] to-[#58cc97e5] w-64 p-4 rounded-xl glass border border-white/10 shadow-lg text-white mr-4">
+      <div className="bg-gradient-to-br from-[#422d05] via-[#032a37] to-[#102019e5] w-64 p-4 rounded-xl border border-white/10 shadow-lg text-white mr-4">
         <h2 className="text-lg font-bold mb-4 text-center">Filters</h2>
 
         <div className="mb-4">
@@ -157,7 +155,7 @@ const CalendarView = () => {
           <select
             value={filters.priority}
             onChange={(e) => handleFilterChange("priority", e.target.value)}
-            className="w-full bg-transparent text-white border p-2 rounded-lg"
+            className="w-full bg-glass text-white border p-2 rounded-lg"
           >
             <option value="all">All</option>
             <option value="high">High</option>
@@ -171,7 +169,7 @@ const CalendarView = () => {
           <select
             value={filters.status}
             onChange={(e) => handleFilterChange("status", e.target.value)}
-            className="w-full bg-transparent text-white border p-2 rounded-lg"
+            className="w-full bg-glass text-white border p-2 rounded-lg"
           >
             <option value="all">All</option>
             <option value="pending">Pending</option>
@@ -186,7 +184,18 @@ const CalendarView = () => {
             onChange={(e) => handleFilterChange("username", e.target.value)}
             className="w-full bg-transparent text-white border p-2 rounded-lg"
           >
-            <option value="all">All</option>
+            <option className="bg-gray-800" value="all">
+              All
+            </option>
+            <option className="bg-gray-800" value="all">
+              Admin
+            </option>
+            <option className="bg-gray-800" value="pending">
+              Manager
+            </option>
+            <option className="bg-gray-800" value="completed">
+              Employee
+            </option>
             {[
               ...new Set(
                 allTasks.map((t) => t.extendedProps.username).filter(Boolean)

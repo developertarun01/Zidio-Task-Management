@@ -14,11 +14,11 @@ import { toast } from "react-hot-toast";
 import LogoutConfirmModal from "./LogoutConfirmModal";
 
 const UserAvatar = () => {
-  const getInitials = (name = "") => {
-    if (!name) return "";
-    const nameParts = name.split(" ");
-    return nameParts.map((part) => part.charAt(0).toUpperCase()).join("");
-  };
+  // const getInitials = (name = "") => {
+  //   if (!name) return "";
+  //   const nameParts = name.split(" ");
+  //   return nameParts.map((part) => part.charAt(0).toUpperCase()).join("");
+  // };
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   // const [isProfileOpen, setProfileOpen] = useState(false);
 
@@ -33,6 +33,8 @@ const UserAvatar = () => {
   const role = localStorage.getItem("userRole");
   const email = localStorage.getItem("userEmail");
   const name = localStorage.getItem("userName");
+  // Default to a placeholder if the user doesn't have an avatar
+  const avatarUrl = user?.avatar || "https://via.placeholder.com/100";
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -74,10 +76,12 @@ const UserAvatar = () => {
       <div>
         <Menu as="div" className="relative inline-block text-left">
           <div>
-            <Menu.Button className="w-10 h-10 2xl:w-12 2xl:h-12 items-center justify-center rounded-full bg-blue-600">
-              <span className="text-white font-semibold">
-                {getInitials(user?.name)}
-              </span>
+            <Menu.Button className="w-10 h-10 2xl:w-12 2xl:h-12 items-center justify-center rounded-full bg-gray-800 text-white flex hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-gray-500">
+              <img
+                src={avatarUrl}
+                alt="User Avatar"
+                className="w-10 h-10 2xl:w-12 2xl:h-12 rounded-full object-cover"
+              />
             </Menu.Button>
           </div>
 
