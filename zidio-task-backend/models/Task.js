@@ -33,11 +33,12 @@ const taskSchema = new mongoose.Schema({
     default: null, // or mongoose.Schema.Types.ObjectId if you want reference
   },
   progress: { type: Number, default: 0 },
-  assignedTo: {
+  assignedTo: [{
     type: String,
     ref: "User",
-  },
+  }],
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  createdByName: { type: String,ref: "User" },
 });
 
 module.exports = mongoose.model("Task", taskSchema);

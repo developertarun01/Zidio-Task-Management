@@ -8,14 +8,14 @@ const router = express.Router();
 
 // ✅ Get Tasks (Admin sees all, Manager sees their created, User sees their assigned)
 router.get("/", verifyToken, async (req, res) => {
-  const { role, name } = req.user;
+  const { role, name, _id } = req.user;
   try {
     let tasks = [];
 
     if (role === "admin") {
       tasks = await Task.find({ deleted: false });
     } else if (role === "manager") {
-      tasks = await Task.find({ assignedTo: name, deleted: false });
+      tasks = await Task.find({assignedTo: name, deleted: false });
     } else {
       tasks = await Task.find({ assignedTo: name, deleted: false });
     }
@@ -38,28 +38,55 @@ router.post(
     try {
       console.log("Task Data Received:", req.body);
 
+      // Destructure task data and assigned users from request body
+      const { title, description, priority, deadline, dueTime, subtasks, status, assignedTo } = req.body;
+
+      // Check if assignedTo is an array and has at least one user
+      if (!Array.isArray(assignedTo) || assignedTo.length === 0) {
+        return res.status(400).json({ message: "At least one user must be assigned" });
+      }
+
+      // Find the users corresponding to the assignedTo usernames
+      const userIds = await User.find({ username: { $in: assignedTo } }).select('_id');
+
+      // If the number of found users does not match the requested ones, return an error
+      if (userIds.length !== assignedTo.length) {
+        return res.status(400).json({ message: "Some users not found" });
+      }
+
+      // Prepare task data with user IDs for assignedTo
       const taskData = {
-        ...req.body,
-        createdBy: req.user.id,
+        title,
+        description,
+        priority,
+        deadline,
+        dueTime,
+        subtasks,
+        status,
+        assignedTo: userIds.map(user => user._id), // Store user IDs as an array
+        createdBy: req.user.id, // Assuming you are storing the creator's ID
       };
 
+      // Create and save the new task
       const newTask = new Task(taskData);
       await newTask.save();
 
-      // ✅ Emit correct object
+      // ✅ Emit the task created event with the full task object (including assigned users)
       const io = req.app.get("io");
       if (io) {
-        io.emit("taskCreated", newTask); // Correct event + object
+        io.emit("taskCreated", newTask); // Correct event and object
       }
-      console.log("Task Created:", newTask); // ✅ Log created task
+      console.log("Task Created:", newTask);
 
+      // Send the created task as a response
       res.status(201).json(newTask);
     } catch (err) {
-      console.error("Error creating task:", err); // ✅ Log actual error
+      console.error("Error creating task:", err);
       res.status(500).json({ message: "Failed to create task" });
     }
   }
 );
+
 
 // ✅ Update Task (Admin & Manager)
 router.put(
@@ -90,6 +117,7 @@ router.put(
       console.log("Task Updated:", updatedTask); // ✅ Log updated task
       res.json(updatedTask);
     } catch (err) {
+      console.error("Error updating task:", err); // ✅ Log actual error
       res.status(500).json({ message: "Failed to update task" });
     }
   }

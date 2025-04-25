@@ -4,35 +4,42 @@ const User = require("../models/userModel"); // Adjust path if needed
 const { verifyToken, allowRoles } = require("../middleware/authMiddleware"); // If you have auth middleware
 const multer = require("multer");
 const upload = require("../middleware/cloudinaryUpload");
-const Submit = require("../models/submit")
+const Submit = require("../models/submit");
+
 router.put(
   "/update-profile",
   verifyToken,
   upload.single("avatar"),
   async (req, res) => {
     try {
-      const { name, email } = req.body;
       const user = await User.findById(req.user.id);
+      if (!user) return res.status(404).json({ message: "User not found." });
 
-      user.name = name || user.name;
-      if (email && email !== user.email) {
-        const existing = await User.findOne({ email });
-        if (existing && existing._id.toString() !== user._id.toString()) {
-          return res.status(400).json({ message: "Email already in use." });
-        }
+      const { phone, location, birthday, bio } = req.body;
 
-        user.email = email;
-      }
+      user.phone = phone ?? user.phone;
+      user.location = location ?? user.location;
+      user.birthday = birthday ?? user.birthday;
+      user.bio = bio ?? user.bio;
 
       if (req.file && req.file.path) {
-        user.avatar = req.file.path; // Cloudinary URL
+        user.avatar = req.file.path; // or cloudinary URL
       }
 
       await user.save();
 
       res.json({
         message: "Profile updated successfully",
-        avatar: user.avatar,
+        user: {
+          name: user.name,
+          email: user.email,
+          avatar: user.avatar,
+          phone: user.phone,
+          location: user.location,
+          birthday: user.birthday,
+          bio: user.bio,
+          role: user.role,
+        },
       });
     } catch (err) {
       console.error(err);
@@ -47,23 +54,25 @@ router.get(
   verifyToken,
   allowRoles("admin", "manager"),
   async (req, res) => {
+    const { query } = req.query;
+
+    if (!query) {
+      return res.status(400).json({ message: "Query parameter is required" });
+    }
+
     try {
-      const query = req.query.query || "";
-      const regex = new RegExp(query, "i");
-
       const users = await User.find({
-        $or: [{ username: regex }, { name: regex }, { email: regex }],
-      })
-        .select("username name email avatar") // assuming you have these fields
-        .limit(10);
+        username: { $regex: query, $options: "i" },
+      }).select("username avatar name");
 
-      res.json({ users });
+      res.json({ users }); // ✅ Return as an array under `users`
     } catch (err) {
-      console.error("User search failed:", err);
-      res.status(500).json({ message: "Server Error" });
+      console.error(err);
+      res.status(500).json({ message: "Server error" });
     }
   }
 );
+
 // Add a new team member
 router.post("/", verifyToken, allowRoles("admin"), async (req, res) => {
   try {
@@ -91,8 +100,7 @@ router.put("/:id", verifyToken, allowRoles("admin"), async (req, res) => {
   }
 });
 
-
-router.put("/change-password",verifyToken, async (req, res) => {
+router.put("/change-password", verifyToken, async (req, res) => {
   try {
     const { currentPassword, newPassword, updatedPassword } = req.body;
 
@@ -137,12 +145,11 @@ router.get("/", verifyToken, allowRoles("admin"), async (req, res) => {
     res.status(500).json({ error: "Failed to fetch team members" });
   }
 });
-router.post("/submit", async (req, res)=>{
-  const {name, email} = req.body;
-  const iSubmit = new Submit ({name, email});
+router.post("/submit", async (req, res) => {
+  const { name, email } = req.body;
+  const iSubmit = new Submit({ name, email });
   await iSubmit.save();
   // submit= new Submit(req.body)
-
-})
+});
 
 module.exports = router;
