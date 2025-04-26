@@ -18,7 +18,7 @@ function Contact() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:4004/feedback", form);
+      const res = await axios.post("https://zidio-task-management-tanmoy9088.vercel.app/feedback", form);
 
       setStatus("Message sent successfully!");
       setSubmitted(true);

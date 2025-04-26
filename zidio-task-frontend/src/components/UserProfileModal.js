@@ -24,7 +24,7 @@ const ProfileModal = ({ open, setOpen, user }) => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const { data } = await axios.get("http://localhost:4004/api/users/search", {
+        const { data } = await axios.get("https://zidio-task-management-tanmoy9088.vercel.app/api/users/search", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("authToken")}`,
           },
@@ -72,7 +72,7 @@ const ProfileModal = ({ open, setOpen, user }) => {
 
       try {
         await axios.put(
-          "http://localhost:4004/api/users/update-profile",
+          "https://zidio-task-management-tanmoy9088.vercel.app/api/users/update-profile",
           formData,
           {
             headers: {

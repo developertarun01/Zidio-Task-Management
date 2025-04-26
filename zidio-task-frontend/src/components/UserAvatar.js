@@ -42,7 +42,7 @@ const UserAvatar = () => {
       if (token) {
         localStorage.setItem("authToken", token);
         try {
-          const res = await axios.get("http://localhost:4004/api/users", {
+          const res = await axios.get("https://zidio-task-management-tanmoy9088.vercel.app/api/users", {
             headers: { Authorization: `Bearer ${token}` },
             withCredentials: true,
           });
@@ -58,7 +58,7 @@ const UserAvatar = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:4004/api/auth/logout", {
+      await axios.post("https://zidio-task-management-tanmoy9088.vercel.app/api/auth/logout", {
         credentials: "include",
       });
       toast.success("Logout successfully");

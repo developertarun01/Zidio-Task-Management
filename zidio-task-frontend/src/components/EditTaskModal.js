@@ -44,7 +44,7 @@ const EditTaskModal = ({ isOpen, onClose, task, onSave }) => {
   useEffect(() => {
     if (userRole === "admin" || userRole === "manager") {
       axios
-        .get("http://localhost:4004/api/auth/users", { withCredentials: true })
+        .get("https://zidio-task-management-tanmoy9088.vercel.app/api/auth/users", { withCredentials: true })
         .then((res) => setUsers(res.data))
         .catch((err) => {
           console.error("Failed to fetch users:", err);
@@ -79,7 +79,7 @@ const EditTaskModal = ({ isOpen, onClose, task, onSave }) => {
     }
 
     try {
-      await axios.put(`http://localhost:4004/api/tasks/${task._id}`, formData, {
+      await axios.put(`https://zidio-task-management-tanmoy9088.vercel.app/api/tasks/${task._id}`, formData, {
         withCredentials: true,
       });
 

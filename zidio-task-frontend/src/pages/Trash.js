@@ -9,7 +9,7 @@ const Trash = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const fetchTrashedTasks = async () => {
     try {
-      const res = await axios.get("http://localhost:4004/api/tasks/trash", {
+      const res = await axios.get("https://zidio-task-management-tanmoy9088.vercel.app/api/tasks/trash", {
         withCredentials: true,
       });
       setTrashedTasks(res.data);
@@ -24,7 +24,7 @@ const Trash = () => {
   const restoreTask = async (id) => {
     try {
       await axios.patch(
-        `http://localhost:4004/api/tasks/restore/${id}`,
+        `https://zidio-task-management-tanmoy9088.vercel.app/api/tasks/restore/${id}`,
 
         { withCredentials: true }
       );
@@ -37,7 +37,7 @@ const Trash = () => {
 
   const deleteTaskForever = async (id) => {
     try {
-      await axios.delete(`http://localhost:4004/api/tasks/permanent/${id}`, {
+      await axios.delete(`https://zidio-task-management-tanmoy9088.vercel.app/api/tasks/permanent/${id}`, {
         withCredentials: true,
       });
       toast.success("Task permanently deleted");

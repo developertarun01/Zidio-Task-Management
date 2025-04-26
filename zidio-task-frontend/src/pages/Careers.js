@@ -8,7 +8,7 @@ const Careers = () => {
     email: "",
     // fileSave:"",
   });
-  const handleSubmit = axios.post("http://localhost:4004/api/users/submit", formData);
+  const handleSubmit = axios.post("https://zidio-task-management-tanmoy9088.vercel.app/api/users/submit", formData);
   return (
     <div className="flex pt-24 h-screen bg-gradient-to-br from-[#042330] via-[#214753] to-[#06041e] flex-col md:flex-row gap-8 px-4">
       {/* Left Section */}

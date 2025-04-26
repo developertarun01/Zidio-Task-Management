@@ -8,7 +8,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import "@fullcalendar/common/main.min.css";
 
-const socket = io("http://localhost:4004");
+const socket = io("https://zidio-task-management-tanmoy9088.vercel.app/");
 
 const CalendarView = () => {
   const [allTasks, setAllTasks] = useState([]);
@@ -47,7 +47,7 @@ const CalendarView = () => {
 
   const fetchTasks = async () => {
     try {
-      const res = await axios.get("http://localhost:4004/api/tasks");
+      const res = await axios.get("https://zidio-task-management-tanmoy9088.vercel.app/api/tasks");
       const formatted = res.data.map(formatTask);
       setAllTasks(formatted);
     } catch (err) {
@@ -93,7 +93,7 @@ const CalendarView = () => {
 
     if (title) {
       try {
-        const res = await axios.post("http://localhost:4004/api/tasks", {
+        const res = await axios.post("https://zidio-task-management-tanmoy9088.vercel.app/api/tasks", {
           title,
           deadline: arg.dateStr,
           status: "pending",
@@ -109,7 +109,7 @@ const CalendarView = () => {
   const handleEventDrop = async ({ event }) => {
     const updatedDeadline = event.startStr;
     try {
-      await axios.put(`http://localhost:4004/api/tasks/${event.id}`, {
+      await axios.put(`https://zidio-task-management-tanmoy9088.vercel.app/api/tasks/${event.id}`, {
         ...event.extendedProps,
         deadline: updatedDeadline,
       });

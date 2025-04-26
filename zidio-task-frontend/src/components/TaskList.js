@@ -9,7 +9,7 @@ import TaskListTableView from "./TaskListTableView";
 import EditTaskModal from "./EditTaskModal";
 
 // Initialize socket connection outside the component
-const socket = io("http://localhost:4004", { autoConnect: false });
+const socket = io("https://zidio-task-management-tanmoy9088.vercel.app/", { autoConnect: false });
 
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
@@ -27,7 +27,7 @@ const TaskList = () => {
 
   const fetchTasks = async () => {
     try {
-      const { data: allTasks } = await axios.get("http://localhost:4004/api/tasks", {
+      const { data: allTasks } = await axios.get("https://zidio-task-management-tanmoy9088.vercel.app/api/tasks", {
         withCredentials: true,
       });
 
@@ -93,7 +93,7 @@ const TaskList = () => {
 
     try {
       const { data } = await axios.put(
-        `http://localhost:4004/api/tasks/${taskId}`,
+        `https://zidio-task-management-tanmoy9088.vercel.app/api/tasks/${taskId}`,
         { status: newStatus, completed: newStatus === "completed", progress: newStatus === "completed" ? "100" : "0" },
         { withCredentials: true }
       );
@@ -116,7 +116,7 @@ const TaskList = () => {
     }
 
     try {
-      await axios.delete(`http://localhost:4004/api/tasks/${taskId}`, {
+      await axios.delete(`https://zidio-task-management-tanmoy9088.vercel.app/api/tasks/${taskId}`, {
         withCredentials: true,
       });
 
@@ -136,7 +136,7 @@ const TaskList = () => {
   const handleTaskUpdate = async (taskId, updatedData) => {
     try {
       const { data } = await axios.put(
-        `http://localhost:4004/api/tasks/${taskId}`,
+        `https://zidio-task-management-tanmoy9088.vercel.app/api/tasks/${taskId}`,
         updatedData,
         { withCredentials: true }
       );

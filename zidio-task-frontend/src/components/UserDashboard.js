@@ -13,7 +13,7 @@ const [users, setUsers] = useState("");
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const response = await axios.get("http://localhost:4004/tasks/my-tasks", {
+        const response = await axios.get("https://zidio-task-management-tanmoy9088.vercel.app/tasks/my-tasks", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
