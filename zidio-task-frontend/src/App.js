@@ -41,21 +41,27 @@ import AnalyticsPage from "./pages/AnalyticPage"; // Add the import for Analytic
 import CreateMeeting from "./components/CreateMeeting";
 import Settings from "./pages/Setting";
 import { useAuth } from "./context/AuthContext";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Layout() {
   const { user } = useSelector((state) => state.auth);
   const location = useLocation();
-const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(true);
   return user ? (
     <div className="flex h-screen bg-gradient-to-br from-blue-200 to-gray-100 text-gray-900">
       {/* Fixed Sidebar */}
       <div className="fixed z-40 inset-y-0 left-0 bg-white border-r border-gray-200 shadow-lg hidden md:block">
         <MobileSidebar />
-        <Sidebar/>
+        <Sidebar />
       </div>
 
       {/* Main content area */}
-      <div className={`flex-1 bg-white rounded-xl shadow-lg flex flex-col ${expanded? "md:ml-64":"md:ml-20"}`}>
+      <div
+        className={`flex-1 bg-white rounded-xl shadow-lg flex flex-col ${
+          expanded ? "md:ml-64" : "md:ml-20"
+        }`}
+      >
         {/* Navbar */}
         <div className="sticky top-0 z-50 bg-white border-b border-gray-200">
           <Navbar />
@@ -106,6 +112,7 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <ToastContainer position="top-right" autoClose={3000} theme="colored" />
         {/* 404 fallback */}
         <Route
           path="*"
