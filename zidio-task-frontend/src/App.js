@@ -112,7 +112,7 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <ToastContainer position="top-right" autoClose={3000} theme="colored" />
+
         {/* 404 fallback */}
         <Route
           path="*"
@@ -123,7 +123,7 @@ const App = () => {
           }
         />
       </Routes>
-
+      <ToastContainer position="top-right" autoClose={3000} theme="colored" />
       {/* <Footer /> */}
     </AuthProvider>
   );
