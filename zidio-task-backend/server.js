@@ -32,13 +32,8 @@ const corsOptions = {
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
 };
 
-// use cors with options
-app.use(cors(corsOptions));
 
-// Also handle preflight requests manually if needed
-app.options("*", cors(corsOptions));
 
-app.use(express.json());
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
@@ -47,11 +42,18 @@ const io = socketIo(server, {
     credentials: true,
   },
 });
+// use cors with options
+app.use(cors(corsOptions));
 
+// Also handle preflight requests manually if needed
+app.options("*", cors(corsOptions));
+
+//Body Parsers middleware
+app.use(express.json());
 app.set("io", io); // Make io available in routes
 app.use(cookieParser());
 app.use(bodyParser.json());
-app.use(express.json());
+
 
 // ✅ Routes
 app.use("/api/auth", authRoutes);
