@@ -25,13 +25,19 @@ connectDB();
 
 const app = express();
 // ✅ Fix: CORS must be set properly
-app.use(
-  cors({
-    origin: "https://zidio-task-management-tanmoy9088.vercel.app", // frontend URL
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-  })
-);
+// setup cors options
+const corsOptions = {
+  origin: "https://zidio-task-management-tanmoy9088.vercel.app",
+  credentials: true, // allow cookies, authorization headers
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+};
+
+// use cors with options
+app.use(cors(corsOptions));
+
+// Also handle preflight requests manually if needed
+app.options("*", cors(corsOptions));
+
 app.use(express.json());
 const server = http.createServer(app);
 const io = socketIo(server, {
@@ -162,3 +168,14 @@ io.on("connection", (socket) => {
 // 🚀 Start Server
 const PORT = process.env.PORT || 4000;
 server.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+
+// 👉 Handle 404 (no route matched)
+app.use((req, res, next) => {
+  res.status(404).json({ message: "Route not found" });
+});
+
+// 👉 Global error handler
+app.use((err, req, res, next) => {
+  console.error("Global error handler caught:", err);
+  res.status(500).json({ message: "Internal Server Error" });
+});

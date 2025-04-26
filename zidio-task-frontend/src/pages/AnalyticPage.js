@@ -21,7 +21,7 @@ const AnalyticsPage = () => {
 
   const fetchTasks = async () => {
     try {
-      const taskRes = await axios.get("https://zidio-task-management-tanmoy9088.vercel.app/api/tasks", {
+      const taskRes = await axios.get("https://zidio-task-management-tanmoy9088.onrender.com/api/tasks", {
         withCredentials: true,
       });
       const allTasks = taskRes.data;
