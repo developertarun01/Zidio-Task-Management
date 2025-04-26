@@ -17,7 +17,7 @@ const ChangePasswordModal = ({ open, setOpen }) => {
 
     try {
       await axios.put(
-        "http://localhost:4004/api/users/change-password",
+        "https://zidio-task-management-tanmoy9088.vercel.app/api/users/change-password",
         {
           currentPassword,
           newPassword,

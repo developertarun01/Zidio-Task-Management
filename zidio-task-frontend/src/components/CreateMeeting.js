@@ -33,7 +33,7 @@ const CreateMeeting = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:4004/api/meetings",
+        "https://zidio-task-management-tanmoy9088.vercel.app/api/meetings",
         meetingData,
         { withCredentials: true }
       );

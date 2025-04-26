@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:4004',
+  baseURL: 'https://zidio-task-management-tanmoy9088.vercel.app/',
   withCredentials: true,
 });
 

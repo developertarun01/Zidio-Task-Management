@@ -1,8 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const API_URI = "http://localhost:4000";
+const API_URI = "https://zidio-task-management-tanmoy9088.vercel.app/";
 
-const baseQuery = fetchBaseQuery({ baseUrl: API_URI });
+const baseQuery = fetchBaseQuery({ baseUrl:' https://zidio-task-management-tanmoy9088.vercel.app/ '});
 
 export const apiSlice = createApi({
   baseQuery,

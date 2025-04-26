@@ -17,7 +17,7 @@ const Settings = () => {
     const fetchUserData = async () => {
       try {
         const token = localStorage.getItem("authToken");
-        const response = await axios.get("http://localhost:4004/api/users", {
+        const response = await axios.get("https://zidio-task-management-tanmoy9088.vercel.app/api/users", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -32,7 +32,7 @@ const Settings = () => {
     const fetchTasks = async () => {
       try {
         const token = localStorage.getItem("authToken");
-        const response = await axios.get("http://localhost:4004/api/tasks", {
+        const response = await axios.get("https://zidio-task-management-tanmoy9088.vercel.app/api/tasks", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -53,7 +53,7 @@ const Settings = () => {
     try {
       const token = localStorage.getItem("authToken");
       await axios.put(
-        `http://localhost:4004/api/users/${user._id}`,
+        `https://zidio-task-management-tanmoy9088.vercel.app/api/users/${user._id}`,
         updatedUserData,
         {
           headers: {
@@ -73,7 +73,7 @@ const Settings = () => {
     try {
       const token = localStorage.getItem("authToken");
       await axios.put(
-        `http://localhost:4004/api/tasks/${taskId}`,
+        `https://zidio-task-management-tanmoy9088.vercel.app/api/tasks/${taskId}`,
         updatedTaskData,
         {
           headers: {
@@ -93,7 +93,7 @@ const Settings = () => {
     try {
       const token = localStorage.getItem("authToken");
       await axios.put(
-        `http://localhost:4004/api/users/password`,
+        `https://zidio-task-management-tanmoy9088.vercel.app/users/password`,
         passwordData,
         {
           headers: {

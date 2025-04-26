@@ -6,7 +6,7 @@ import axios from "axios";
 
 // Register chart components
 Chart.register(ArcElement, Tooltip, Legend);
-const socket = io("http://localhost:4004");
+const socket = io("https://zidio-task-management-tanmoy9088.vercel.app/");
 
 const RealTimeChart = () => {
   const [tasks, setTasks] = useState([]);
@@ -36,7 +36,11 @@ const RealTimeChart = () => {
 
   const fetchTasks = async () => {
     try {
-      const res = await axios.get("http://localhost:4004/api/tasks");
+      const res = await axios.get("https://zidio-task-management-tanmoy9088.vercel.app/api/tasks", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       setTasks(res.data);
     } catch (err) {
       console.error("Error fetching tasks:", err);

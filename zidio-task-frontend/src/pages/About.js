@@ -43,7 +43,7 @@ const About = () => {
   const [aboutInfo, setAboutInfo] = useState({});
 
   useEffect(() => {
-    axios.get("http://localhost:4004/api/about").then((response) => {
+    axios.get("https://zidio-task-management-tanmoy9088.vercel.app/api/about").then((response) => {
       setAboutInfo(response.data);
     });
   }, []);
