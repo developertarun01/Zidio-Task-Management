@@ -4,7 +4,7 @@ import axios from "axios";
 import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, Title, Tooltip, Legend, PointElement } from "chart.js";
 import {io} from "socket.io-client";
 ChartJS.register(LineElement, CategoryScale, LinearScale, Title, Tooltip, Legend, PointElement);
-const socket = io("https://zidio-task-management-tanmoy9088.vercel.app/");
+const socket = io("https://zidio-task-management-tanmoy9088.onrender.com/");
 
 const Chart = () => {
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
@@ -38,7 +38,7 @@ const Chart = () => {
 
   const fetchTasks = async () => {
     try {
-      const response = await axios.get("https://zidio-task-management-tanmoy9088.vercel.app/tasks");
+      const response = await axios.get("https://zidio-task-management-tanmoy9088.onrender.com/tasks");
       setTasks(response.data);
     } catch (error) {
       console.error("Error fetching tasks:", error);
