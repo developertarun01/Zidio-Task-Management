@@ -27,7 +27,7 @@ const app = express();
 // ✅ Fix: CORS must be set properly
 app.use(
   cors({
-    origin: "https://zidio-task-management-tanmoy9088.vercel.app/", // frontend URL
+    origin: "https://zidio-task-management-tanmoy9088.vercel.app", // frontend URL
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
@@ -36,7 +36,7 @@ app.use(express.json());
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "https://zidio-task-management-tanmoy9088.vercel.app/", // frontend URL
+    origin: "https://zidio-task-management-tanmoy9088.vercel.app", // frontend URL
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
   },
