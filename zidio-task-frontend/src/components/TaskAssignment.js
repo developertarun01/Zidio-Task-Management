@@ -55,7 +55,7 @@ const TaskAssignment = () => {
 
     try {
       const response = await axios.post(
-        "https://zidio-task-management-tanmoy9088.vercel.app/api/tasks",
+        "https://zidio-task-management-tanmoy9088.onrender.com/api/tasks",
         newTask,
         { withCredentials: true }
       );
@@ -80,7 +80,7 @@ const TaskAssignment = () => {
   const fetchUsers = debounce(async (query) => {
     try {
       const res = await axios.get(
-        `https://zidio-task-management-tanmoy9088.vercel.app/api/users/search?query=${query}`,
+        `https://zidio-task-management-tanmoy9088.onrender.com/api/users/search?query=${query}`,
         { withCredentials: true }
       );
       setUserOptions(Array.isArray(res.data.users) ? res.data.users : []);

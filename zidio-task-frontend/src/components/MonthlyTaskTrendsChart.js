@@ -31,7 +31,7 @@ const MonthlyTaskTrendsChart = () => {
       try {
         const token = localStorage.getItem("token");
 
-        const response = await axios.get("https://zidio-task-management-tanmoy9088.vercel.app/api/tasks", {
+        const response = await axios.get("https://zidio-task-management-tanmoy9088.onrender.com/api/tasks", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

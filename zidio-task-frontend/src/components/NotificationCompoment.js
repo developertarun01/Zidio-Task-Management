@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { io } from "socket.io-client";
 
-const socket = io("https://zidio-task-management-tanmoy9088.vercel.app/");
+const socket = io("https://zidio-task-management-tanmoy9088.onrender.com/");
 
 const NotificationToast = () => {
   const [notifications, setNotifications] = useState([]);

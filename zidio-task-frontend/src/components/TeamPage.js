@@ -49,7 +49,7 @@ const TeamPage = () => {
 
   const fetchTeam = async () => {
     try {
-      const response = await axios.get("https://zidio-task-management-tanmoy9088.vercel.app/users/");
+      const response = await axios.get("https://zidio-task-management-tanmoy9088.onrender.com/users/");
       setTeam(response.data);
     } catch (error) {
       console.error("Failed to fetch team", error);
@@ -63,7 +63,7 @@ const TeamPage = () => {
   const handleCreate = async () => {
     try {
       const response = await axios.post(
-        "https://zidio-task-management-tanmoy9088.vercel.app/api/auth/register",
+        "https://zidio-task-management-tanmoy9088.onrender.com/api/auth/register",
         newMember
       );
       setTeam([...team, response.data]);
@@ -76,7 +76,7 @@ const TeamPage = () => {
   const handleUpdateMember = async (updatedData) => {
     try {
       await axios.put(
-        `https://zidio-task-management-tanmoy9088.vercel.app/api/users/${updatedData._id}`,
+        `https://zidio-task-management-tanmoy9088.onrender.com/api/users/${updatedData._id}`,
         updatedData
       );
       fetchTeam();
@@ -92,7 +92,7 @@ const TeamPage = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`https://zidio-task-management-tanmoy9088.vercel.app/api/users/${id}`);
+      await axios.delete(`https://zidio-task-management-tanmoy9088.onrender.com/api/users/${id}`);
       setTeam((prev) => prev.filter((member) => member._id !== id));
     } catch (err) {
       console.error("Error deleting member", err);

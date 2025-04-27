@@ -72,7 +72,7 @@ const ProfileModal = ({ open, setOpen, user }) => {
 
       try {
         await axios.put(
-          "https://zidio-task-management-tanmoy9088.vercel.app/api/users/update-profile",
+          "https://zidio-task-management-tanmoy9088.onrender.com/api/users/update-profile",
           formData,
           {
             headers: {
