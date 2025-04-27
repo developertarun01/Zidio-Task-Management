@@ -36,7 +36,7 @@ const Dashboard = () => {
 
   const fetchTasks = async () => {
     try {
-      const taskRes = await axios.get("https://zidio-task-management-tanmoy9088.vercel.app/api/tasks", {
+      const taskRes = await axios.get("https://zidio-task-management-tanmoy9088.onrender.com/api/tasks", {
         withCredentials: true,
       });
       const allTasks = taskRes.data;
@@ -105,7 +105,7 @@ const Dashboard = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch("https://zidio-task-management-tanmoy9088.vercel.app/api/auth/logout", {
+      const response = await fetch("https://zidio-task-management-tanmoy9088.onrender.com/api/auth/logout", {
         method: "POST",
         credentials: "include",
       });

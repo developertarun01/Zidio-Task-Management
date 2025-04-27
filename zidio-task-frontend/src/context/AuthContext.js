@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(() => localStorage.getItem("token"));
   const fetchUser = async () => {
     try {
-      const data  = await axios.get("https://zidio-task-management-tanmoy9088.vercel.app//auth/users", { withCredentials: true });
+      const data  = await axios.get("https://zidio-task-management-tanmoy9088.onrender.com/auth/users", { withCredentials: true });
       setUser(data.user);
       console.log(data.user);
     } catch (err) {
