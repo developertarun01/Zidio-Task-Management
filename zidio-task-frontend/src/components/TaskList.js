@@ -9,7 +9,7 @@ import TaskListTableView from "./TaskListTableView";
 import EditTaskModal from "./EditTaskModal";
 
 // Initialize socket connection outside the component
-const socket = io("https://zidio-task-management-tanmoy9088.onrender.com/", { autoConnect: false });
+const socket = io("https://zidio-task-management-tanmoy9088.onrender.com", { autoConnect: false });
 
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);

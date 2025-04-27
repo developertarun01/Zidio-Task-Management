@@ -53,7 +53,7 @@ router.post("/register", async (req, res) => {
     res
       .cookie("token", token, {
         httpOnly: true,
-        secure: false, // true in production with HTTPS
+        secure: true, // true in production with HTTPS
         sameSite: "Lax",
         maxAge: 24 * 60 * 60 * 1000,
       })
@@ -97,7 +97,7 @@ router.post("/login", async (req, res) => {
     res
       .cookie("token", token, {
         httpOnly: true,
-        secure: false, // set to true in production with HTTPS
+        secure: true, // set to true in production with HTTPS
         sameSite: "Lax", // or "None" if using cross-origin
         maxAge: 24 * 60 * 60 * 1000, // 1 day
       })
@@ -136,7 +136,7 @@ router.get("/users", async (req, res) => {
 router.post("/logout", (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
-    secure: false, // Set to true if using HTTPS in production
+    secure: true, // Set to true if using HTTPS in production
     sameSite: "Lax",
   });
 

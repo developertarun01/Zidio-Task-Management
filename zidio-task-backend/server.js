@@ -27,17 +27,21 @@ const app = express();
 // ✅ Fix: CORS must be set properly
 // setup cors options
 const corsOptions = {
-  origin: "https://zidio-task-management-tanmoy9088.vercel.app",
+  origin: [
+    "http://localhost:3000", // Local React app
+    "https://zidio-task-management-tanmoy9088.vercel.app",
+  ],
   credentials: true, // allow cookies, authorization headers
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
 };
 
-
-
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "https://zidio-task-management-tanmoy9088.vercel.app", // frontend URL
+    origin: [
+      "http://localhost:3000", // Local React app
+      "https://zidio-task-management-tanmoy9088.vercel.app",
+    ], // frontend URL
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
   },
@@ -53,7 +57,6 @@ app.use(express.json());
 app.set("io", io); // Make io available in routes
 app.use(cookieParser());
 app.use(bodyParser.json());
-
 
 // ✅ Routes
 app.use("/api/auth", authRoutes);
