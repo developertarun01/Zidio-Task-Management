@@ -13,6 +13,7 @@ const ADMIN_EMAILS = [
   "tanmay@company.com",
   "a11@g.com",
   "a12@g.com",
+  "prashupradi156@gmail.com"
 ]; // whitelist
 
 // ✅ Generate JWT Token
