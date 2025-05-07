@@ -14,6 +14,7 @@ const TaskAssignment = () => {
   const [subtasks, setSubtasks] = useState([]);
   const [subtaskInput, setSubtaskInput] = useState("");
   const [assignedTo, setAssignedTo] = useState([]); // Change to an array
+  const [assigneeInput, setAssigneeInput] = useState(""); // Input text for live search
   const [userOptions, setUserOptions] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef();
@@ -37,7 +38,8 @@ const TaskAssignment = () => {
 
   const handleAddTask = async (e) => {
     e.preventDefault();
-    if (!title.trim() || assignedTo.length === 0) { // Check if at least one user is assigned
+    if (!title.trim() || assignedTo.length === 0) {
+      // Check if at least one user is assigned
       toast.error("Please fill out required fields.");
       return;
     }
@@ -92,12 +94,13 @@ const TaskAssignment = () => {
   }, 300);
 
   useEffect(() => {
-    if (assignedTo.length > 0) { // Trigger search when user types
-      fetchUsers(assignedTo.join(" ")); // Fetch users based on the input text
+    if (assigneeInput.trim()) {
+      fetchUsers(assigneeInput);
     } else {
+      setUserOptions([]);
       setShowDropdown(false);
     }
-  }, [assignedTo]);
+  }, [assigneeInput]);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -111,8 +114,10 @@ const TaskAssignment = () => {
 
   const handleAddAssignedUser = (user) => {
     if (!assignedTo.includes(user.username)) {
-      setAssignedTo([...assignedTo, user.username]); // Add user to assigned list
+      setAssignedTo([...assignedTo, user.username]);
     }
+    setAssigneeInput(""); // Clear the input box
+    setUserOptions([]);
     setShowDropdown(false);
   };
 
@@ -222,11 +227,32 @@ const TaskAssignment = () => {
         </div>
 
         <div className="relative" ref={dropdownRef}>
+          <div className="flex flex-wrap gap-2 mb-2">
+            {assignedTo.map((username) => (
+              <span
+                key={username}
+                className="flex items-center gap-1 bg-cyan-600/50 px-2 py-1 rounded-full text-sm"
+              >
+                {username}
+                <button
+                  type="button"
+                  onClick={() => handleRemoveAssignedUser(username)}
+                  className="text-white hover:text-red-300"
+                >
+                  ×
+                </button>
+              </span>
+            ))}
+          </div>
+
           <input
             type="text"
-            placeholder="Assign to (username)"
-            value={assignedTo.join(", ")} // Show selected users in the input
-            onChange={(e) => setAssignedTo(e.target.value.split(", ").map(item => item.trim()))}
+            placeholder="Search users to assign"
+            value={assigneeInput}
+            onChange={(e) => {
+              setAssigneeInput(e.target.value);
+              fetchUsers(e.target.value); // Fetch as user types
+            }}
             onFocus={() => setShowDropdown(true)}
             className="w-full p-3 rounded-xl bg-white/10 border border-white/30 focus:outline-none focus:ring-2 focus:ring-cyan-400"
           />
@@ -238,9 +264,9 @@ const TaskAssignment = () => {
               transition={{ duration: 0.2 }}
               className="absolute z-50 top-full left-0 w-full bg-white/10 backdrop-blur-md border border-white/30 text-white rounded-lg shadow-lg mt-1 max-h-40 overflow-y-auto"
             >
-              {userOptions.map((user, index) => (
+              {userOptions.map((user) => (
                 <li
-                  key={index}
+                  key={user._id}
                   className="flex items-center gap-3 p-2 hover:bg-cyan-500/30 cursor-pointer text-blue-100 transition duration-200 rounded-lg"
                   onClick={() => handleAddAssignedUser(user)}
                 >

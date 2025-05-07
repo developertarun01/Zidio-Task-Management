@@ -9,9 +9,9 @@ const TaskListCardView = ({ tasks, onDelete, onStatusToggle, onEdit }) => {
   // const email = localStorage.getItem("userEmail"); // Storing the role in localStorage
   // const name = localStorage.getItem("userName");
   // const user = JSON.parse(localStorage.getItem("user"));
-  
+
   return (
-    <div className="min-w-full grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 max-h-[550px] overflow-auto">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-white">
       {filteredTasks.map((task) => (
         <div
           key={task._id}
@@ -20,12 +20,19 @@ const TaskListCardView = ({ tasks, onDelete, onStatusToggle, onEdit }) => {
           <h2 className="text-xl font-bold mb-2">{task.title}</h2>
           <p className="text-sm text-gray-300 mb-2">{task.description}</p>
           {/* ✅ Show assigned user's name */}
+          <div className="max-h-20 overflow-y-auto space-y-1">
+            {task.assignedTo.map((username) => (
+              <span
+                key={username}
+                className="inline-flex items-center gap-1 bg-cyan-600/50 px-2 py-1 mr-1 mb-1 rounded-full text-xs"
+              >
+                {username}
+              </span>
+            ))}
+          </div>
+
           <p className="text-sm text-gray-400">
-            Assigned to: {task.assignedTo || "Unassigned"} (
-            {task.assignedTo?.email})
-          </p>
-          <p className="text-sm text-gray-400">
-            Created by: {task.createdByName || "Unassigned"} (
+            Created by: {task.createdBy || "Unassigned"} (
             {task.assignedTo?.email})
           </p>
           <p className="text-sm text-gray-400">
