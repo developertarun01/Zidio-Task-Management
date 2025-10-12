@@ -1,12 +1,14 @@
 import React from "react";
 import clsx from "clsx";
+import "./Textbox.css"
+
 
 const Textbox = React.forwardRef(
   ({ type, placeholder, label,value, onChange, className, register, name, error }, ref) => {
     return (
-      <div className='w-full flex flex-col gap-1'>
+      <div className='relative w-full gap-1'>
         {label && (
-          <label htmlFor={name} className='text-black-100'>
+          <label htmlFor={name}  className='label-login w-full text-white '>
             {label}
           </label>
         )}
@@ -17,12 +19,13 @@ const Textbox = React.forwardRef(
             name={name}
             placeholder={placeholder}
             value={value}
+            id={name}
             onChange={onChange}
             ref={ref}
             {...register}
             aria-invalid={error ? "true" : "false"}
             className={clsx(
-              "bg-transparent px-3 py-2.5 2xl:py-3 border border-gray-300 placeholder-gray-400 text-gray-900 outline-none text-base focus:ring-2 ring-blue-300",
+              "bg-transparent m-2 px-3 py-4  rounded-md border border-gray-300 placeholder-gray-400 text-gray-900 outline-none text-base ring-blue-600",
               className
             )}
           />

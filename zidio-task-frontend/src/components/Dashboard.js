@@ -148,7 +148,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="flex bg-gradient-to-br from-[#042330] via-[#214753] to-[#06041e] min-h-screen font-sans bg-white dark:bg-gray-900 text-black dark:text-white">
+    <div className="flex bg-gradient-to-r from-[#ced7da] via-[#dfeaed] to-[#c8c6dd] min-h-screen bg-white dark:bg-gray-900 text-black dark:text-white">
       <main className="flex-1 p-6 overflow-y-auto space-y-6">
         <motion.div
           initial={{ opacity: 0, y: -30 }}
@@ -170,8 +170,8 @@ const Dashboard = () => {
           {/* </div> */}
 
           <div>
-            <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-pink-400 to-yellow-300 animate-gradient">
-               Welcome back! {name}, to Zidio Dashboard
+            <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#4f6691] via-pink-400 to-[#e12775]">
+               Welcome back! <span className="text-[#1d5cd1]">{name}</span>, <br/> to TaskManager Dashboard
             </h1>
           </div>
           <div className="text-white bg-gradient-to-r from-black via-indigo-800 to-blue-700 animate-gradient p-4 rounded-lg shadow-md text-sm backdrop-blur-md space-y-2">
