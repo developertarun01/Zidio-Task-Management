@@ -11,11 +11,11 @@ const TaskListCardView = ({ tasks, onDelete, onStatusToggle, onEdit }) => {
   // const user = JSON.parse(localStorage.getItem("user"));
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-white">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 text-white">
       {filteredTasks.map((task) => (
         <div
           key={task._id}
-          className="bg-white/10 backdrop-blur-lg border border-gray-300 dark:border-gray-600 rounded-2xl p-5 shadow-xl text-white transition hover:-translate-y-1 hover:shadow-2xl duration-300"
+          className="bg-[#09120d] backdrop-blur-lg border border-gray-300 dark:border-gray-600 rounded-2xl p-5 shadow-xl text-white transition hover:-translate-y-1 hover:shadow-2xl duration-300"
         >
           <h2 className="text-xl font-bold mb-2">{task.title}</h2>
           <p className="text-sm text-gray-300 mb-2">{task.description}</p>
@@ -47,14 +47,14 @@ const TaskListCardView = ({ tasks, onDelete, onStatusToggle, onEdit }) => {
                 : "text-green-300"
             }`}
           >
-            Priority: {task.priority}
+            <span className="text-white/80">Priority:</span> {task.priority}
           </p>
           <p
             className={`text-xs mt-2 ${
               task.status === "completed" ? "text-green-400" : "text-blue-400"
             }`}
           >
-            Status: {task.status}
+            <span className="text-white/80">Status:</span> {task.status}
           </p>
 
           <div className="flex flex-wrap gap-2 mt-4 justify-between">

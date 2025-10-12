@@ -192,7 +192,7 @@ const TaskList = () => {
         </select>
       </div>
 
-      <div className="bg-gradient-to-br from-[#042330] via-[#214753] to-[#06041e] rounded-lg shadow-lg p-6">
+      <div className="bg-gradient-to-br from-[#1643d6] via-[#1182a4] to-[#3014bb] rounded-lg shadow-lg p-6">
         {view === "card" ? (
           <TaskListCardView
             tasks={filteredTasks}
