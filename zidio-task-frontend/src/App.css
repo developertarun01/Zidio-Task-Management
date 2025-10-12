@@ -44,8 +44,8 @@
 .container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  padding: 20px;
+  /* justify-content: center; */
+  /* padding: 20px; */
 }
 
 /* Ensure images and other media scale properly */

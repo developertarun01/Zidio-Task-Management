@@ -1,0 +1,16 @@
+.label-login {
+  position: absolute;
+  font-size: 16px;
+  left: 20px;
+  top: 24%;
+  box-sizing: border-box;
+  cursor: text;
+}
+
+input:focus ~ .label-login {
+  font-size: 8px;
+  top: 10px;
+}
+input {
+  padding: 10px;
+}

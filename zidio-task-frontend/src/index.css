@@ -18,6 +18,9 @@ body {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 1rem;
 }
+* {
+  fpnt-family: "Montserrat";
+}
 
 select {
   background-color: rgba(255, 255, 255, 0.1);
@@ -29,3 +32,4 @@ select:focus {
   outline: none;
   border-color: #00ffe0;
 }
+

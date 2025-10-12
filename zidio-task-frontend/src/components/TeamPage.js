@@ -49,7 +49,7 @@ const TeamPage = () => {
 
   const fetchTeam = async () => {
     try {
-      const response = await axios.get("https://zidio-task-management-tanmoy9088.onrender.com/users/");
+      const response = await axios.get("https://zidio-task-management-tanmoy9088.onrender.com/api/users");
       setTeam(response.data);
     } catch (error) {
       console.error("Failed to fetch team", error);
