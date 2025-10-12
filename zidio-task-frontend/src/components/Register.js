@@ -15,11 +15,17 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("user");
   const [darkMode, setDarkMode] = useState(() => {
-    return localStorage.getItem("theme") === "dark";
+    // Assuming you want the dark theme as default for the vibrant look
+    return localStorage.getItem("theme") === "dark" || !localStorage.getItem("theme"); 
   });
 
   const navigate = useNavigate();
   const soundRef = useRef(null);
+  
+  // Custom class for eye-catching typography
+  const fontDisplayClass = "font-extrabold tracking-tight font-sans"; 
+  const primaryAccent = "text-cyan-400"; // Primary highlight color
+  const secondaryAccent = "bg-orange-400"; // Button color
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -64,6 +70,8 @@ const Register = () => {
 
   useEffect(() => {
     document.body.classList.toggle("dark", darkMode);
+    // You might also need to set a specific background here if not handled by CSS file
+    document.body.style.backgroundColor = darkMode ? '#1a0f3d' : '#f0f4f8';
   }, [darkMode]);
 
   return (
@@ -78,7 +86,7 @@ const Register = () => {
       {/* 🔊 Audio ref */}
       {/* <audio ref={soundRef} src={toggleSoundFile} preload="auto" /> */}
 
-      {/* Toggle Button */}
+      {/* Toggle Button: Using dark mode default for consistency */}
       <button
         onClick={toggleDarkMode}
         className="absolute top-4 right-4 z-50 px-4 py-2 bg-white/30 text-white backdrop-blur-md rounded-full text-sm shadow hover:bg-white/50 transition-all duration-300"
@@ -86,59 +94,58 @@ const Register = () => {
         {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
       </button>
 
-      {/* 🎇 Starfield */}
-      <div className={`starfield z-0 ${darkMode ? "dark-stars" : ""}`}>
-        <div />
-      </div>
-
-      {/* 🫧 Bubbles */}
+      {/* 🎇 Starfield & 🫧 Bubbles (Assuming styles are defined in register.css) */}
+      <div className={`starfield z-0 ${darkMode ? "dark-stars" : ""}`}><div /></div>
       <div className="absolute inset-2 z-0 flex items-center justify-center overflow-hidden">
         <div className={`bubble-effect ${darkMode ? "dark-bubbles" : ""}`} />
       </div>
 
-      {/* 🎨 Background */}
+      {/* 🎨 Background: Using a dark violet for visual appeal */}
       <div
         className={`absolute inset-0 z-[-2] ${
-          darkMode ? "dark-bg" : "light-bg"
-        }`}
+          darkMode ? "bg-[#1a0f3d]" : "bg-gray-100" // Deep violet base color
+        } transition-colors duration-500`}
       />
 
       {/* Page Content */}
       <div className="w-full md:w-auto flex gap-0 md:gap-40 flex-col md:flex-row items-center justify-center z-10">
-        <div className="h-full w-full lg:w-2/3 flex flex-col items-center justify-center text-white text-center px-4 transition-all duration-500">
-          <div className="w-full md:max-w-lg 2xl:max-w-3xl flex flex-col items-center justify-center gap-5 md:gap-y-10 2xl:-mt-20">
-            <span className="flex gap-1 py-1 px-3 border rounded-full text-sm md:text-base border-white/50 text-white bg-white/20 backdrop-blur-md">
-              Manage all your task in one place!
+        
+        {/* Left Side: Marketing Text */}
+        <div className="h-full w-full lg:w-2/3 flex flex-col items-center justify-center text-white text-center px-4 transition-all duration-500 py-10 md:py-0">
+          <div className="w-full md:max-w-lg 2xl:max-w-3xl flex flex-col items-center justify-center gap-5 md:gap-y-10">
+            <span className={`flex gap-1 py-2 px-5 border rounded-full text-sm md:text-base border-cyan-400/50 text-cyan-400 bg-white/10 backdrop-blur-md ${fontDisplayClass}`}>
+              Manage all your tasks in one place!
             </span>
-            <p className="flex flex-col gap-0 md:gap-4 text-4xl md:text-6xl 2xl:text-7xl font-black">
-              <span>Zidio</span>
-              <span>Task Manager</span>
+            <p className="flex flex-col gap-0 md:gap-4 text-5xl md:text-7xl 2xl:text-8xl font-black">
+              {/* <span className={`text-white ${fontDisplayClass}`}></span> */}
+              <span className={primaryAccent}>{`Task Manager`}</span>
             </p>
           </div>
         </div>
 
-        {/* Right Form */}
+        {/* Right Form: Using the dark mode glass card look */}
         <div className="z-10 w-full md:w-1/3 p-4 md:p-1 flex flex-col justify-center items-center relative">
           <motion.form
             onSubmit={handleSubmit}
-            className="form-container w-full md:w-[400px] flex flex-col gap-y-8 glass-card px-10 pt-14 pb-14"
+            className="bg-[#000000] rounded-2xl form-container w-full md:w-[420px] flex flex-col gap-y-8 px-10 pt-14 pb-14 shadow-2xl" // Added dark mode styling to form
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ type: "spring", stiffness: 80, delay: 0.3 }}
           >
             <div>
-              <p className="text-blue-600 text-3xl font-bold text-center">
-                Welcome!
+              <p className={`text-3xl ${primaryAccent} ${fontDisplayClass} text-center`}>
+                Start Organizing
               </p>
-              <p className="text-center text-base text-gray-700 dark:text-gray-300">
-                Keep all your credentials safe.
+              <p className="text-center text-base text-gray-400">
+                Create your account in seconds.
               </p>
             </div>
 
             <div className="flex flex-col gap-y-5">
+              {/* Textboxes: Updated color classes for dark glass effect */}
               <Textbox
-                placeholder="username"
-                className="w-full h-10 bg-blue-700  text-gray-200 rounded-full"
+                // placeholder="username"
+                className="w-full h-12 bg-white/10 border border-gray-600 text-white rounded-lg focus:border-cyan-400"
                 type="text"
                 name="username"
                 label="Username"
@@ -148,8 +155,8 @@ const Register = () => {
               />
 
               <Textbox
-                placeholder="email@example.com"
-                className="w-full h-10 bg-blue-700  text-gray-200 rounded-full"
+                // placeholder="email@example.com"
+                className="w-full h-12 bg-white/10 border border-gray-600 text-white rounded-lg focus:border-cyan-400"
                 type="email"
                 name="email"
                 label="Email Address"
@@ -159,8 +166,8 @@ const Register = () => {
               />
 
               <Textbox
-                placeholder="your password"
-                className="w-full h-10 bg-blue-700 text-gray-200 rounded-full"
+                // placeholder="your password"
+                className="w-full h-12 bg-white/10 border border-gray-600 text-white rounded-lg focus:border-cyan-400"
                 type="password"
                 name="password"
                 label="Password"
@@ -170,39 +177,56 @@ const Register = () => {
               />
 
               <div>
-                <label className="block mb-1 font-semibold text-gray-200 dark:text-gray-300">
+                <label className="block mb-1 font-semibold text-white">
                   Select Role:
                 </label>
+                {/* Select: Updated color classes for dark glass effect */}
                 <select
-                  className="w-full px-4 py-2 rounded-full border h-10 text-slate-400"
+                  className="w-full px-4 py-2 rounded-lg border h-12 bg-white/10 text-white border-gray-600 focus:border-cyan-400 appearance-none"
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
                   required
                 >
-                  <option value="user">User</option>
-                  <option value="manager">Manager</option>
-                  <option value="admin">Admin</option>
+                  <option className="bg-[#1a0f3d] text-white" value="user">User</option>
+                  <option className="bg-[#1a0f3d] text-white" value="manager">Manager</option>
+                  <option className="bg-[#1a0f3d] text-white" value="admin">Admin</option>
                 </select>
               </div>
 
+              {/* Button: Updated to the vibrant Orange accent */}
               <Button
                 type="submit"
-                label="Register"
-                className="w-full h-10 bg-blue-700 text-white rounded-full"
+                label="Register Account"
+                className={`w-full h-12 ${secondaryAccent} text-gray-900 font-extrabold text-lg rounded-lg shadow-xl hover:bg-orange-300 transition duration-300`}
               />
             </div>
 
             <div className="text-center">
               <button
-                className="text-blue-500 text-center hover:underline"
+                className="text-cyan-400 font-semibold hover:underline"
                 onClick={handleLog}
               >
-                Already have an account? Login
+                Already have an account? Login here
               </button>
             </div>
           </motion.form>
         </div>
       </div>
+      
+      {/* Assuming .glass-card style is defined in register.css or the following style block */}
+      <style>{`
+        /* Minimal custom styles for the glass effect and general dark theme */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        /* Override Textbox label color if needed */
+        .form-container label {
+            color: #ffffff; /* Ensures labels are white in dark mode */
+        }
+      `}</style>
     </motion.div>
   );
 };
