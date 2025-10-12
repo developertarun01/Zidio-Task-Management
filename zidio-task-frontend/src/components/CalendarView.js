@@ -47,7 +47,7 @@ const CalendarView = () => {
 
   const fetchTasks = async () => {
     try {
-      const res = await axios.get("https://zidio-task-management-tanmoy9088.vercel.app/api/tasks");
+      const res = await axios.get("https://zidio-task-management-tanmoy9088.onrender.com/api/tasks");
       const formatted = res.data.map(formatTask);
       setAllTasks(formatted);
     } catch (err) {
