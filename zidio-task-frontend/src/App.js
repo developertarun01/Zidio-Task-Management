@@ -44,31 +44,51 @@ import { useAuth } from "./context/AuthContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+// Layout.jsx (Modified)
+
+// ... imports
+
 function Layout() {
   const { user } = useSelector((state) => state.auth);
   const location = useLocation();
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(false); // Initial state is false (sidebar is full width)
+
+  // 1. Create a function to toggle the state
+  const toggleExpanded = () => {
+    setExpanded(prev => !prev);
+  };
+
+  const SIDEBAR_FULL_WIDTH = "md:ml-64"; 
+  const SIDEBAR_COLLAPSED_WIDTH = "md:ml-20"; 
+  const MAIN_WIDTH_FULL = "w-[calc(100vw-16rem)]"; 
+  const MAIN_WIDTH_COLLAPSED = "w-[calc(100vw-5rem)]"; 
+
   return user ? (
     <div className="flex h-screen bg-gradient-to-br from-blue-200 to-gray-100 text-gray-900">
-      {/* Fixed Sidebar */}
+      
+      {/* Sidebar - Pass the toggle function */}
       <div className="fixed z-40 inset-y-0 left-0 bg-white border-r border-gray-200 shadow-lg hidden md:block">
-        <MobileSidebar />
-        <Sidebar />
+        <MobileSidebar isExpanded={expanded} toggleSidebar={toggleExpanded} /> 
+        <Sidebar isExpanded={expanded} toggleSidebar={toggleExpanded} /> 
       </div>
 
       {/* Main content area */}
       <div
         className={`flex-1 bg-white rounded-xl shadow-lg flex flex-col ${
-          expanded ? "md:ml-64" : "md:ml-20"
+          expanded ? SIDEBAR_COLLAPSED_WIDTH : SIDEBAR_FULL_WIDTH 
         }`}
       >
-        {/* Navbar */}
+        {/* Navbar - Pass the toggle function and current state */}
         <div className="sticky top-0 z-50 bg-white border-b border-gray-200">
-          <Navbar />
+          <Navbar toggleSidebar={toggleExpanded} isExpanded={expanded} /> 
         </div>
 
         {/* Page content */}
-        <main className="flex-1 overflow-y-auto bg-animate-fade-in">
+        <main
+          className={`flex-1 overflow-y-auto bg-animate-fade-in p-4 
+            ${expanded ? MAIN_WIDTH_COLLAPSED : MAIN_WIDTH_FULL}
+          `}
+        >
           <Outlet />
         </main>
       </div>
@@ -77,7 +97,6 @@ function Layout() {
     <Navigate to="/login" state={{ from: location }} replace />
   );
 }
-
 const App = () => {
   return (
     <AuthProvider>

@@ -7,11 +7,11 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="bg-white border-b border-gray-200 shadow-sm">
-      <div className="container mx-auto px-6 py-3 flex justify-between items-center">
+    <nav className="bg-transparent border-b border-gray-200 shadow-sm">
+      <div className="container px-6 py-3 flex justify-between items-center">
         {/* Logo */}
         <Link to="/" className="text-2xl font-bold text-indigo-600">
-          Zidio TaskManager
+          TaskManager
         </Link>
 
         {/* Search Bar */}
@@ -57,7 +57,7 @@ const Navbar = () => {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden bg-gray-50 border-gray-200 py-3 space-y-1 text-center text-gray-700 font-medium ">
-        {/* <Link to="/home" className="block hover:bg-indigo-100 p-2">
+          {/* <Link to="/home" className="block hover:bg-indigo-100 p-2">
             Home
           </Link> */}
           <Link
@@ -69,22 +69,13 @@ const Navbar = () => {
           <Link to="/about" className="block hover:bg-indigo-100 p-2">
             About Us
           </Link>
-          <Link
-            to="/services"
-            className="block hover:bg-indigo-100 p-2"
-          >
+          <Link to="/services" className="block hover:bg-indigo-100 p-2">
             Services
           </Link>
-          <Link
-            to="/careers"
-            className="block hover:bg-indigo-100 p-2"
-          >
+          <Link to="/careers" className="block hover:bg-indigo-100 p-2">
             Career
           </Link>
-          <Link
-            to="/contact"
-            className="block hover:bg-indigo-100 p-2"
-          >
+          <Link to="/contact" className="block hover:bg-indigo-100 p-2">
             Contact Us
           </Link>
 
